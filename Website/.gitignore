@@ -29,28 +29,3 @@ dist-ssr
 .env.development
 .env.test
 .env.production
-
-# misc
-.DS_Store
-Thumbs.db
-desktop.ini
-
-
-# db
-db.sqlite3
-db.sqlite3-journal
-
-# cache
-.cache
-.cypress
-.cypress-cache
-node_modules/.cache
-
-# virtual environment
-venv
-env
-ENV
-
-# requirements
-requirements.txt
-
