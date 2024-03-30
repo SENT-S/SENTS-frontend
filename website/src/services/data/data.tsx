@@ -1,0 +1,126 @@
+export const List = [
+  {
+    name: 'Uganda',
+    count: '25',
+    code: 'ug',
+  },
+  {
+    name: 'Kenya',
+    count: '26',
+    code: 'ke',
+  },
+  {
+    name: 'Rwanda',
+    count: '15',
+    code: 'rw',
+  },
+];
+
+export const tableData = [
+  {
+    'Company Name': 'Stanbic Uganda Holdings Limited',
+    'Stock Symbol': 'SBU',
+    'Sector/ Industry': 'Banking',
+    'Stock Price': '30.00',
+    'GDP Change (%)': '+0.5%',
+  },
+  {
+    'Company Name': 'Umeme Limited',
+    'Stock Symbol': 'UMEM',
+    'Sector/ Industry': 'Energy',
+    'Stock Price': '10.00',
+    'GDP Change (%)': '-0.5%',
+  },
+  {
+    'Company Name': 'Centenary Bank',
+    'Stock Symbol': 'CBL',
+    'Sector/ Industry': 'Banking',
+    'Stock Price': '15.00',
+    'GDP Change (%)': '+0.2%',
+  },
+  {
+    'Company Name': 'Uganda Breweries Limited',
+    'Stock Symbol': 'UBL',
+    'Sector/ Industry': 'Manufacturing',
+    'Stock Price': '20.00',
+    'GDP Change (%)': '-0.1%',
+  },
+  {
+    'Company Name': 'Nile Breweries Limited',
+    'Stock Symbol': 'NBL',
+    'Sector/ Industry': 'Manufacturing',
+    'Stock Price': '25.00',
+    'GDP Change (%)': '+0.3%',
+  },
+  {
+    'Company Name': 'MTN Uganda',
+    'Stock Symbol': 'MTNU',
+    'Sector/ Industry': 'Telecom',
+    'Stock Price': '40.00',
+    'GDP Change (%)': '-0.4%',
+  },
+
+  {
+    'Company Name': 'Jubilee Insurance',
+    'Stock Symbol': 'JUB',
+    'Sector/ Industry': 'Insurance',
+    'Stock Price': '35.00',
+    'GDP Change (%)': '+0.6%',
+  },
+  {
+    'Company Name': 'Uganda Clays Limited',
+    'Stock Symbol': 'UCL',
+    'Sector/ Industry': 'Manufacturing',
+    'Stock Price': '5.00',
+    'GDP Change (%)': '-0.2%',
+  },
+  {
+    'Company Name': 'Dfcu Bank',
+    'Stock Symbol': 'DFCU',
+    'Sector/ Industry': 'Banking',
+    'Stock Price': '12.00',
+    'GDP Change (%)': '+0.1%',
+  },
+  {
+    'Company Name': 'Cipla Quality Chemicals',
+    'Stock Symbol': 'CIPLA',
+    'Sector/ Industry': 'Pharmaceuticals',
+    'Stock Price': '8.00',
+    'GDP Change (%)': '-0.3%',
+  },
+  {
+    'Company Name': 'New Vision Printing and Publishing Company',
+    'Stock Symbol': 'NVP',
+    'Sector/ Industry': 'Media',
+    'Stock Price': '7.00',
+    'GDP Change (%)': '+0.4%',
+  },
+  {
+    'Company Name': 'Uganda Clays Limited',
+    'Stock Symbol': 'UCL',
+    'Sector/ Industry': 'Manufacturing',
+    'Stock Price': '5.00',
+    'GDP Change (%)': '-0.2%',
+  },
+  {
+    'Company Name': 'Dfcu Bank',
+    'Stock Symbol': 'DFCU',
+    'Sector/ Industry': 'Banking',
+    'Stock Price': '12.00',
+    'GDP Change (%)': '+0.1%',
+  },
+  {
+    'Company Name': 'Cipla Quality Chemicals',
+    'Stock Symbol': 'CIPLA',
+    'Sector/ Industry': 'Pharmaceuticals',
+    'Stock Price': '8.00',
+    'GDP Change (%)': '-0.3%',
+  },
+  {
+    'Company Name': 'New Vision Printing and Publishing Company',
+    'Stock Symbol': 'NVP',
+    'Sector/ Industry': 'Media',
+    'Stock Price': '7.00',
+    'GDP Change (%)': '+0.4%',
+  },
+];
