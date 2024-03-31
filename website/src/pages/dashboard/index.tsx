@@ -2,6 +2,8 @@ import MainLayout from '../../layouts/main';
 import { useState } from 'react';
 import TableComponent from 'src/components/table';
 import { List, tableData } from 'src/services/data/data';
+import { GET_COUNTRY_FLAG } from 'src/services/urls';
+import PlaceHolder from '/images/placeholder.png';
 
 const Index = () => {
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
@@ -29,7 +31,10 @@ const Index = () => {
               <div className="">
                 <img
                   className="h-14 w-14 rounded-full object-cover"
-                  src={`https://countryflagsapi.netlify.app/flag/${country.code.toLowerCase()}.svg`}
+                  src={
+                    `${GET_COUNTRY_FLAG}/${country.code.toLowerCase()}.svg` ||
+                    PlaceHolder
+                  }
                   alt="flag"
                   loading="lazy"
                 />
@@ -51,7 +56,7 @@ const Index = () => {
           showSearch={true}
           customRender={{
             'GDP Change (%)': (row, value) => (
-              <span className="text-sm text-gray-500">{row[value]}</span>
+              <span className="text-sm text-green-500">{row[value]}</span>
             ),
           }}
         />
