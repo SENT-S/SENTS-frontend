@@ -6,6 +6,9 @@ import Overview from '../_sections/Overview';
 import Financial from '../_sections/Financials';
 import News from '../_sections/News';
 import About from '../_sections/About';
+import F_statements from '../_sections/F_statements';
+import Relations from '../_sections/Relations';
+import Experts_Buy from '../_sections/Experts_Buy';
 
 interface CompanyDetailsProps {
   params: { companyId: string };
@@ -47,8 +50,15 @@ const CompanyDetails = ({ params }: CompanyDetailsProps) => {
             </div>
           </div>
           <div className="col-span-2">
-            <div className="w-full h-auto rounded-2xl bg-white px-8 py-4">
-              <About data />
+            <div className="w-full h-auto">
+              {selectedLink === 'Overview' && <About data />}
+              {selectedLink === 'Financials' && (
+                <div className="space-y-8">
+                  <F_statements data />
+                  <Relations data />
+                </div>
+              )}
+              {selectedLink === 'News' && <Experts_Buy />}
             </div>
           </div>
         </div>
