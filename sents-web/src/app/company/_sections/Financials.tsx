@@ -41,7 +41,8 @@ const Financials = ({ data }: FinancialProps) => {
         <Image
           src={FinancialImage}
           alt="financials"
-          objectFit="contain"
+          objectFit="cover"
+          layout="responsive"
           className="rounded-2xl"
         />
       </div>
