@@ -3,71 +3,16 @@ import React, { useState } from 'react';
 import MainLayout from '@/components/layout';
 import Image from 'next/image';
 import TableComponent from '@/components/table';
-
-interface CountryData {
-  country: string;
-  total: number;
-  flag: string;
-}
-
-interface TableData {
-  'Company Name': string;
-  'Stock Symbol': string;
-  'Sector/Industry': string;
-}
+import { countryData, tableData } from '@/services/mockData/mock';
+import { useRouter } from 'next/navigation';
 
 const Dashboard = () => {
+  const router = useRouter();
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
-
-  const countryData: CountryData[] = [
-    {
-      country: 'Uganda',
-      total: 25,
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Flag_of_Uganda.svg',
-    },
-    {
-      country: 'Kenya',
-      total: 26,
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg',
-    },
-  ];
-
-  const tableData: TableData[] = [
-    {
-      'Company Name': 'Stanbic Uganda Holdings Limited',
-      'Stock Symbol': 'SBU',
-      'Sector/Industry': 'Financial Services',
-    },
-    {
-      'Company Name': 'Jubilee Holdings Limited',
-      'Stock Symbol': 'JHL',
-      'Sector/Industry': 'Insurance',
-    },
-    {
-      'Company Name': 'Umeme Limited',
-      'Stock Symbol': 'UMEME',
-      'Sector/Industry': 'Utilities',
-    },
-    {
-      'Company Name': 'Bank of Baroda Uganda Limited',
-      'Stock Symbol': 'BOBU',
-      'Sector/Industry': 'Financial Services',
-    },
-    {
-      'Company Name': 'DFCU Group',
-      'Stock Symbol': 'DFCU',
-      'Sector/Industry': 'Financial Services',
-    },
-    {
-      'Company Name': 'Jubilee Holdings Limited',
-      'Stock Symbol': 'JHL',
-      'Sector/Industry': 'Insurance',
-    },
-  ];
 
   return (
     <MainLayout>
-      <div className="space-y-8">
+      <div className="space-y-8 container">
         <div className="text-2xl font-medium text-[#0D4222] text-left">
           Dashboard
         </div>
@@ -75,7 +20,7 @@ const Dashboard = () => {
           {countryData.map(item => (
             <div
               key={item.country}
-              className={`w-full flex justify-around cursor-pointer items-center p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white'}`}
+              className={`w-full flex justify-around cursor-pointer items-center p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white'} border border-transparent hover:border-[#148C59]`}
               onClick={() => setSelectedCountry(item.country)}
             >
               <div className="flex flex-col text-left">
@@ -97,7 +42,9 @@ const Dashboard = () => {
         <div className="">
           <TableComponent
             headers={['Company Name', 'Stock Symbol', 'Sector/Industry']}
-            onRowClick={row => console.log(row)}
+            onRowClick={row => {
+              router.push(`/company/${row.id}`);
+            }}
             rows={tableData}
           />
         </div>
