@@ -1,7 +1,8 @@
-import React from "react";
+import React from 'react';
+import Dashboard from './dashboard/page';
 
-const HomePage = () => {
-  return <div>HomePage</div>;
+const Index = () => {
+  return <Dashboard />;
 };
 
-export default HomePage;
+export default Index;
