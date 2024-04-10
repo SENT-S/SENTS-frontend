@@ -34,19 +34,19 @@ const CompanyDetails = ({ params }: CompanyDetailsProps) => {
 
   return (
     <MainLayout>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-y-8 lg:gap-x-8 mt-4">
-        <div className="space-y-8 col-span-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
+        <div className="col-span-1 lg:col-span-2 space-y-8">
           <SubNav
             links={links}
             selectedLink={selectedLink}
             setSelectedLink={setSelectedLink}
           />
-          <div className="w-full h-auto rounded-2xl bg-white p-4 overflow-hidden">
+          <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
             {renderSection()}
           </div>
         </div>
-        <div className="col-span-2">
-          <div className="w-full h-auto">
+        <div className="col-span-1">
+          <div className="w-full flex justify-center">
             {selectedLink === 'Overview' && <About data />}
             {selectedLink === 'Financials' && <F_statements data />}
             {selectedLink === 'News' && <Experts_Buy />}

@@ -8,7 +8,7 @@ interface SubNavProps {
 
 const SubNav = ({ links, selectedLink, setSelectedLink }: SubNavProps) => {
   return (
-    <div className="flex flex-wrap justify-around items-center p-2 md:p-3 bg-white rounded-2xl overflow-auto">
+    <div className="flex flex-wrap justify-around items-center p-2 md:p-3 bg-white dark:bg-[#39463E80] rounded-2xl overflow-auto">
       {links.map(link => (
         <div
           key={link}

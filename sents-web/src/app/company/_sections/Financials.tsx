@@ -22,7 +22,7 @@ const Financials = ({ data }: FinancialProps) => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full">
       <div>
         <h1 className="text-2xl font-semibold">
           Stanbic Uganda Holdings Limited
@@ -30,12 +30,14 @@ const Financials = ({ data }: FinancialProps) => {
         <h2 className="text-xl font-thin mb-2">SBU</h2>
         <span className="font-semibold text-lg">Quarterly Financials</span>
       </div>
-      <div className="bg-gray-100 rounded-2xl flex justify-between py-3 px-4 overflow-x-auto">
+      <div className="bg-gray-100 dark:text-white dark:bg-[#0E120F] rounded-2xl flex justify-between py-3 px-4 overflow-x-auto">
         {PastLinks.map(link => (
           <nav
             key={link.value}
             className={`cursor-pointer min-w-[150px] text-center p-2 rounded-xl ${
-              selectedLink === link.value ? 'bg-gray-300 ' : ''
+              selectedLink === link.value
+                ? 'bg-gray-300 dark:bg-[#39463E80]'
+                : ''
             }`}
             onClick={() => setSelectedLink(link.value)}
           >

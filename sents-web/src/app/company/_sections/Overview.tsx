@@ -8,16 +8,17 @@ interface OverviewProps {
 
 const Overview = ({ data }: OverviewProps) => {
   return (
-    <div>
-      <div className="w-full flex justify-center mt-6 mb-12">
+    <div className="w-full h-auto">
+      <div className="w-full relative flex justify-center mt-6 mb-12">
         <h1 className="text-3xl font-semibold">Coming Soon!</h1>
       </div>
-      <div className="relative left-8 md:left-32 w-auto h-[200px] md:h-[500px]">
+      <div className="relative left-4 flex justify-end">
         <Image
           src={OveriewImage}
           alt="overview"
-          fill={true}
-          className="w-auto h-auto object-contain"
+          width={500}
+          height={500}
+          className="object-contain"
         />
       </div>
     </div>

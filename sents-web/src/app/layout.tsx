@@ -1,4 +1,6 @@
+import Provider from '@/services/redux/Provider';
 import '@/styles/styles.scss';
+import { ThemeProvider } from 'next-themes';
 
 export const metadata = {
   title: 'Next.js',
@@ -12,7 +14,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Provider>
+          <ThemeProvider attribute="class" enableSystem={false}>
+            {children}
+          </ThemeProvider>
+        </Provider>
+      </body>
     </html>
   );
 }

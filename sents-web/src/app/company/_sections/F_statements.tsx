@@ -16,26 +16,27 @@ const F_statements = ({ data }: FinancialProps) => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4 rounded-2xl bg-white px-8 py-4">
+    <div className="space-y-8 w-full">
+      <div className="space-y-4 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
         <h1 className="text-2xl font-semibold">Financial Statements</h1>
-        <ul className="list-none divide-y space-y-6">
+        <ul className="list-none divide-y divide-[#E6EEEA] dark:divide-[#39463E] space-y-6">
           {financialStatements.map((statement, index) => (
             <li key={index} className="flex items-center justify-between p-3">
               <span>{statement.name}</span>
               <a href={`/path/to/documents/${statement.file}`} download>
                 <TfiDownload
-                  className="text-green-600 text-lg bg-green-100 rounded-full p-2 cursor-pointer"
-                  size={30}
+                  className="text-green-600 text-lg bg-green-100 dark:bg-[#0E120F] rounded-full p-3 cursor-pointer"
+                  size={40}
                 />
               </a>
             </li>
           ))}
         </ul>
       </div>
-      <div className="space-y-4 rounded-2xl bg-white px-8 py-4">
+
+      <div className="space-y-4 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
         <h1 className="text-2xl font-semibold">Related Stocks</h1>
-        <ul className="list-none divide-y divide-gray-200 space-y-3">
+        <ul className="list-none divide-y divide-[#E6EEEA] dark:divide-[#39463E]  space-y-3">
           {mockdata.map(stock => (
             <li
               key={stock.id}
