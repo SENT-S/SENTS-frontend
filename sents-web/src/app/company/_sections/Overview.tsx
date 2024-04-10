@@ -12,12 +12,12 @@ const Overview = ({ data }: OverviewProps) => {
       <div className="w-full flex justify-center mt-6 mb-12">
         <h1 className="text-3xl font-semibold">Coming Soon!</h1>
       </div>
-      <div className="relative w-auto h-auto md:h-[500px]">
+      <div className="relative left-8 md:left-32 w-auto h-[200px] md:h-[500px]">
         <Image
           src={OveriewImage}
           alt="overview"
-          objectFit="contain"
-          className="absolute right-[-86px] bottom-0"
+          fill={true}
+          className="w-auto h-auto object-contain"
         />
       </div>
     </div>

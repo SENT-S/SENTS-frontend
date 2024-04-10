@@ -11,15 +11,15 @@ const Experts_Buy = () => {
         <h2 className="text-[40px] leading-10 font-semibold">
           Coming <br /> Soon!
         </h2>
-        <div className="relative flex justify-end">
-          <Image
-            src={Expert1}
-            alt="expert"
-            objectFit="contain"
-            width={200}
-            height={200}
-            className="rounded-2xl right-0"
-          />
+        <div className="flex justify-end">
+          <div className="relative w-52 h-52">
+            <Image
+              src={Expert1}
+              alt="expert"
+              fill={true}
+              className="object-contain"
+            />
+          </div>
         </div>
       </div>
       <div className="relative space-y-4 rounded-2xl bg-white px-8 py-4">
@@ -27,15 +27,15 @@ const Experts_Buy = () => {
         <h2 className="text-[40px] leading-10 font-semibold">
           Coming <br /> Soon!
         </h2>
-        <div className="relative flex justify-end">
-          <Image
-            src={Expert2}
-            alt="expert"
-            objectFit="contain"
-            width={200}
-            height={200}
-            className="rounded-2xl right-0"
-          />
+        <div className="flex justify-end">
+          <div className="relative w-52 h-52">
+            <Image
+              src={Expert2}
+              alt="expert"
+              fill={true}
+              className="object-contain"
+            />
+          </div>
         </div>
       </div>
     </div>

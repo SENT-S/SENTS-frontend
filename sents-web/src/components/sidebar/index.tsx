@@ -5,7 +5,7 @@ import { IoIosLogOut } from 'react-icons/io';
 
 const SideBar = () => {
   return (
-    <div className="flex flex-col w-64 h-full p-4 overflow-y-auto bg-transparent">
+    <div className="hidden flex-col w-64 h-full p-4 overflow-y-auto bg-transparent md:flex">
       <div className="flex items-center justify-center mb-4">
         <Link href="/dashboard">
           <h1 className="text-2xl text-[#0D4222] font-bold">SENTS.</h1>

@@ -49,3 +49,44 @@ export const tableData = [
     'Sector/Industry': 'Insurance',
   },
 ];
+
+export const financialStatements = [
+  { name: 'Annual Report 2023', file: 'annual_report_2023.pdf' },
+  { name: 'Q1 Financials 2023', file: 'Q1_financials_2023.pdf' },
+  { name: 'Q2 Financials 2023', file: 'Q2_financials_2023.pdf' },
+  { name: 'Q3 Financials 2023', file: 'Q3_financials_2023.pdf' },
+];
+
+export const mockdata = [
+  { id: 1, name: 'Umeme Limited.', symbol: 'UMEME' },
+  { id: 2, name: 'Jubilee Holding Limited', symbol: 'JHL' },
+  { id: 3, name: 'DFCU Group', symbol: 'DFCU' },
+  { id: 4, name: 'Alphabet Inc.', symbol: 'GOOGL' },
+];
+
+export const mockData = [
+  {
+    id: 1,
+    title:
+      'Stanbic Uganda Holdings Reports Record Profits in 2023 Annual Financial Report',
+    description:
+      'Stanbic Uganda Holdings Limited, one of the leading financial services groups in Uganda, has announced record-breaking profits in its 2023 Annual Financial Report. ',
+    imageUrl: 'https://source.unsplash.com/random/finance',
+  },
+  {
+    id: 2,
+    title:
+      'Stanbic Uganda Holdings Reports Record Profits in 2023 Annual Financial Report',
+    description:
+      'Stanbic Uganda Holdings Limited, one of the leading financial services groups in Uganda, has announced record-breaking profits in its 2023 Annual Financial Report.',
+    imageUrl: 'https://source.unsplash.com/random/technology',
+  },
+  {
+    id: 3,
+    title:
+      'Stanbic Uganda Holdings Reports Record Profits in 2023 Annual Financial Report',
+    description:
+      'Stanbic Uganda Holdings Limited, one of the leading financial services groups in Uganda, has announced record-breaking profits in its 2023 Annual Financial Report. ',
+    imageUrl: 'https://source.unsplash.com/random/technology',
+  },
+];

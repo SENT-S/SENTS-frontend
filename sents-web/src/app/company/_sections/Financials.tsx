@@ -15,6 +15,12 @@ const PastLinks = [
 
 const Financials = ({ data }: FinancialProps) => {
   const [selectedLink, setSelectedLink] = useState(PastLinks[0].value);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const handleClick = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -24,26 +30,24 @@ const Financials = ({ data }: FinancialProps) => {
         <h2 className="text-xl font-thin mb-2">SBU</h2>
         <span className="font-semibold text-lg">Quarterly Financials</span>
       </div>
-      <div className="bg-gray-100 rounded-2xl flex justify-between py-3 px-4">
+      <div className="bg-gray-100 rounded-2xl flex justify-between py-3 px-4 overflow-x-auto">
         {PastLinks.map(link => (
-          <div
+          <nav
             key={link.value}
-            className={`cursor-pointer p-2 rounded-xl ${
+            className={`cursor-pointer min-w-[150px] text-center p-2 rounded-xl ${
               selectedLink === link.value ? 'bg-gray-300 ' : ''
             }`}
             onClick={() => setSelectedLink(link.value)}
           >
             {link.name}
-          </div>
+          </nav>
         ))}
       </div>
-      <div className="relative w-full h-auto">
+      <div className="relative flex justify-center w-full h-auto">
         <Image
           src={FinancialImage}
           alt="financials"
-          objectFit="cover"
-          layout="responsive"
-          className="rounded-2xl"
+          className="object-contain w-full h-auto md:w-auto md:h-auto"
         />
       </div>
     </div>

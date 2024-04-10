@@ -12,7 +12,7 @@ const About = ({ data }: AboutProps) => {
   return (
     <div className="space-y-4 rounded-2xl bg-white px-8 py-4">
       <h1 className="text-2xl font-bold">About</h1>
-      <p className="text-justify">
+      <p className="text-left">
         Stanbic Uganda Holdings Limited is a leading financial services group
         based in Uganda, serving individuals, businesses, and institutions
         across the country. Established in [year], Stanbic Uganda Holdings has
