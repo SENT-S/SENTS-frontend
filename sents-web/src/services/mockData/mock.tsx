@@ -61,7 +61,6 @@ export const mockdata = [
   { id: 1, name: 'Umeme Limited.', symbol: 'UMEME' },
   { id: 2, name: 'Jubilee Holding Limited', symbol: 'JHL' },
   { id: 3, name: 'DFCU Group', symbol: 'DFCU' },
-  { id: 4, name: 'Alphabet Inc.', symbol: 'GOOGL' },
 ];
 
 export const mockData = [

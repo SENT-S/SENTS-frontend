@@ -1,4 +1,5 @@
 import React from 'react';
+import { RiArrowRightSLine } from 'react-icons/ri';
 
 interface TableProps {
   headers: string[];
@@ -25,11 +26,13 @@ const TableComponent: React.FC<TableProps> = ({
                     {header}
                   </div>
                 ))}
+                {/* Empty div for the arrow icon alignment */}
+                <div className="w-8"></div>
               </div>
               {rows.map((row, rowIndex) => (
                 <div
                   key={rowIndex}
-                  className="flex bg-gray-50 dark:bg-[#39463E] rounded-2xl mt-4 cursor-pointer hover:bg-gray-100"
+                  className="flex items-center bg-gray-50 dark:bg-[#39463E] rounded-2xl mt-4 cursor-pointer hover:bg-gray-100"
                   onClick={() => onRowClick && onRowClick(row)}
                 >
                   {headers.map((header, cellIndex) => (
@@ -40,6 +43,9 @@ const TableComponent: React.FC<TableProps> = ({
                       {renderCell ? renderCell(row, header) : row[header]}
                     </div>
                   ))}
+                  <div className="w-8 h-8 relative top-1 right-2 text-gray-400">
+                    <RiArrowRightSLine size={20} />
+                  </div>
                 </div>
               ))}
             </div>

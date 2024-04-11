@@ -8,12 +8,12 @@ interface AboutProps {
   data: any;
 }
 
-const About = ({ data }: AboutProps) => {
+const O_Right_Panel = ({ data }: AboutProps) => {
   return (
-    <div className="w-full space-y-4 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
+    <div className="w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
       <h1 className="text-2xl font-bold">About</h1>
       <div>
-        <p className="text-left">
+        <p className="text-justify">
           Stanbic Uganda Holdings Limited is a leading financial services group
           based in Uganda, serving individuals, businesses, and institutions
           across the country. Established in [year], Stanbic Uganda Holdings has
@@ -28,7 +28,7 @@ const About = ({ data }: AboutProps) => {
           Uganda and beyond."
         </p>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-10">
         <div className="flex items-center justify-between">
           <div className="flex">
             <HiOutlineUser className="text-2xl mr-2" color="#148C59" />
@@ -66,4 +66,4 @@ const About = ({ data }: AboutProps) => {
   );
 };
 
-export default About;
+export default O_Right_Panel;

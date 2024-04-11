@@ -4,29 +4,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { RiMenu3Fill } from 'react-icons/ri';
 import { MdOutlineLightMode } from 'react-icons/md';
-import { FaMoon } from 'react-icons/fa';
+import { BsFillMoonStarsFill } from 'react-icons/bs';
 import { useTheme } from 'next-themes';
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     document.body.classList.toggle('dark', theme === 'dark');
   }, [theme]);
-
-  if (!mounted) return null;
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
-    <div className="w-full bg-white px-4 lg:px-14 shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
+    <div className=" bg-white px-4 lg:px-14 shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
       <div className="container flex justify-between items-center space-x-4 md:space-x-0">
         <div className="lg:hidden">
           <Link href="/dashboard">
@@ -51,7 +44,7 @@ const Header = () => {
             {theme === 'dark' ? (
               <MdOutlineLightMode size={20} />
             ) : (
-              <FaMoon size={20} />
+              <BsFillMoonStarsFill size={20} />
             )}
           </button>
           <div className="flex items-center ml-4">

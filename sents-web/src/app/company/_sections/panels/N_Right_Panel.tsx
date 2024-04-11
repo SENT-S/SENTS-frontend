@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Expert1 from '@/public/images/expert1.png';
 import Expert2 from '@/public/images/expert2.png';
 
-const Experts_Buy = () => {
+const N_Right_Panel = () => {
   return (
     <div className="space-y-8 w-full">
       <div className="relative space-y-4 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
@@ -12,12 +12,12 @@ const Experts_Buy = () => {
           Coming <br /> Soon!
         </h2>
         <div className="flex justify-end">
-          <div className="relative">
+          <div className="relative w-48 h-48">
             <Image
               src={Expert1}
               alt="expert"
-              width={190}
-              height={190}
+              fill={true}
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
               className="object-contain"
             />
           </div>
@@ -30,12 +30,12 @@ const Experts_Buy = () => {
           Coming <br /> Soon!
         </h2>
         <div className="flex justify-end">
-          <div className="relative">
+          <div className="relative w-48 h-48">
             <Image
               src={Expert2}
               alt="expert"
-              width={190}
-              height={190}
+              fill={true}
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
               className="object-contain"
             />
           </div>
@@ -45,4 +45,4 @@ const Experts_Buy = () => {
   );
 };
 
-export default Experts_Buy;
+export default N_Right_Panel;

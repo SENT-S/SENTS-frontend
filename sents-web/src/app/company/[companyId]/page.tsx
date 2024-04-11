@@ -5,9 +5,9 @@ import SubNav from '@/components/navigation/SubNav';
 import Overview from '../_sections/Overview';
 import Financial from '../_sections/Financials';
 import News from '../_sections/News';
-import About from '../_sections/About';
-import F_statements from '../_sections/F_statements';
-import Experts_Buy from '../_sections/Experts_Buy';
+import O_Right_Panel from '../_sections/panels/O_Right_Panel';
+import F_Right_Panel from '../_sections/panels/F_Right_Panel';
+import N_Right_Panel from '../_sections/panels/N_Right_Panel';
 
 interface CompanyDetailsProps {
   params: { companyId: string };
@@ -45,11 +45,11 @@ const CompanyDetails = ({ params }: CompanyDetailsProps) => {
             {renderSection()}
           </div>
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 w-auto">
           <div className="w-full flex justify-center">
-            {selectedLink === 'Overview' && <About data />}
-            {selectedLink === 'Financials' && <F_statements data />}
-            {selectedLink === 'News' && <Experts_Buy />}
+            {selectedLink === 'Overview' && <O_Right_Panel data />}
+            {selectedLink === 'Financials' && <F_Right_Panel data />}
+            {selectedLink === 'News' && <N_Right_Panel />}
           </div>
         </div>
       </div>

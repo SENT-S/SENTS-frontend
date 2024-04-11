@@ -21,6 +21,7 @@ const News = ({ data }: NewsProps) => {
               alt={newsItem.title}
               className="w-full h-full object-cover rounded-bl-2xl rounded-tl-2xl"
               fill={true}
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
             />
           </div>
           <div>
