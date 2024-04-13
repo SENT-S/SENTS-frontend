@@ -13,16 +13,14 @@ const Overview = ({ data }: OverviewProps) => {
         <h1 className="text-3xl font-semibold">Coming Soon!</h1>
       </div>
       <div className="flex justify-end h-auto w-full">
-        <div className="relative left-4 w-full md:w-[300px] lg:w-[500px] h-[200px] md:h-[300px] lg:h-[500px]">
+        <section className="relative left-4 w-auto lg:h-auto">
           <Image
             src={OveriewImage}
             alt="overview"
-            fill={true}
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
             className="object-contain"
             priority={true}
           />
-        </div>
+        </section>
       </div>
     </div>
   );

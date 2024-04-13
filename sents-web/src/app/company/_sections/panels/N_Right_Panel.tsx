@@ -30,15 +30,9 @@ const N_Right_Panel = () => {
           Coming <br /> Soon!
         </h2>
         <div className="flex justify-end">
-          <div className="relative w-48 h-48">
-            <Image
-              src={Expert2}
-              alt="expert"
-              fill={true}
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
-              className="object-contain"
-            />
-          </div>
+          <section className="relative w-auto lg:h-auto">
+            <Image src={Expert2} alt="expert" className="object-contain" />
+          </section>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import Provider from '@/services/redux/Provider';
 import '@/styles/styles.scss';
+import Provider from '@/services/redux/Provider';
 import ThemeProvider from './ThemeProvider';
 
 export const metadata = {

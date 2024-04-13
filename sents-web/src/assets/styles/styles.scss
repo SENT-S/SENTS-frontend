@@ -1,12 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import '@fontsource/urbanist';
+
+@font-face {
+  font-family: 'Unigeo64';
+  src: url('../fonts/Unigoe/Unigeo64-Bold-trial.ttf') format('truetype');
+}
 
 body,
 html {
   height: 100%;
   width: 100%;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Urbanist', sans-serif;
   font-size: 16px;
   line-height: 1.5;
   color: #4a4d56;
@@ -14,6 +20,11 @@ html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden;
+}
+
+.Unigoe-font {
+  font-family: 'Unigeo64';
 }
 
 body.dark {
