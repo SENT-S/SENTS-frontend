@@ -15,7 +15,11 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
   if (!mounted) return <>{children}</>;
 
   return (
-    <NextThemeProvider attribute="class" enableSystem={false}>
+    <NextThemeProvider
+      attribute="class"
+      enableSystem={true}
+      defaultTheme="system"
+    >
       {children}
     </NextThemeProvider>
   );
