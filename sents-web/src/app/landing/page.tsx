@@ -103,7 +103,7 @@ const LandingPage = () => {
           <Image
             src={theme === 'dark' ? LandingImage2 : LandingImage}
             alt="Landing Image"
-            className="object-contain w-full relative bottom-[125px] lg:bottom-[14rem] 2xl:bottom-[20rem]"
+            className="object-contain w-full relative bottom-[125px] lg:bottom-[14rem] 2xl:bottom-[18rem]"
             loading="eager"
           />
         </section>
