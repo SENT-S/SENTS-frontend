@@ -28,7 +28,7 @@ const LandingPage = () => {
         <h1 className="text-3xl Unigoe-font tracking-wider text-[#0D4222] dark:text-[#E6F6F0]">
           SENTS.
         </h1>
-        <nav>
+        <nav className="max-sm:flex max-sm:justify-center max-sm:w-full">
           <ul className="flex items-center dark:text-white h-auto space-x-6 py-4 px-5 bg-[#E6F6F0] dark:bg-[#39463E80] rounded-full">
             <li>
               <Link
@@ -67,10 +67,10 @@ const LandingPage = () => {
 
       <main className="relative text-center flex flex-col justify-between  h-full">
         <section className="relative text-[#0D4222] dark:text-[#E6F6F0] py-12 z-50">
-          <h2 className="md:text-[80px] mb-6 Unigoe-font">
+          <h2 className="text-3xl leading-[65px] md:text-[80px] py-6 Unigoe-font">
             Unlock Financial Insights
           </h2>
-          <p className="md:text-4xl mb-8">
+          <p className="md:text-4xl py-5 mb-4">
             Explore Publicly Traded Companies in <br /> Uganda and Kenya
           </p>
           <div>

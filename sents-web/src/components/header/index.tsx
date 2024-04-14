@@ -35,7 +35,7 @@ const Header = () => {
   return (
     <>
       <div className=" bg-white shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
-        <div className="px-4 flex justify-between items-center space-x-4 md:space-x-0">
+        <div className="px-4 flex justify-between items-center space-x-4 lg:space-x-0">
           <div className="lg:hidden">
             <Link href="/dashboard">
               <h1 className="text-xl lg:text-2xl Unigoe-font text-[#0D4222] dark:text-[#E6F6F0] font-bold">
@@ -43,7 +43,7 @@ const Header = () => {
               </h1>
             </Link>
           </div>
-          <div className="flex items-center text-gray-400 bg-gray-100 max-md:dark:bg-black py-2 rounded-lg w-full md:w-1/3 overflow-hidden dark:bg-[#39463E80]">
+          <div className="flex items-center text-gray-400 bg-gray-100 max-md:dark:bg-black py-2 rounded-lg w-full lg:w-1/3 overflow-hidden dark:bg-[#39463E80]">
             <div className="ml-3">
               <CiSearch />
             </div>
@@ -53,7 +53,7 @@ const Header = () => {
               className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
             />
           </div>
-          <div className="hidden md:flex items-center lg:pr-14">
+          <div className="hidden lg:flex items-center lg:pr-14">
             <button
               className="p-2 bg-gray-100 rounded-full cursor-pointer text-black dark:text-white dark:bg-[#39463E80]"
               onClick={toggleTheme}
@@ -77,7 +77,7 @@ const Header = () => {
           </div>
 
           {/* mobile & tablet drawer */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Drawer direction="right">
               <DrawerTrigger asChild>
                 <button className="cursor-pointer">
