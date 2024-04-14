@@ -55,7 +55,7 @@ const AuthCard = ({
     </div>
     <CardDescription className="text-center text-[10px]">
       By signing up to create an account I accept Company’s
-      <Link href="/terms" className="text-[#1EF1A5] pl-2">
+      <Link href="/terms" className="text-black dark:text-[#1EF1A5] pl-2">
         Terms of use & Privacy Policy.
       </Link>
     </CardDescription>
