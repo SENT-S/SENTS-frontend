@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -63,7 +62,7 @@ const AuthCard = ({
   </Card>
 );
 
-const AuthPage = () => {
+const Auth = () => {
   return (
     <div className="w-full h-full flex justify-center items-center">
       <Tabs
@@ -203,4 +202,4 @@ const AuthPage = () => {
   );
 };
 
-export default AuthPage;
+export default Auth;

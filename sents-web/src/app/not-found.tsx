@@ -10,6 +10,7 @@ const NotFound = () => {
           src={NotFoundIllustration}
           alt="Not found"
           className="object-contain md:w-1/2 md:h-1/2"
+          loading="eager"
         />
       </div>
       <p className="text-2xl mb-4">Page Not Found</p>
