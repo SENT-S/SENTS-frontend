@@ -1,6 +1,6 @@
 import '@/styles/styles.scss';
 import Provider from '@/services/redux/Provider';
-import ThemeProvider from './ThemeProvider';
+import ThemeProvider from '../components/themeProvider/ThemeProvider';
 
 export const metadata = {
   title: 'Next.js',
@@ -13,10 +13,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
         <Provider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
         </Provider>
       </body>
     </html>
