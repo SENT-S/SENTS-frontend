@@ -7,7 +7,7 @@ interface MainLayoutProps {
 }
 
 const MainLayout: FC<MainLayoutProps> = ({ children }) => (
-  <div className="flex h-dvh overflow-hidden">
+  <div className="flex h-screen overflow-y-auto">
     <div className="w-auto">
       <SideBar />
     </div>
