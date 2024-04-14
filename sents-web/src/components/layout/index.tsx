@@ -7,12 +7,12 @@ interface MainLayoutProps {
 }
 
 const MainLayout: FC<MainLayoutProps> = ({ children }) => (
-  <div className="flex h-screen overflow-y-auto">
+  <div className="flex h-full overflow-y-auto">
     <div className="w-auto">
       <SideBar />
     </div>
     <div className="flex flex-col w-full h-auto overflow-y-auto">
-      <div className="w-full">
+      <div className="w-full z-50">
         <Header />
       </div>
       <main className="flex-grow w-full mt-4 px-4 pb-4 lg:px-0 lg:pr-10 space-y-4 bg-transparent">
