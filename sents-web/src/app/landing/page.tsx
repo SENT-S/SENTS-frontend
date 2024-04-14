@@ -23,8 +23,8 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="container relative mx-auto px-4">
-      <header className="flex justify-between items-center pt-6">
+    <div className="container relative mx-auto px-4 h-full">
+      <header className="flex justify-between flex-wrap items-center pt-6">
         <h1 className="text-3xl Unigoe-font tracking-wider text-[#0D4222] dark:text-[#E6F6F0]">
           SENTS.
         </h1>
@@ -103,7 +103,7 @@ const LandingPage = () => {
           <Image
             src={theme === 'dark' ? LandingImage2 : LandingImage}
             alt="Landing Image"
-            className="object-contain w-full relative lg:bottom-[14rem] 2xl:bottom-[20rem]"
+            className="object-contain w-full relative bottom-[125px] lg:bottom-[14rem] 2xl:bottom-[20rem]"
             loading="eager"
           />
         </section>
