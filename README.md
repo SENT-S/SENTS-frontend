@@ -2,25 +2,23 @@
 
 This repository contains the frontend code for the SENTS Website and Admin Panel projects. Both projects are built with React-Vite and TypeScript, styled with Tailwind CSS, and run on Node.js.
 
-## Projects
+## Project Overview
 
-### 1. Website Project
+### Website Project
 
-The Website Project is our main user-facing platform. It provides users with access to our services and information about our organization.
-
-### 2. Admin Panel Project
-
-The Admin Panel Project is used internally for managing the website. It provides a user-friendly interface for our team to update content, manage users, and monitor site performance.
+The Website Project is our primary user-facing platform, offering users access to our services and detailed information about our organization. With the transition to Next.js, we've significantly improved the project's performance and user experience.
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js (version >18.19.1)
-- Yarn (stable version 4.1.1)
-- React-Vite
+- npm (version >6.14.0)
+- Next.js
 - TypeScript
+- SASS
 - Tailwind CSS
+- Shadcn UI
 
 ### Installation
 
@@ -34,12 +32,12 @@ The Admin Panel Project is used internally for managing the website. It provides
    ```
 3. Install Yarn packages
    ```sh
-   yarn install
+   npm install
    ```
 
 ### Usage
 After installation, you can start the development server:
 ```sh
-yarn dev
+npm run dev
 ```
-And open http://localhost:5173 in your browser.
+And open http://localhost:3000 in your browser.
