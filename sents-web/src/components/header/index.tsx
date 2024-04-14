@@ -43,7 +43,7 @@ const Header = () => {
               </h1>
             </Link>
           </div>
-          <div className="flex items-center text-gray-400 bg-gray-100 max-md:bg-black py-2 rounded-lg w-full md:w-1/3 overflow-hidden dark:bg-[#39463E80]">
+          <div className="flex items-center text-gray-400 bg-gray-100 max-md:dark:bg-black py-2 rounded-lg w-full md:w-1/3 overflow-hidden dark:bg-[#39463E80]">
             <div className="ml-3">
               <CiSearch />
             </div>
