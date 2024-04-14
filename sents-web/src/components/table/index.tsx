@@ -1,4 +1,3 @@
-import React from 'react';
 import { RiArrowRightSLine } from 'react-icons/ri';
 
 interface TableProps {
