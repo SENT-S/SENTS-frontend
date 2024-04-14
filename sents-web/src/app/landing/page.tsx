@@ -32,7 +32,7 @@ const LandingPage = () => {
           <ul className="flex items-center dark:text-white h-auto space-x-6 py-4 px-5 bg-[#E6F6F0] dark:bg-[#39463E80] rounded-full">
             <li>
               <Link
-                href="/auth"
+                href="/login_register"
                 className="p-3 rounded-xl bg-white dark:bg-[#39463E80]"
               >
                 Sign in
@@ -40,7 +40,7 @@ const LandingPage = () => {
             </li>
             <li>
               <Link
-                href="/auth"
+                href="/login_register"
                 className="p-3 rounded-xl bg-[#1EF1A5] dark:text-[#0D4222]"
               >
                 Sign Up
