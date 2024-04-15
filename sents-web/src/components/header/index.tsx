@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { CiSearch } from 'react-icons/ci';
 import Link from 'next/link';
 import { IoIosMenu } from 'react-icons/io';
@@ -14,20 +14,13 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
 
 const Header = () => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    document.body.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -59,11 +52,8 @@ const Header = () => {
               className="p-2 bg-gray-100 rounded-full cursor-pointer text-black dark:text-white dark:bg-[#39463E80]"
               onClick={toggleTheme}
             >
-              {theme === 'dark' ? (
-                <MdOutlineLightMode size={20} />
-              ) : (
-                <BsFillMoonStarsFill size={20} />
-              )}
+              <MdOutlineLightMode size={20} className="hidden dark:block" />
+              <BsFillMoonStarsFill size={20} className="dark:hidden" />
             </button>
             <div className="flex items-center ml-4">
               <Avatar>

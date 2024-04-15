@@ -10,7 +10,7 @@ const ThemeProvider = ({ children, ...props }: ThemeProviderProps) => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) return [children];
 
   return <NextThemeProvider {...props}>{children}</NextThemeProvider>;
 };
