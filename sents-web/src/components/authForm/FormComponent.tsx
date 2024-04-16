@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -11,6 +11,8 @@ import { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface FormComponent {
   title: string;
@@ -25,17 +27,33 @@ export default function FormComponent({
   footerText,
   socialButtons,
 }: FormComponent) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    if (title === 'Sign In') {
-      console.log('sign in', data);
+
+    const result = await signIn('credentials', {
+      redirect: false,
+      ...data,
+    });
+
+    setLoading(false);
+
+    if (result?.error) {
+      // Handle error here
+      console.error(result.error);
     } else {
-      console.log('sign up', data);
+      // Successful sign in
+      router.push('/dashboard');
     }
   };
+
   return (
     <Card className="relative border-none shadow-none space-y-4 text-[#9C9AA5]">
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -44,8 +62,9 @@ export default function FormComponent({
           <Button
             className="bg-[#148C59] hover:bg-green-600 text-white w-full"
             type="submit"
+            disabled={loading}
           >
-            {footerText}
+            {loading ? 'Loading...' : footerText}
           </Button>
         </CardFooter>
       </form>
