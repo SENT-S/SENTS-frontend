@@ -5,6 +5,7 @@ import ThemeToggle from '@/components/themeProvider/ThemeToggle';
 import AuthProvider from '@/components/context/AuthProvider';
 import Head from 'next/head';
 import Logo from '@/public/favicon.ico';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata = {
   title: 'Next.js',
@@ -20,8 +21,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <Head>
         <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href={Logo.src} sizes="any" />
       </Head>
       <body>
@@ -38,6 +37,7 @@ export default function RootLayout({
             </AuthProvider>
           </ThemeProvider>
         </Provider>
+        <Toaster />
       </body>
     </html>
   );
