@@ -105,7 +105,7 @@ const Financials = ({ data }: FinancialProps) => {
               <TableRow className="text-black font-semibold">
                 <TableHead className="w-1/6 py-2">Metrics</TableHead>
                 {years.map(year => (
-                  <TableHead key={year} className="w-[13%] py-2 rounded-t-2xl">
+                  <TableHead key={year} className="w-[13%] py-2">
                     {year}
                   </TableHead>
                 ))}
