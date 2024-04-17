@@ -23,7 +23,12 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
           {data?.company_documents.map((documentUrl: string, index: number) => (
             <li key={index} className="flex items-center justify-between p-3">
               <span>PDF Document {index + 1}</span>
-              <a href={documentUrl} download target="_blank" rel="noreferrer">
+              <a
+                href="https://www.adobe.com/acrobat/about-adobe-pdf.html"
+                download
+                target="_blank"
+                rel="noreferrer"
+              >
                 <TfiDownload
                   className="text-green-600 text-lg bg-green-100 dark:bg-[#0E120F] rounded-full p-3 cursor-pointer"
                   size={40}

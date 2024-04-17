@@ -12,7 +12,7 @@ const Auth = () => {
     <div className="w-full h-full flex justify-center items-center">
       <Tabs
         defaultValue="sign_In"
-        className="w-[558px] rounded-3xl bg-white dark:bg-[#070707] shadow p-14 lg:p-24"
+        className="w-[558px] rounded-3xl bg-white dark:bg-[#070707] md:shadow p-14 lg:p-24"
       >
         <TabsList className="grid w-full grid-cols-2 bg-[#E6F6F0] dark:bg-[#39463E80] rounded-[8px]">
           <TabsTrigger
@@ -47,6 +47,7 @@ const Auth = () => {
                 id="email"
                 placeholder="JoneDoe@gmail.com"
                 name="email"
+                type="email"
               />
             </div>
             <div className="space-y-1">
@@ -61,6 +62,7 @@ const Auth = () => {
                 id="password"
                 placeholder="Enter Password"
                 name="password"
+                type="password"
               />
             </div>
             <p className="text-sm underline">Forgot Password?</p>
@@ -117,6 +119,38 @@ const Auth = () => {
                 />
               </div>
             </div>
+            <div className="flex items-center space-x-6">
+              <div className="space-y-1">
+                <Label
+                  htmlFor="contact"
+                  className="text-black dark:text-[#FFFFFF]"
+                >
+                  Contact
+                </Label>
+                <Input
+                  className="dark:bg-[#39463E80] dark:border-[#148C59]"
+                  id="contact"
+                  placeholder="Enter Contact Number"
+                  name="contact"
+                  type="text"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label
+                  htmlFor="address"
+                  className="text-black dark:text-[#FFFFFF]"
+                >
+                  Address
+                </Label>
+                <Input
+                  className="dark:bg-[#39463E80] dark:border-[#148C59]"
+                  id="address"
+                  placeholder="Enter Address"
+                  name="address"
+                  type="text"
+                />
+              </div>
+            </div>
             <div className="space-y-1">
               <Label
                 htmlFor="password"
@@ -129,6 +163,7 @@ const Auth = () => {
                 id="password"
                 placeholder="Enter Password"
                 name="password"
+                type="password"
               />
             </div>
             <div className="space-y-1">
@@ -143,6 +178,7 @@ const Auth = () => {
                 id="password2"
                 placeholder="Enter Password"
                 name="password2"
+                type="password"
               />
             </div>
           </FormComponent>

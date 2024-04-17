@@ -51,7 +51,7 @@ const O_Right_Panel = ({ data }: AboutProps) => {
               rel="noreferrer"
               className="text-sm text-[#148C59]"
             >
-              website.co.com
+              website
             </a>
           </span>
         </div>

@@ -58,9 +58,9 @@ export const financialStatements = [
 ];
 
 export const mockdata = [
-  { id: 1, name: 'Umeme Limited.', symbol: 'UMEME' },
+  { id: 1, name: 'Stanbic Uganda Holdings Limited', symbol: 'SBU' },
   { id: 2, name: 'Jubilee Holding Limited', symbol: 'JHL' },
-  { id: 3, name: 'DFCU Group', symbol: 'DFCU' },
+  { id: 3, name: 'Umeme Limited', symbol: 'UMEME' },
 ];
 
 export const mockData = [

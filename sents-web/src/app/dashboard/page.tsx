@@ -42,12 +42,12 @@ const Dashboard = () => {
     <MainLayout>
       {isLoading ? (
         <div className="space-y-8">
-          <Skeleton className="text-2xl font-medium text-[#0D4222] dark:text-[#E6F6F0] text-left w-1/6 h-8 rounded-xl bg-slate-400 p-4" />
+          <Skeleton className="text-2xl font-medium text-[#0D4222] dark:text-[#E6F6F0] text-left w-1/6 h-8 rounded-xl bg-slate-200 p-4" />
           <div className="grid grid-cols-2 gap-6 md:gap-8 mt-4">
-            <Skeleton className="w-full h-14 rounded-xl bg-slate-400 p-4" />
-            <Skeleton className="w-full h-14 rounded-xl bg-slate-400 p-4" />
+            <Skeleton className="w-full h-14 rounded-xl bg-slate-200 p-4" />
+            <Skeleton className="w-full h-14 rounded-xl bg-slate-200 p-4" />
           </div>
-          <Skeleton className="w-full h-96 rounded-xl bg-slate-400 p-4">
+          <Skeleton className="w-full h-96 rounded-xl bg-slate-200 p-4">
             {
               // array of 5 items
               Array.from({ length: 7 }).map((_, index) => (

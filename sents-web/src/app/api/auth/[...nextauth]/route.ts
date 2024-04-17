@@ -10,12 +10,6 @@ const handler = NextAuth({
       name: 'Credentials',
       credentials: {},
       async authorize(credentials: any) {
-        // Check if email or password is empty
-        if (!credentials?.email || !credentials?.password) {
-          console.error('Email or password cannot be empty');
-          throw new Error('Email or password cannot be empty');
-        }
-
         const body = {
           username: credentials?.email,
           password: credentials?.password,
@@ -35,13 +29,13 @@ const handler = NextAuth({
               };
               return user;
             } else {
-              throw new Error('Login failed');
+              throw new Error('User not found');
             }
           } else {
             throw new Error('No response from the server');
           }
         } catch (error) {
-          throw new Error('Failed to log in');
+          throw new Error('Failed to log in, please try again');
         }
       },
     }),

@@ -13,8 +13,9 @@ import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { Console } from 'console';
+import { registerUser } from '@/services/apis/registerUser';
+import { toast } from 'sonner';
+import { ScaleLoader } from 'react-spinners';
 
 interface FormComponent {
   title: string;
@@ -48,36 +49,49 @@ export default function FormComponent({
         });
 
         if (result?.error) {
-          console.error(result.error);
+          toast.error(result.error, {
+            style: { background: 'red', color: 'white', border: 'none' },
+          });
         } else {
-          // Successful sign in
+          toast.success('User authenticated successfully', {
+            style: {
+              background: 'green',
+              color: 'white',
+              border: 'none',
+            },
+            duration: 5000,
+          });
+
+          // Redirect to dashboard
           router.push('/dashboard');
         }
       } else {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/register/`,
-          {
-            firstname: data.firstname,
-            lastname: data.lastname,
-            email: data.email,
-            contact: '',
-            address: '',
-            password: data.password,
-            password2: data.password2,
-          },
-        );
+        // Register user
+        const response = await registerUser(data);
 
         // Check if registration was successful
-        if (response.data) {
-          // Successful registration
-          console.log('Registration successful', response);
-          // Redirect or show success message here
+        if (response) {
+          toast.success('Registration successful, please login', {
+            style: { background: 'green', color: 'white', border: 'none' },
+            duration: 5000,
+          });
+
+          // Redirect to success page after 2 seconds
+          setTimeout(() => {
+            router.push('/success-register');
+          }, 2000);
         } else {
-          console.error('Registration failed', response);
+          toast.error('Registration failed', {
+            style: { background: 'red', color: 'white', border: 'none' },
+            duration: 5000,
+          });
         }
       }
     } catch (error) {
-      console.error('An error occurred during the process', error);
+      toast.error('An error occurred during the process', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+      });
     } finally {
       setLoading(false);
     }
@@ -93,7 +107,7 @@ export default function FormComponent({
             type="submit"
             disabled={loading}
           >
-            {loading ? 'Loading...' : footerText}
+            {loading ? <ScaleLoader height={20} color="#fff" /> : footerText}
           </Button>
         </CardFooter>
       </form>
@@ -103,11 +117,12 @@ export default function FormComponent({
           OR
         </span>
       </div>
-      <div className="flex space-x-3">
+      <div className="flex space-x-3 cursor-not-allowed">
         {socialButtons.map((button: any) => (
           <Button
             key={button.id}
             className={`dark:bg-[#39463E80] hover:bg-[#148C5966] border border-[#148C5966] relative w-full`}
+            disabled={true}
           >
             <Image src={button.icon} alt={button.name} width={25} height={25} />
           </Button>
