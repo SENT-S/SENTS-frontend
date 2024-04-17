@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+'use client';
+import React, { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import Link from 'next/link';
 import { IoIosMenu } from 'react-icons/io';
@@ -7,35 +8,36 @@ import { BsFillMoonStarsFill } from 'react-icons/bs';
 import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { IoClose } from 'react-icons/io5';
-import { useRouter } from 'next/navigation';
 import { IoIosLogOut } from 'react-icons/io';
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
+import { useSession } from 'next-auth/react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { signOut } from 'next-auth/react';
 
 const Header = () => {
-  const router = useRouter();
   const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    document.body.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(false);
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  const handleLogout = () => {
+    setLoading(true);
+    signOut().then(() => setLoading(false));
+  };
+
   return (
     <>
       <div className=" bg-white shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
-        <div className="px-4 flex justify-between items-center space-x-4 md:space-x-0">
+        <div className="px-4 flex justify-between items-center space-x-4 lg:space-x-0">
           <div className="lg:hidden">
             <Link href="/dashboard">
               <h1 className="text-xl lg:text-2xl Unigoe-font text-[#0D4222] dark:text-[#E6F6F0] font-bold">
@@ -43,7 +45,7 @@ const Header = () => {
               </h1>
             </Link>
           </div>
-          <div className="flex items-center text-gray-400 bg-gray-100 max-md:bg-black py-2 rounded-lg w-full md:w-1/3 overflow-hidden dark:bg-[#39463E80]">
+          <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg w-full lg:w-1/3 overflow-hidden dark:bg-[#39463E80]">
             <div className="ml-3">
               <CiSearch />
             </div>
@@ -53,31 +55,40 @@ const Header = () => {
               className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
             />
           </div>
-          <div className="hidden md:flex items-center lg:pr-14">
+          <div className="hidden lg:flex items-center lg:pr-14">
             <button
               className="p-2 bg-gray-100 rounded-full cursor-pointer text-black dark:text-white dark:bg-[#39463E80]"
               onClick={toggleTheme}
             >
-              {theme === 'dark' ? (
-                <MdOutlineLightMode size={20} />
-              ) : (
-                <BsFillMoonStarsFill size={20} />
-              )}
+              <MdOutlineLightMode size={20} className="hidden dark:block" />
+              <BsFillMoonStarsFill size={20} className="dark:hidden" />
             </button>
-            <div className="flex items-center ml-4">
-              <Avatar>
-                <AvatarImage src="https://source.unsplash.com/100x100/?user" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div className="ml-2 dark:text-white">
-                <p className="font-bold">User Name</p>
-                <p className="text-sm text-gray-500">user.email@example.com</p>
+            {status === 'loading' ? (
+              <div className="flex items-center space-x-4 ml-2">
+                <Skeleton className="h-12 w-12 rounded-full bg-gray-200 dark:bg-[#0e120f]" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[100px] bg-gray-200 dark:bg-[#0e120f]" />
+                  <Skeleton className="h-4 w-[150px] bg-gray-200 dark:bg-[#0e120f]" />
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center ml-4">
+                <Avatar style={{ boxShadow: '0 0 0 1px #148c59' }}>
+                  <AvatarImage src={session?.user?.image || ''} />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <div className="ml-2 dark:text-white">
+                  <p className="font-bold">{session?.user?.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {session?.user?.email}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* mobile & tablet drawer */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Drawer direction="right">
               <DrawerTrigger asChild>
                 <button className="cursor-pointer">
@@ -96,29 +107,39 @@ const Header = () => {
                       <IoClose size={20} />
                     </DrawerClose>
                   </div>
-                  <div className="flex flex-col justify-start">
-                    <Avatar>
-                      <AvatarImage src="https://source.unsplash.com/100x100/?user" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div className="mt-3 text-start">
-                      <p className="font-bold">User Name</p>
-                      <p className="text-sm text-gray-500">
-                        user.email@example.com
-                      </p>
+                  {status === 'loading' ? (
+                    <div className="flex flex-col justify-start">
+                      <Skeleton className="h-12 w-12 rounded-full bg-gray-200 dark:bg-[#0e120f]" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[100px] bg-gray-200 dark:bg-[#0e120f]" />
+                        <Skeleton className="h-4 w-[150px] bg-gray-200 dark:bg-[#0e120f]" />
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex flex-col justify-start">
+                      <Avatar style={{ boxShadow: '0 0 0 1px #148c59' }}>
+                        <AvatarImage src={session?.user?.image || ''} />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                      <div className="mt-3 text-start">
+                        <p className="font-bold">{session?.user?.name}</p>
+                        <p className="text-sm text-gray-500">
+                          {session?.user?.email}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </DrawerHeader>
                 <div className="flex flex-col justify-between h-full pb-4">
                   <div />
                   <button
                     onClick={() => {
-                      router.push('/landing');
+                      handleLogout();
                     }}
                     className="flex justify-center items-center space-x-2 p-4 cursor-pointer text-gray-400 hover:bg-gray-100 rounded-lg"
                   >
                     <IoIosLogOut size={24} />
-                    <p>Logout</p>
+                    <span>{loading ? 'Logging out...' : 'Logout'}</span>
                   </button>
                 </div>
               </DrawerContent>

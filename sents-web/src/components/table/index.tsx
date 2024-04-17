@@ -1,20 +1,26 @@
-import React from 'react';
 import { RiArrowRightSLine } from 'react-icons/ri';
 
+interface TableColumn {
+  field: string;
+  label: string;
+  width?: string;
+}
+
 interface TableProps {
-  headers: string[];
+  columns: TableColumn[];
   rows: { [key: string]: any }[];
   onRowClick?: (row: { [key: string]: any }) => void;
-  renderCell?: (row: { [key: string]: any }, column: string) => JSX.Element;
-  columnWidths?: { [key: string]: string }; // Add this line
+  renderCell?: (
+    row: { [key: string]: any },
+    column: TableColumn,
+  ) => JSX.Element;
 }
 
 const TableComponent: React.FC<TableProps> = ({
-  headers,
+  columns,
   rows,
   onRowClick,
   renderCell,
-  columnWidths, // Add this line
 }) => {
   return (
     <div className="flex flex-col">
@@ -23,15 +29,14 @@ const TableComponent: React.FC<TableProps> = ({
           <div className="overflow-hidden">
             <div className="bg-white dark:text-[#FFFFFF] dark:bg-[#39463E80] p-6 rounded-2xl">
               <div className="flex text-left text-sm leading-4 font-medium capitalize tracking-wider">
-                {headers.map((header, index) => (
+                {columns.map((column, index) => (
                   <div
                     key={index}
-                    className={`px-6 py-3 font-semibold ${columnWidths?.[header] || 'w-1/2'}`}
+                    className={`px-6 py-3 font-semibold ${column.width || 'w-1/2'}`}
                   >
-                    {header}
+                    {column.label}
                   </div>
                 ))}
-                {/* Empty div for the arrow icon alignment */}
                 <div className="hidden md:block w-8"></div>
               </div>
               {rows.map((row, rowIndex) => (
@@ -40,12 +45,12 @@ const TableComponent: React.FC<TableProps> = ({
                   className="flex items-center bg-gray-50 dark:bg-[#39463E] rounded-2xl mt-4 cursor-pointer hover:bg-gray-100"
                   onClick={() => onRowClick && onRowClick(row)}
                 >
-                  {headers.map((header, cellIndex) => (
+                  {columns.map((column, cellIndex) => (
                     <div
                       key={cellIndex}
-                      className={`px-6 py-4 whitespace-normal text-sm overflow-auto ${columnWidths?.[header] || 'w-1/2'}`}
+                      className={`px-6 py-4 whitespace-normal text-sm overflow-auto ${column.width || 'w-1/2'}`}
                     >
-                      {renderCell ? renderCell(row, header) : row[header]}
+                      {renderCell ? renderCell(row, column) : row[column.field]}
                     </div>
                   ))}
                   <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-gray-400">
@@ -60,5 +65,4 @@ const TableComponent: React.FC<TableProps> = ({
     </div>
   );
 };
-
 export default TableComponent;

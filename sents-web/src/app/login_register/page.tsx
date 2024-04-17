@@ -1,66 +1,11 @@
 import React from 'react';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
 import Apple from '@/public/icons/apple.png';
 import Google from '@/public/icons/google.png';
 import Microsoft from '@/public/icons/micro.png';
-import Link from 'next/link';
-import { StaticImageData } from 'next/image';
-
-interface AuthCardProps {
-  title: string;
-  children: React.ReactNode;
-  footerText: string;
-  socialButtons: { id: string; icon: StaticImageData; name: string }[];
-}
-
-const AuthCard = ({
-  title,
-  children,
-  footerText,
-  socialButtons,
-}: AuthCardProps) => (
-  <Card className="relative border-none shadow-none space-y-4 text-[#9C9AA5]">
-    <CardContent className="space-y-2 p-0">{children}</CardContent>
-    <CardFooter className="p-0">
-      <Button className="bg-[#148C59] hover:bg-green-600 text-white w-full">
-        {footerText}
-      </Button>
-    </CardFooter>
-    <div className="flex w-full flex-col items-center relative">
-      <Separator className="my-4 bg-[#9C9AA54D]" />
-      <span className="text-center text-[12px] bg-white dark:bg-[#39463E] w-[48px] absolute top-[7px]">
-        OR
-      </span>
-    </div>
-    <div className="flex space-x-3">
-      {socialButtons.map((button: any) => (
-        <Button
-          key={button.id}
-          className={`dark:bg-[#39463E80] hover:bg-[#148C5966] border border-[#148C5966] relative w-full`}
-        >
-          <Image src={button.icon} alt={button.name} width={25} height={25} />
-        </Button>
-      ))}
-    </div>
-    <CardDescription className="text-center text-[10px]">
-      By signing up to create an account I accept Company’s
-      <Link href="/terms" className="text-black dark:text-[#1EF1A5] pl-2">
-        Terms of use & Privacy Policy.
-      </Link>
-    </CardDescription>
-  </Card>
-);
+import FormComponent from '@/components/authForm/FormComponent';
 
 const Auth = () => {
   return (
@@ -84,7 +29,7 @@ const Auth = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="sign_In">
-          <AuthCard
+          <FormComponent
             title="Sign In"
             footerText="Sign in"
             socialButtons={[
@@ -101,6 +46,7 @@ const Auth = () => {
                 className="dark:bg-[#39463E80] dark:border-[#148C59]"
                 id="email"
                 placeholder="JoneDoe@gmail.com"
+                name="email"
               />
             </div>
             <div className="space-y-1">
@@ -114,15 +60,14 @@ const Auth = () => {
                 className="dark:bg-[#39463E80] dark:border-[#148C59]"
                 id="password"
                 placeholder="Enter Password"
+                name="password"
               />
             </div>
-            <CardDescription className="text-sm underline">
-              Forgot Password?
-            </CardDescription>
-          </AuthCard>
+            <p className="text-sm underline">Forgot Password?</p>
+          </FormComponent>
         </TabsContent>
         <TabsContent value="sign_Up">
-          <AuthCard
+          <FormComponent
             title="Sign Up"
             footerText="Create an account"
             socialButtons={[
@@ -139,33 +84,36 @@ const Auth = () => {
                 className="dark:bg-[#39463E80] dark:border-[#148C59]"
                 id="email"
                 placeholder="JoneDoe@gmail.com"
+                name="email"
               />
             </div>
             <div className="flex items-center space-x-6">
               <div className="space-y-1">
                 <Label
-                  htmlFor="Fname"
+                  htmlFor="firstname"
                   className="text-black dark:text-[#FFFFFF]"
                 >
                   First Name
                 </Label>
                 <Input
                   className="dark:bg-[#39463E80] dark:border-[#148C59]"
-                  id="Fname"
+                  id="firstname"
                   placeholder="Enter First Name"
+                  name="firstname"
                 />
               </div>
               <div className="space-y-1">
                 <Label
-                  htmlFor="Lname"
+                  htmlFor="lastname"
                   className="text-black dark:text-[#FFFFFF]"
                 >
                   Last Name
                 </Label>
                 <Input
                   className="dark:bg-[#39463E80] dark:border-[#148C59]"
-                  id="Lname"
+                  id="lastname"
                   placeholder="Enter Last Name"
+                  name="lastname"
                 />
               </div>
             </div>
@@ -180,22 +128,24 @@ const Auth = () => {
                 className="dark:bg-[#39463E80] dark:border-[#148C59]"
                 id="password"
                 placeholder="Enter Password"
+                name="password"
               />
             </div>
             <div className="space-y-1">
               <Label
-                htmlFor="confirmation_password"
+                htmlFor="password2"
                 className="text-black dark:text-[#FFFFFF]"
               >
                 Confirm Password
               </Label>
               <Input
                 className="dark:bg-[#39463E80] dark:border-[#148C59]"
-                id="confirmation_password"
+                id="password2"
                 placeholder="Enter Password"
+                name="password2"
               />
             </div>
-          </AuthCard>
+          </FormComponent>
         </TabsContent>
       </Tabs>
     </div>

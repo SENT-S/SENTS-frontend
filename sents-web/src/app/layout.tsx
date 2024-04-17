@@ -1,6 +1,8 @@
 import '@/styles/styles.scss';
 import Provider from '@/services/redux/Provider';
 import ThemeProvider from '../components/themeProvider/ThemeProvider';
+import ThemeToggle from '@/components/themeProvider/ThemeToggle';
+import AuthProvider from '@/components/context/AuthProvider';
 
 export const metadata = {
   title: 'Next.js',
@@ -22,7 +24,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <ThemeToggle />
+            <AuthProvider>
+              <>{children}</>
+            </AuthProvider>
           </ThemeProvider>
         </Provider>
       </body>

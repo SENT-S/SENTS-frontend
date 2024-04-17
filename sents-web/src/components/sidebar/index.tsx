@@ -1,11 +1,17 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { IoIosLogOut } from 'react-icons/io';
+import { signOut } from 'next-auth/react';
 
 const SideBar = () => {
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleLogout = () => {
+    setLoading(true);
+    signOut().then(() => setLoading(false));
+  };
+
   return (
     <div className="hidden lg:flex flex-col w-56 h-full p-4 bg-transparent">
       <div className="flex items-center justify-center mb-4">
@@ -19,12 +25,12 @@ const SideBar = () => {
         <div></div>
         <button
           onClick={() => {
-            router.push('/landing');
+            handleLogout();
           }}
           className="flex justify-center items-center space-x-2 p-4 cursor-pointer text-gray-400 hover:bg-gray-100 rounded-lg"
         >
           <IoIosLogOut size={24} />
-          <p>Logout</p>
+          <span>{loading ? 'Logging out...' : 'Logout'}</span>
         </button>
       </div>
     </div>
