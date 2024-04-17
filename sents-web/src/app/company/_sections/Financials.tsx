@@ -100,9 +100,9 @@ const Financials = ({ data }: FinancialProps) => {
 
       {!selectedItem ? (
         <div className="relative shadow-md rounded-2xl w-full h-auto">
-          <Table className="min-w-full text-black dark:text-white dark:bg-[#39463E]">
-            <TableHeader className="bg-[#1EF1A5]">
-              <TableRow>
+          <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
+            <TableHeader>
+              <TableRow className="text-black font-semibold">
                 <TableHead className="w-1/6 py-2">Metrics</TableHead>
                 {years.map(year => (
                   <TableHead key={year} className="w-[13%] py-2 rounded-t-2xl">
@@ -112,7 +112,7 @@ const Financials = ({ data }: FinancialProps) => {
                 <TableHead className="w-1/3 py-2">Chart</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="bg-white dark:bg-[#39463E]">
               {FinancialData.map(
                 (item: { [key: string]: string | number }, index: number) => (
                   <TableRow
@@ -169,7 +169,7 @@ const Financials = ({ data }: FinancialProps) => {
               </Select>
             </div>
           </div>
-          <div className="ml-6">
+          <div className="ml-6 mb-4">
             <Separator className="my-4 h-[1px] w-full dark:bg-[#E6EEEA]" />
           </div>
           <div className="overflow-x-auto md:overflow-visible">
