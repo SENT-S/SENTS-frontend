@@ -25,6 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { useTheme } from 'next-themes';
 
 interface FinancialProps {
   data: any;
@@ -48,6 +50,7 @@ const CustomBar = (props: any) => {
 };
 
 const Financials = ({ data }: FinancialProps) => {
+  const { theme } = useTheme();
   const [selectedMetric, setSelectedMetric] = useState('');
   const [selectedItem, setSelectedItem] = useState<{
     [key: string]: string | number;
@@ -97,7 +100,7 @@ const Financials = ({ data }: FinancialProps) => {
 
       {!selectedItem ? (
         <div className="relative shadow-md rounded-2xl w-full h-auto">
-          <Table className="min-w-full text-black">
+          <Table className="min-w-full text-black dark:text-white dark:bg-[#39463E]">
             <TableHeader className="bg-[#1EF1A5]">
               <TableRow>
                 <TableHead className="w-1/6 py-2">Metrics</TableHead>
@@ -116,7 +119,7 @@ const Financials = ({ data }: FinancialProps) => {
                     key={index}
                     className={`
             ${index === FinancialData.length - 1 ? 'rounded-b-xl' : ''}
-            hover:bg-[#E6F6F0] cursor-pointer
+            hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
           `}
                   >
                     <TableCell className="py-2">{item.metrics}</TableCell>
@@ -141,15 +144,16 @@ const Financials = ({ data }: FinancialProps) => {
           </Table>
         </div>
       ) : (
-        <div className="p-4 bg-[#F8FAF9] w-auto rounded-2xl shadow">
+        <div className="p-4 bg-[#F8FAF9] dark:text-white dark:bg-[#39463E] w-auto rounded-2xl shadow">
           <div className="px-6 mb-3 w-full flex flex-wrap items-center justify-between">
             <div className="flex flex-col justify-start">
               <h2 className="text-[#9291A5] font-normal text-[18px]">Chart</h2>
               <h1 className="font-semibold text-[22px]">Revenue</h1>
             </div>
+
             <div>
               <Select>
-                <SelectTrigger className="w-[180px] rounded-full flex justify-around border-none bg-[#E6F6F0]">
+                <SelectTrigger className="w-[180px] rounded-full flex justify-around border-none dark:text-white bg-[#E6F6F0] dark:bg-[#8D9D93]">
                   <SelectValue
                     placeholder="Select Metric"
                     className="text-center w-full"
@@ -165,6 +169,9 @@ const Financials = ({ data }: FinancialProps) => {
               </Select>
             </div>
           </div>
+          <div className="ml-6">
+            <Separator className="my-4 h-[1px] w-full dark:bg-[#E6EEEA]" />
+          </div>
           <div className="overflow-x-auto md:overflow-visible">
             <div className="min-w-[600px]">
               <ResponsiveContainer width="100%" height={300}>
@@ -175,8 +182,13 @@ const Financials = ({ data }: FinancialProps) => {
                     strokeWidth={1}
                     axisLine={false}
                     tickLine={false}
+                    tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
                   />
-                  <YAxis axisLine={false} tickLine={false} />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
+                  />
                   <Tooltip />
                   <Bar
                     dataKey="value"
