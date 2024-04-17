@@ -90,30 +90,30 @@ const Auth = () => {
             <div className="flex items-center space-x-6">
               <div className="space-y-1">
                 <Label
-                  htmlFor="Fname"
+                  htmlFor="firstname"
                   className="text-black dark:text-[#FFFFFF]"
                 >
                   First Name
                 </Label>
                 <Input
                   className="dark:bg-[#39463E80] dark:border-[#148C59]"
-                  id="Fname"
+                  id="firstname"
                   placeholder="Enter First Name"
-                  name="first_name"
+                  name="firstname"
                 />
               </div>
               <div className="space-y-1">
                 <Label
-                  htmlFor="Lname"
+                  htmlFor="lastname"
                   className="text-black dark:text-[#FFFFFF]"
                 >
                   Last Name
                 </Label>
                 <Input
                   className="dark:bg-[#39463E80] dark:border-[#148C59]"
-                  id="Lname"
+                  id="lastname"
                   placeholder="Enter Last Name"
-                  name="last_name"
+                  name="lastname"
                 />
               </div>
             </div>
@@ -133,16 +133,16 @@ const Auth = () => {
             </div>
             <div className="space-y-1">
               <Label
-                htmlFor="confirmation_password"
+                htmlFor="password2"
                 className="text-black dark:text-[#FFFFFF]"
               >
                 Confirm Password
               </Label>
               <Input
                 className="dark:bg-[#39463E80] dark:border-[#148C59]"
-                id="confirmation_password"
+                id="password2"
                 placeholder="Enter Password"
-                name="password_confirmation"
+                name="password2"
               />
             </div>
           </FormComponent>

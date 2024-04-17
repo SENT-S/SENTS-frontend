@@ -22,7 +22,7 @@ const handler = NextAuth({
         };
 
         try {
-          const url = `${process.env.NEXT_API_URL}/login/`;
+          const url = `${process.env.NEXT_PUBLIC_API_URL}/login/`;
           const res = await axios.post(url, body);
 
           if (res.data) {

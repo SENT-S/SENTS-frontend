@@ -13,6 +13,8 @@ import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { Console } from 'console';
 
 interface FormComponent {
   title: string;
@@ -38,19 +40,46 @@ export default function FormComponent({
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      ...data,
-    });
+    try {
+      if (title === 'Sign In') {
+        const result = await signIn('credentials', {
+          redirect: false,
+          ...data,
+        });
 
-    setLoading(false);
+        if (result?.error) {
+          console.error(result.error);
+        } else {
+          // Successful sign in
+          router.push('/dashboard');
+        }
+      } else {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/register/`,
+          {
+            firstname: data.firstname,
+            lastname: data.lastname,
+            email: data.email,
+            contact: '',
+            address: '',
+            password: data.password,
+            password2: data.password2,
+          },
+        );
 
-    if (result?.error) {
-      // Handle error here
-      console.error(result.error);
-    } else {
-      // Successful sign in
-      router.push('/dashboard');
+        // Check if registration was successful
+        if (response.data) {
+          // Successful registration
+          console.log('Registration successful', response);
+          // Redirect or show success message here
+        } else {
+          console.error('Registration failed', response);
+        }
+      }
+    } catch (error) {
+      console.error('An error occurred during the process', error);
+    } finally {
+      setLoading(false);
     }
   };
 
