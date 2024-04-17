@@ -1,20 +1,87 @@
 import React, { useState } from 'react';
-import Image from 'next/image';
-import FinancialImage from '@/public/images/financial.png';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Curve,
+} from 'recharts';
+import { FinancialData } from '@/services/mockData/mock';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface FinancialProps {
   data: any;
 }
 
-const PastLinks = [
-  { name: 'December 2023', value: 'december-2021' },
-  { name: 'September 2023', value: 'september-2021' },
-  { name: 'June 2023', value: 'june-2021' },
-  { name: 'March 2023', value: 'march-2021' },
-];
+const CustomBar = (props: any) => {
+  const { fill, x, y, width, height } = props;
+
+  return (
+    <path
+      d={`M${x},${y + height} 
+         H${x + width} 
+         V${y + 10} 
+         Q${x + width},${y} ${x + width - 10},${y} 
+         H${x + 10} 
+         Q${x},${y} ${x},${y + 10} 
+         Z`}
+      fill={fill}
+    />
+  );
+};
 
 const Financials = ({ data }: FinancialProps) => {
-  const [selectedLink, setSelectedLink] = useState(PastLinks[0].value);
+  const [selectedMetric, setSelectedMetric] = useState('');
+  const [selectedItem, setSelectedItem] = useState<{
+    [key: string]: string | number;
+  } | null>(null);
+  const years = ['FY19', 'FY20', 'FY21', 'FY22', 'FY23'];
+
+  const handleViewChart = (item: { [key: string]: string | number }) => {
+    setSelectedItem(item);
+  };
+
+  const handleSelectChange = (
+    event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
+  ) => {
+    const selectedValue = event.target.value as string; // Adjust the type assertion as necessary
+    setSelectedMetric(selectedValue);
+  };
+
+  const chartData = selectedItem
+    ? years.map(year => ({
+        name: year,
+        value: selectedItem[year as keyof typeof selectedItem],
+      }))
+    : [];
+
+  const chartData1 = selectedMetric
+    ? FinancialData.filter(item => item.metrics === selectedMetric)
+        .map(item =>
+          years.map(year => ({
+            name: year,
+            value: item[year as keyof typeof item],
+          })),
+        )
+        .flat()
+    : [];
 
   return (
     <div className="space-y-8 w-full">
@@ -27,28 +94,102 @@ const Financials = ({ data }: FinancialProps) => {
         </h2>
         <span className="font-semibold text-lg">Yearly Financials</span>
       </div>
-      <div className="bg-gray-100 dark:text-white dark:bg-[#0E120F] rounded-2xl flex justify-between py-3 px-4 overflow-x-auto">
-        {PastLinks.map(link => (
-          <nav
-            key={link.value}
-            className={`cursor-pointer min-w-[150px] text-center p-2 rounded-xl ${
-              selectedLink === link.value
-                ? 'bg-gray-300 dark:bg-[#39463E80]'
-                : ''
-            }`}
-            onClick={() => setSelectedLink(link.value)}
-          >
-            {link.name}
-          </nav>
-        ))}
-      </div>
-      <div className="relative flex justify-center w-full h-auto">
-        <Image
-          src={FinancialImage}
-          alt="financials"
-          className="object-contain w-full h-auto md:w-auto md:h-auto"
-        />
-      </div>
+
+      {!selectedItem ? (
+        <div className="relative shadow-md rounded-2xl w-full h-auto">
+          <Table className="min-w-full text-black">
+            <TableHeader className="bg-[#1EF1A5]">
+              <TableRow>
+                <TableHead className="w-1/6 py-2">Metrics</TableHead>
+                {years.map(year => (
+                  <TableHead key={year} className="w-[13%] py-2 rounded-t-2xl">
+                    {year}
+                  </TableHead>
+                ))}
+                <TableHead className="w-1/3 py-2">Chart</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {FinancialData.map(
+                (item: { [key: string]: string | number }, index: number) => (
+                  <TableRow
+                    key={index}
+                    className={`
+            ${index === FinancialData.length - 1 ? 'rounded-b-xl' : ''}
+            hover:bg-[#E6F6F0] cursor-pointer
+          `}
+                  >
+                    <TableCell className="py-2">{item.metrics}</TableCell>
+                    {years.map(year => (
+                      <TableCell key={year} className="flex-grow py-2">
+                        {item[year]}
+                      </TableCell>
+                    ))}
+                    <TableCell className="w-2/6 py-2">
+                      <a
+                        href="#"
+                        onClick={() => handleViewChart(item)}
+                        className="text-[#148C59] z-50"
+                      >
+                        view chart
+                      </a>
+                    </TableCell>
+                  </TableRow>
+                ),
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <div className="p-4 bg-[#F8FAF9] w-auto rounded-2xl shadow">
+          <div className="px-6 mb-3 w-full flex flex-wrap items-center justify-between">
+            <div className="flex flex-col justify-start">
+              <h2 className="text-[#9291A5] font-normal text-[18px]">Chart</h2>
+              <h1 className="font-semibold text-[22px]">Revenue</h1>
+            </div>
+            <div>
+              <Select>
+                <SelectTrigger className="w-[180px] rounded-full flex justify-around border-none bg-[#E6F6F0]">
+                  <SelectValue
+                    placeholder="Select Metric"
+                    className="text-center w-full"
+                  />
+                </SelectTrigger>
+                <SelectContent className="z-50 bg-white">
+                  {FinancialData.map((item, index) => (
+                    <SelectItem key={index} value={item.metrics}>
+                      {item.metrics}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="overflow-x-auto md:overflow-visible">
+            <div className="min-w-[600px]">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="6 6" vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    strokeWidth={1}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis axisLine={false} tickLine={false} />
+                  <Tooltip />
+                  <Bar
+                    dataKey="value"
+                    fill="#148C59"
+                    barSize={60}
+                    shape={<CustomBar />}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
