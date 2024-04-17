@@ -70,13 +70,13 @@ const CompanyDetails = ({ params }: CompanyDetailsProps) => {
       {isLoading ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
           <div className="col-span-1 lg:col-span-2 space-y-8">
-            <Skeleton className="dark:text-[#E6F6F0] w-full h-16 rounded-xl bg-slate-400 p-4" />
-            <Skeleton className="w-full h-[435px] rounded-xl bg-slate-400 p-4" />
+            <Skeleton className="dark:text-[#E6F6F0] w-full h-16 rounded-xl bg-slate-200 p-4" />
+            <Skeleton className="w-full h-[435px] rounded-xl bg-slate-200 p-4" />
           </div>
           <div className="col-span-1 w-auto">
             <div className="w-full flex flex-col space-y-8 justify-center">
-              <Skeleton className="w-full h-[250px] rounded-xl bg-slate-400 p-4" />
-              <Skeleton className="w-full h-[250px] rounded-xl bg-slate-400 p-4" />
+              <Skeleton className="w-full h-[250px] rounded-xl bg-slate-200 p-4" />
+              <Skeleton className="w-full h-[250px] rounded-xl bg-slate-200 p-4" />
             </div>
           </div>
         </div>
