@@ -15,20 +15,17 @@ const PastLinks = [
 
 const Financials = ({ data }: FinancialProps) => {
   const [selectedLink, setSelectedLink] = useState(PastLinks[0].value);
-  const [isFullScreen, setIsFullScreen] = useState(false);
-
-  const handleClick = () => {
-    setIsFullScreen(!isFullScreen);
-  };
 
   return (
     <div className="space-y-8 w-full">
       <div>
         <h1 className="text-2xl font-semibold">
-          Stanbic Uganda Holdings Limited
+          {data?.company_name && data.company_name}
         </h1>
-        <h2 className="text-xl font-thin mb-2">SBU</h2>
-        <span className="font-semibold text-lg">Quarterly Financials</span>
+        <h2 className="text-xl font-thin mb-2">
+          {data?.stock_symbol && data.stock_symbol}
+        </h2>
+        <span className="font-semibold text-lg">Yearly Financials</span>
       </div>
       <div className="bg-gray-100 dark:text-white dark:bg-[#0E120F] rounded-2xl flex justify-between py-3 px-4 overflow-x-auto">
         {PastLinks.map(link => (

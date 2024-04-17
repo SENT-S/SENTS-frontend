@@ -12,7 +12,7 @@ export const config = {
 
 export async function middleware(req: any) {
   // Use getToken to access the session on the server side
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getToken({ req, secret: process.env.NEXT_AUTH_SECRET });
 
   const { pathname } = req.nextUrl;
 

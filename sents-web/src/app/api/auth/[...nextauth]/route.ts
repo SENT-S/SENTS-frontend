@@ -53,7 +53,7 @@ const handler = NextAuth({
   pages: {
     signIn: '/login_register',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXT_AUTH_SECRET,
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
@@ -62,11 +62,9 @@ const handler = NextAuth({
       return token;
     },
     session: async ({ session, token }: any) => {
-      const { token: _, ...userData } = token;
-      if (userData.firstname && userData.last_name) {
-        userData.name = `${userData.firstname} ${userData.last_name}`;
-      }
-      session.user = { ...session.user, ...userData };
+      session.user = { ...session.user };
+      session.user.name = `${token.firstname} ${token.last_name}`;
+      session.token = token.token;
       return session;
     },
   },

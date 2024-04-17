@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import Link from 'next/link';
 import { IoIosMenu } from 'react-icons/io';
@@ -8,7 +8,6 @@ import { BsFillMoonStarsFill } from 'react-icons/bs';
 import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { IoClose } from 'react-icons/io5';
-import { useRouter } from 'next/navigation';
 import { IoIosLogOut } from 'react-icons/io';
 import {
   Drawer,
@@ -19,14 +18,20 @@ import {
 } from '@/components/ui/drawer';
 import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { signOut } from 'next-auth/react';
 
 const Header = () => {
-  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(false);
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  const handleLogout = () => {
+    setLoading(true);
+    signOut().then(() => setLoading(false));
   };
 
   return (
@@ -129,12 +134,12 @@ const Header = () => {
                   <div />
                   <button
                     onClick={() => {
-                      router.push('/landing');
+                      handleLogout();
                     }}
                     className="flex justify-center items-center space-x-2 p-4 cursor-pointer text-gray-400 hover:bg-gray-100 rounded-lg"
                   >
                     <IoIosLogOut size={24} />
-                    <p>Logout</p>
+                    <span>{loading ? 'Logging out...' : 'Logout'}</span>
                   </button>
                 </div>
               </DrawerContent>
