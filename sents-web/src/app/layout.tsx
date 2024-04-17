@@ -3,8 +3,6 @@ import Provider from '@/services/redux/Provider';
 import ThemeProvider from '../components/themeProvider/ThemeProvider';
 import ThemeToggle from '@/components/themeProvider/ThemeToggle';
 import AuthProvider from '@/components/context/AuthProvider';
-import Head from 'next/head';
-import Logo from '@/public/favicon.ico';
 import { Toaster } from '@/components/ui/sonner';
 
 export const metadata = {
@@ -19,10 +17,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <Head>
-        <title>{metadata.title}</title>
-        <link rel="icon" href={Logo.src} sizes="any" />
-      </Head>
       <body>
         <Provider>
           <ThemeProvider
