@@ -9,31 +9,29 @@ const handler = NextAuth({
       id: 'credentials',
       name: 'Credentials',
       credentials: {},
-      async authorize(credentials: any) {
-        const body = {
-          username: credentials?.email,
-          password: credentials?.password,
-        };
+      async authorize(
+        credentials: { email?: string; password?: string } | undefined,
+        req: any,
+      ) {
+        if (!credentials) {
+          throw new Error('No credentials provided');
+        }
+
+        const { email: username = '', password = '' } = credentials;
 
         try {
           const url = `${process.env.NEXT_PUBLIC_API_URL}/login/`;
-          const res = await axios.post(url, body);
+          const { data: response } = await axios.post(url, {
+            username,
+            password,
+          });
 
-          if (res.data) {
-            const response = res.data;
-
-            if (response.message === 'Logged In Successfully') {
-              const user = {
-                ...response.data.user_data,
-                token: response.data.token,
-              };
-              return user;
-            } else {
-              throw new Error('User not found');
-            }
-          } else {
-            throw new Error('No response from the server');
+          if (response?.message === 'Logged In Successfully') {
+            const { user_data, token } = response.user_data;
+            return { ...user_data, token };
           }
+
+          throw new Error('User not found');
         } catch (error) {
           throw new Error('Failed to log in, please try again');
         }
@@ -56,8 +54,10 @@ const handler = NextAuth({
       return token;
     },
     session: async ({ session, token }: any) => {
-      session.user = { ...session.user };
-      session.user.name = `${token.firstname} ${token.last_name}`;
+      session.user = {
+        ...session.user,
+        name: `${token.firstname} ${token.last_name}`,
+      };
       session.token = token.token;
       return session;
     },
