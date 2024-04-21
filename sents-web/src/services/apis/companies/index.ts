@@ -6,7 +6,7 @@ export const getCompanies = async (token: string) => {
   const res = await axios.get(`${BASE_URL}/allcompanies/`, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'token ' + token,
+      Authorization: 'Bearer ' + token,
     },
   });
   return res.data;
@@ -16,7 +16,7 @@ export const getCompany = async (token: string, id: number) => {
   const res = await axios.get(`${BASE_URL}/acompany/${id}/`, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'token ' + token,
+      Authorization: 'Bearer ' + token,
     },
   });
   return res.data;
