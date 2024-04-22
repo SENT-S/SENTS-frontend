@@ -7,8 +7,6 @@ export const registerUser = async (data: any) => {
     firstname: data.firstname,
     lastname: data.lastname,
     email: data.email,
-    contact: data.contact,
-    address: data.address,
     password: data.password,
     password2: data.password2,
   });

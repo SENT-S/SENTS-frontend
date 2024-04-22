@@ -26,7 +26,7 @@ const handler = NextAuth({
             password,
           });
 
-          if (response?.message === 'Logged In Successfully') {
+          if (response?.status === 202) {
             const { user_data, token } = response.user_data;
             return { ...user_data, token };
           }

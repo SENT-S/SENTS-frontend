@@ -39,7 +39,7 @@ const TableComponent: React.FC<TableProps> = ({
                 ))}
                 <div className="hidden md:block w-8"></div>
               </div>
-              {rows.map((row, rowIndex) => (
+              {rows?.map((row, rowIndex) => (
                 <div
                   key={rowIndex}
                   className="flex items-center bg-gray-50 dark:bg-[#39463E] rounded-2xl mt-4 cursor-pointer hover:bg-gray-100"

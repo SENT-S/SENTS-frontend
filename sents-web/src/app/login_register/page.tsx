@@ -119,38 +119,6 @@ const Auth = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center space-x-6">
-              <div className="space-y-1">
-                <Label
-                  htmlFor="contact"
-                  className="text-black dark:text-[#FFFFFF]"
-                >
-                  Contact
-                </Label>
-                <Input
-                  className="dark:bg-[#39463E80] dark:border-[#148C59]"
-                  id="contact"
-                  placeholder="Enter Contact Number"
-                  name="contact"
-                  type="text"
-                />
-              </div>
-              <div className="space-y-1">
-                <Label
-                  htmlFor="address"
-                  className="text-black dark:text-[#FFFFFF]"
-                >
-                  Address
-                </Label>
-                <Input
-                  className="dark:bg-[#39463E80] dark:border-[#148C59]"
-                  id="address"
-                  placeholder="Enter Address"
-                  name="address"
-                  type="text"
-                />
-              </div>
-            </div>
             <div className="space-y-1">
               <Label
                 htmlFor="password"

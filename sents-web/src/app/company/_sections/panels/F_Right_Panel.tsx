@@ -15,20 +15,27 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
     router.push(`/company/${id}`);
   };
 
+  const companyDocuments = data?.company_documents.map((urlString: string) => {
+    const url = new URL(urlString);
+    return {
+      url: urlString,
+      hostname: url.pathname.split('/').pop(),
+    };
+  });
+
   return (
     <div className="space-y-8 w-full">
       <div className="space-y-4 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
         <h1 className="text-2xl font-semibold">Financial Statements</h1>
         <ul className="list-none divide-y divide-[#E6EEEA] dark:divide-[#39463E] space-y-6 scroll-smooth overflow-y-auto">
-          {data?.company_documents.map((documentUrl: string, index: number) => (
+          {companyDocuments?.map((doc: any, index: number) => (
             <li key={index} className="flex items-center justify-between p-3">
-              <span>PDF Document {index + 1}</span>
-              <a
-                href="https://www.adobe.com/acrobat/about-adobe-pdf.html"
-                download
-                target="_blank"
-                rel="noreferrer"
-              >
+              <span>
+                {doc.hostname.length > 25
+                  ? doc.hostname.slice(0, 25) + '...'
+                  : doc.hostname}
+              </span>
+              <a href={doc.url} download target="_blank" rel="noreferrer">
                 <TfiDownload
                   className="text-green-600 text-lg bg-green-100 dark:bg-[#0E120F] rounded-full p-3 cursor-pointer"
                   size={40}

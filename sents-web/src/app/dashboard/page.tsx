@@ -14,6 +14,18 @@ interface CustomSession extends Session {
   token?: string;
 }
 
+interface Company {
+  company_country: string;
+  num_of_companies: number;
+  list_of_companies: {
+    id: number;
+    company_name: string;
+    company_country: string;
+    stock_symbol: string;
+    sector_or_industry: string;
+  }[];
+}
+
 const Dashboard = () => {
   const router = useRouter();
   const { data: session, status } = useSession() as {
@@ -25,18 +37,31 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (session?.token) {
-      getCompanies(session.token)
-        .then(data => {
-          setCompanies(data);
+    const fetchCompanies = async () => {
+      if (session?.token) {
+        const response = await getCompanies(session.token);
+        if (response.status === 200) {
+          setCompanies(response.data);
           setIsLoading(false);
-        })
-        .catch(error => {
-          console.error(error);
-          setIsLoading(false);
-        });
-    }
+        } else {
+          console.error('Failed to fetch companies', response);
+        }
+      }
+    };
+
+    fetchCompanies();
   }, [session]);
+
+  const companyCountries = companies.map((item: Company) => ({
+    country: item.company_country,
+    total: item.num_of_companies,
+    flag: `https://upload.wikimedia.org/wikipedia/commons/4/4e/Flag_of_${item.company_country}.svg`,
+  }));
+
+  const filteredCompanies = companies
+    .filter((item: Company) => item.company_country === selectedCountry)
+    .map((item: Company) => item.list_of_companies)
+    .flat();
 
   return (
     <MainLayout>
@@ -69,7 +94,7 @@ const Dashboard = () => {
             Dashboard
           </div>
           <div className="grid grid-cols-2 gap-6 md:gap-8 mt-4">
-            {countryData.map(item => (
+            {companyCountries?.map(item => (
               <div
                 key={item.country}
                 className={`w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]'} border border-transparent hover:border-[#148C59]`}
@@ -112,7 +137,7 @@ const Dashboard = () => {
             onRowClick={row => {
               router.push(`/company/${row.id}`);
             }}
-            rows={companies}
+            rows={filteredCompanies}
           />
         </div>
       )}

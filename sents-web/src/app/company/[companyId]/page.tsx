@@ -23,7 +23,6 @@ interface CompanyDetailsProps {
 const links = ['Overview', 'Financials', 'News'];
 
 const CompanyDetails = ({ params }: CompanyDetailsProps) => {
-  const companyId = params.companyId;
   const { data: session, status } = useSession() as {
     data: CustomSession;
     status: 'loading' | 'authenticated' | 'unauthenticated';
@@ -33,23 +32,22 @@ const CompanyDetails = ({ params }: CompanyDetailsProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (session?.token) {
-      const companyIdNumber = Number(companyId);
-      if (!isNaN(companyIdNumber)) {
-        getCompany(session.token, companyIdNumber)
-          .then(data => {
-            setCompanyData(data);
-            setIsLoading(false);
-          })
-          .catch(error => {
-            console.error(error);
-            setIsLoading(false);
-          });
+    const fetchCompanies = async () => {
+      if (session?.token) {
+        const companyId = parseInt(params.companyId);
+        const response = await getCompany(session.token, companyId);
+        if (response.status === 200) {
+          setCompanyData(response.data);
+          setIsLoading(false);
+        } else {
+          console.error('Failed to fetch company', response);
+        }
       }
-    }
-  }, [session, companyId]);
+    };
 
-  // from the companyData, filter out company_details and company_financials
+    fetchCompanies();
+  }, [session, params.companyId]);
+
   const companyDetails = companyData?.company_details;
 
   const renderSection = () => {

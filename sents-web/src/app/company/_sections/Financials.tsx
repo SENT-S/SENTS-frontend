@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
+import SubNav from '@/components/navigation/SubNav';
 
 interface FinancialProps {
   data: any;
@@ -99,49 +100,63 @@ const Financials = ({ data }: FinancialProps) => {
       </div>
 
       {!selectedItem ? (
-        <div className="relative shadow-md rounded-2xl w-full h-auto">
-          <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
-            <TableHeader>
-              <TableRow className="text-black font-semibold">
-                <TableHead className="w-1/6 py-2">Metrics</TableHead>
-                {years.map(year => (
-                  <TableHead key={year} className="w-[13%] py-2">
-                    {year}
-                  </TableHead>
-                ))}
-                <TableHead className="w-1/3 py-2">Chart</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="bg-white dark:bg-[#39463E]">
-              {FinancialData.map(
-                (item: { [key: string]: string | number }, index: number) => (
-                  <TableRow
-                    key={index}
-                    className={`
+        <div className="space-y-8">
+          <SubNav
+            links={[
+              'Financial Summary',
+              'Profit & Loss',
+              'Balance Sheet',
+              'Cashflow Statement',
+              'Financial Analysis',
+            ]}
+            selectedLink="Financial Summary"
+            setSelectedLink={() => {}}
+            bgColor={true}
+          />
+          <div className="relative shadow-md rounded-2xl w-full h-auto">
+            <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
+              <TableHeader>
+                <TableRow className="text-black font-semibold">
+                  <TableHead className="w-1/6 py-2">Metrics</TableHead>
+                  {years.map(year => (
+                    <TableHead key={year} className="w-[13%] py-2">
+                      {year}
+                    </TableHead>
+                  ))}
+                  <TableHead className="w-1/3 py-2">Chart</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="bg-white dark:bg-[#39463E]">
+                {FinancialData.map(
+                  (item: { [key: string]: string | number }, index: number) => (
+                    <TableRow
+                      key={index}
+                      className={`
             ${index === FinancialData.length - 1 ? 'rounded-b-xl' : ''}
             hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
           `}
-                  >
-                    <TableCell className="py-2">{item.metrics}</TableCell>
-                    {years.map(year => (
-                      <TableCell key={year} className="flex-grow py-2">
-                        {item[year]}
+                    >
+                      <TableCell className="py-2">{item.metrics}</TableCell>
+                      {years.map(year => (
+                        <TableCell key={year} className="flex-grow py-2">
+                          {item[year]}
+                        </TableCell>
+                      ))}
+                      <TableCell className="w-2/6 py-2">
+                        <a
+                          href="#"
+                          onClick={() => handleViewChart(item)}
+                          className="text-[#148C59] z-50"
+                        >
+                          view chart
+                        </a>
                       </TableCell>
-                    ))}
-                    <TableCell className="w-2/6 py-2">
-                      <a
-                        href="#"
-                        onClick={() => handleViewChart(item)}
-                        className="text-[#148C59] z-50"
-                      >
-                        view chart
-                      </a>
-                    </TableCell>
-                  </TableRow>
-                ),
-              )}
-            </TableBody>
-          </Table>
+                    </TableRow>
+                  ),
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       ) : (
         <div className="p-4 bg-[#F8FAF9] dark:text-white dark:bg-[#39463E] w-auto rounded-2xl shadow">

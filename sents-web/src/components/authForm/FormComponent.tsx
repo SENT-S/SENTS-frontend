@@ -70,8 +70,8 @@ export default function FormComponent({
         const response = await registerUser(data);
 
         // Check if registration was successful
-        if (response) {
-          toast.success('Registration successful, please login', {
+        if (response?.status === 201) {
+          toast.success('Registration successful, redirecting...', {
             style: { background: 'green', color: 'white', border: 'none' },
             duration: 5000,
           });
@@ -79,9 +79,9 @@ export default function FormComponent({
           // Redirect to success page after 2 seconds
           setTimeout(() => {
             router.push('/success-register');
-          }, 2000);
+          }, 500);
         } else {
-          toast.error('Registration failed', {
+          toast.error('Registration failed, please try again', {
             style: { background: 'red', color: 'white', border: 'none' },
             duration: 5000,
           });
