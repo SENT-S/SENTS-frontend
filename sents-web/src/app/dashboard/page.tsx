@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout';
 import Image from 'next/image';
 import TableComponent from '@/components/table';
-import { countryData, tableData } from '@/services/mockData/mock';
+import { countryData } from '@/services/mockData/mock';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { getCompanies } from '@/services/apis/companies';
@@ -55,7 +55,7 @@ const Dashboard = () => {
   const companyCountries = companies.map((item: Company) => ({
     country: item.company_country,
     total: item.num_of_companies,
-    flag: `https://upload.wikimedia.org/wikipedia/commons/4/4e/Flag_of_${item.company_country}.svg`,
+    flag: `https://flagsapi.com/${countryData.find((country: any) => item.company_country.toLocaleLowerCase() === country.country.toLocaleLowerCase())?.code?.toLocaleUpperCase()}/flat/64.png`,
   }));
 
   const filteredCompanies = companies
@@ -107,10 +107,10 @@ const Dashboard = () => {
                 <div className="relative w-10 h-10 md:h-12 md:w-12">
                   <Image
                     src={item.flag}
-                    alt={`flag of ${item.country}`}
+                    alt={item.country}
                     fill={true}
                     loading="eager"
-                    className="rounded-full object-cover"
+                    className="object-cover"
                   />
                 </div>
               </div>

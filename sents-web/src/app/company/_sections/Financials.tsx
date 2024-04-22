@@ -28,6 +28,8 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
 import SubNav from '@/components/navigation/SubNav';
+import { Button } from '@/components/ui/button';
+import { IoChevronBackOutline } from 'react-icons/io5';
 
 interface FinancialProps {
   data: any;
@@ -159,63 +161,75 @@ const Financials = ({ data }: FinancialProps) => {
           </div>
         </div>
       ) : (
-        <div className="p-4 bg-[#F8FAF9] dark:text-white dark:bg-[#39463E] w-auto rounded-2xl shadow">
-          <div className="px-6 mb-3 w-full flex flex-wrap items-center justify-between">
-            <div className="flex flex-col justify-start">
-              <h2 className="text-[#9291A5] font-normal text-[18px]">Chart</h2>
-              <h1 className="font-semibold text-[22px]">Revenue</h1>
-            </div>
+        <>
+          <Button
+            variant="outline"
+            size="icon"
+            className="ml-3"
+            onClick={() => setSelectedItem(null)}
+          >
+            <IoChevronBackOutline />
+          </Button>
+          <div className="p-4 bg-[#F8FAF9] dark:text-white dark:bg-[#39463E] w-auto rounded-2xl shadow">
+            <div className="px-6 mb-3 w-full flex flex-wrap items-center justify-between">
+              <div className="flex flex-col justify-start">
+                <h2 className="text-[#9291A5] font-normal text-[18px]">
+                  Chart
+                </h2>
+                <h1 className="font-semibold text-[22px]">Revenue</h1>
+              </div>
 
-            <div>
-              <Select>
-                <SelectTrigger className="w-[180px] rounded-full flex justify-around border-none dark:text-white bg-[#E6F6F0] dark:bg-[#8D9D93]">
-                  <SelectValue
-                    placeholder="Select Metric"
-                    className="text-center w-full"
-                  />
-                </SelectTrigger>
-                <SelectContent className="z-50 bg-white">
-                  {FinancialData.map((item, index) => (
-                    <SelectItem key={index} value={item.metrics}>
-                      {item.metrics}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div>
+                <Select>
+                  <SelectTrigger className="w-[180px] rounded-full flex justify-around border-none dark:text-white bg-[#E6F6F0] dark:bg-[#8D9D93]">
+                    <SelectValue
+                      placeholder="Select Metric"
+                      className="text-center w-full"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="z-50 bg-white">
+                    {FinancialData.map((item, index) => (
+                      <SelectItem key={index} value={item.metrics}>
+                        {item.metrics}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="ml-6 mb-4">
+              <Separator className="my-4 h-[1px] w-full dark:bg-[#E6EEEA]" />
+            </div>
+            <div className="overflow-x-auto md:overflow-visible">
+              <div className="min-w-[600px]">
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="6 6" vertical={false} />
+                    <XAxis
+                      dataKey="name"
+                      strokeWidth={1}
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
+                    />
+                    <Tooltip />
+                    <Bar
+                      dataKey="value"
+                      fill="#148C59"
+                      barSize={60}
+                      shape={<CustomBar />}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
-          <div className="ml-6 mb-4">
-            <Separator className="my-4 h-[1px] w-full dark:bg-[#E6EEEA]" />
-          </div>
-          <div className="overflow-x-auto md:overflow-visible">
-            <div className="min-w-[600px]">
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="6 6" vertical={false} />
-                  <XAxis
-                    dataKey="name"
-                    strokeWidth={1}
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
-                  />
-                  <Tooltip />
-                  <Bar
-                    dataKey="value"
-                    fill="#148C59"
-                    barSize={60}
-                    shape={<CustomBar />}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
