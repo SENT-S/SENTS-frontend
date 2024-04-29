@@ -87,10 +87,19 @@ const Financials = ({ data }: FinancialProps) => {
   const selectedData = TableData[selectedLink as keyof typeof TableData];
 
   const chartData = selectedMetric
-    ? years.map(year => ({
-        name: year,
-        value: selectedMetric[year as keyof typeof selectedMetric],
-      }))
+    ? years.map(year => {
+        const value = selectedMetric[year as keyof typeof selectedMetric];
+        // Check if the value is a percentage
+        if (typeof value === 'string' && value.endsWith('%')) {
+          // Remove the '%' sign and convert to a number
+          return {
+            name: year,
+            value: parseFloat(value.slice(0, -1)),
+          };
+        } else {
+          return { name: year, value };
+        }
+      })
     : [];
 
   return (
