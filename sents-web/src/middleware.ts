@@ -8,7 +8,7 @@ interface Token {
 }
 
 export const config = {
-  matcher: ['/dashboard', '/company', '/company/:path*'],
+  matcher: ['/dashboard', '/company', '/company/:path*', '/news'],
 };
 
 export async function middleware(req: any) {

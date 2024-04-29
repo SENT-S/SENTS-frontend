@@ -38,11 +38,13 @@ export default function Events() {
               </span>
               <h3 className="text-sm md:text-lg font-semibold mt-3">
                 {windowWidth < 768
-                  ? `${newsItem.title.slice(0, 50)}...`
+                  ? `${newsItem.title.slice(0, 40)}...`
                   : newsItem.title}
               </h3>
               <p className="text-sm text-gray-600 dark:text-white">
-                {`${newsItem.description}`}
+                {windowWidth < 768
+                  ? `${newsItem.description.slice(0, 50)}...`
+                  : newsItem.description}
               </p>
             </div>
             <span

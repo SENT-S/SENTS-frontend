@@ -150,7 +150,7 @@ const Header = () => {
                       </div>
                     </div>
                   )}
-                  <div>
+                  <div className="w-full flex justify-start">
                     <button
                       className="p-2 bg-gray-100 rounded-full cursor-pointer text-black dark:text-white dark:bg-[#39463E80]"
                       onClick={toggleTheme}
