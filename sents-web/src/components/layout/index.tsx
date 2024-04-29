@@ -12,7 +12,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => (
       <SideBar />
     </div>
     <div className="flex flex-col w-full h-auto overflow-y-auto">
-      <div className="w-full z-50">
+      <div className="w-full z-50 top-0 sticky">
         <Header />
       </div>
       <main className="flex-grow w-full mt-4 px-4 pb-4 lg:px-0 lg:pr-10 space-y-4 bg-transparent">

@@ -42,7 +42,7 @@ export default function Resources() {
             <span
               className={`absolute bottom-0 right-0 ${hovered ? 'bg-green-200 dark:text-black' : 'bg-green-700 text-white'} rounded-tl-2xl rounded-br-2xl px-2 py-1 text-sm `}
             >
-              stanbic uganda
+              {newsItem.tag}
             </span>
           </div>
         );

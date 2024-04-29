@@ -58,22 +58,25 @@ export const mockData = [
     description:
       'Stanbic Uganda Holdings Limited, one of the leading financial services groups in Uganda, has announced record-breaking profits in its 2023 Annual Financial Report. ',
     imageUrl: 'https://source.unsplash.com/random/finance',
+    tag: 'Stanbic Uganda Holdings Limited',
   },
   {
     id: 2,
     title:
-      'Stanbic Uganda Holdings Reports Record Profits in 2023 Annual Financial Report',
+      'Jubilee Holdings Limited Reports Record Profits in 2023 Annual Financial Report',
     description:
-      'Stanbic Uganda Holdings Limited, one of the leading financial services groups in Uganda, has announced record-breaking profits in its 2023 Annual Financial Report.',
+      'Jubilee Holdings Limited, one of the leading financial services groups in Uganda, has announced record-breaking profits in its 2023 Annual Financial Report. ',
     imageUrl: 'https://source.unsplash.com/random/technology',
+    tag: 'Jubilee Holdings Limited',
   },
   {
     id: 3,
     title:
-      'Stanbic Uganda Holdings Reports Record Profits in 2023 Annual Financial Report',
+      'Umeme Limited Reports Record Profits in 2023 Annual Financial Report',
     description:
-      'Stanbic Uganda Holdings Limited, one of the leading financial services groups in Uganda, has announced record-breaking profits in its 2023 Annual Financial Report. ',
+      'Umeme Limited, one of the leading financial services groups in Uganda, has announced record-breaking profits in its 2023 Annual Financial Report. ',
     imageUrl: 'https://source.unsplash.com/random/technology',
+    tag: 'Umeme Limited',
   },
 ];
 
