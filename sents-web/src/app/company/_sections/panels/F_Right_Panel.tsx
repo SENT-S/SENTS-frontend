@@ -30,7 +30,7 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
         <ul className="list-none divide-y divide-[#E6EEEA] dark:divide-[#39463E] space-y-6 scroll-smooth overflow-y-auto">
           {companyDocuments?.map((doc: any, index: number) => (
             <li key={index} className="flex items-center justify-between p-3">
-              <span>
+              <span className="min-w-[200px]">
                 {doc.hostname.length > 25
                   ? doc.hostname.slice(0, 25) + '...'
                   : doc.hostname}

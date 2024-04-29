@@ -19,11 +19,17 @@ import {
 import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
+import { LuLayoutDashboard } from 'react-icons/lu';
+import { HiOutlineNewspaper } from 'react-icons/hi2';
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname.startsWith(path);
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -33,6 +39,21 @@ const Header = () => {
     setLoading(true);
     signOut().then(() => setLoading(false));
   };
+
+  const Links = [
+    {
+      name: 'Dashboard',
+      icon: LuLayoutDashboard,
+      path: '/dashboard',
+      activePaths: ['/dashboard', '/company'],
+    },
+    {
+      name: 'News',
+      icon: HiOutlineNewspaper,
+      path: '/news',
+      activePaths: ['/news'],
+    },
+  ];
 
   return (
     <>
@@ -129,6 +150,40 @@ const Header = () => {
                       </div>
                     </div>
                   )}
+                  <div>
+                    <button
+                      className="p-2 bg-gray-100 rounded-full cursor-pointer text-black dark:text-white dark:bg-[#39463E80]"
+                      onClick={toggleTheme}
+                    >
+                      <MdOutlineLightMode
+                        size={20}
+                        className="hidden dark:block"
+                      />
+                      <BsFillMoonStarsFill size={20} className="dark:hidden" />
+                    </button>
+                  </div>
+                  <ul className="w-full space-y-3">
+                    {Links.map((link, index) => {
+                      const Icon = link.icon;
+                      const isActiveLink = link.activePaths.some(isActive);
+                      return (
+                        <li
+                          key={index}
+                          className={`flex justify-center items-center rounded-md space-x-2 px-4 py-2 cursor-pointer relative ${
+                            isActiveLink ? 'bg-[#39463E] text-white' : ''
+                          }`}
+                        >
+                          <Link
+                            href={link.path}
+                            className="flex gap-3 justify-start items-center w-full"
+                          >
+                            <Icon size={24} className="text-[#148c59]" />
+                            <span className="text-lg">{link.name}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </DrawerHeader>
                 <div className="flex flex-col justify-between h-full pb-4">
                   <div />

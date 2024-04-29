@@ -1,15 +1,10 @@
-'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { mockData } from '@/services/mockData/mock';
 
-interface NewsProps {
-  data: any;
-}
-
-const News = ({ data }: NewsProps) => {
+export default function News() {
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-4 w-full p-4">
       {mockData.map(newsItem => {
         const [hovered, setHovered] = useState(false);
         return (
@@ -17,7 +12,7 @@ const News = ({ data }: NewsProps) => {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             key={newsItem.id}
-            className="flex items-center gap-4 bg-white dark:text-white dark:bg-[#39463E80] h-auto hover:bg-[#E6EEEA] cursor-pointer rounded-2xl"
+            className="flex items-center gap-4 bg-gray-100 dark:text-white dark:bg-[#39463E80] h-auto hover:bg-[#E6EEEA] cursor-pointer rounded-2xl relative"
             onClick={() => console.log('clicked')}
           >
             <div className="w-64 h-40 relative">
@@ -41,14 +36,17 @@ const News = ({ data }: NewsProps) => {
                   : newsItem.title}
               </h3>
               <p className="text-sm text-gray-600 dark:text-white">
-                {`${newsItem.description.slice(0, 100)}...`}
+                {`${newsItem.description}`}
               </p>
             </div>
+            <span
+              className={`absolute bottom-0 right-0 ${hovered ? 'bg-green-200 dark:text-black' : 'bg-green-700 text-white'} rounded-tl-2xl rounded-br-2xl px-2 py-1 text-sm `}
+            >
+              stanbic uganda
+            </span>
           </div>
         );
       })}
     </div>
   );
-};
-
-export default News;
+}

@@ -3,14 +3,36 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { IoIosLogOut } from 'react-icons/io';
 import { signOut } from 'next-auth/react';
+import { LuLayoutDashboard } from 'react-icons/lu';
+import { HiOutlineNewspaper } from 'react-icons/hi2';
+import { usePathname } from 'next/navigation';
 
 const SideBar = () => {
   const [loading, setLoading] = useState(false);
+  const pathname = usePathname();
 
-  const handleLogout = () => {
+  const isActive = (path: string) => pathname.startsWith(path);
+
+  const handleLogout = async () => {
     setLoading(true);
-    signOut().then(() => setLoading(false));
+    await signOut();
+    setLoading(false);
   };
+
+  const Links = [
+    {
+      name: 'Dashboard',
+      icon: LuLayoutDashboard,
+      path: '/dashboard',
+      activePaths: ['/dashboard', '/company'],
+    },
+    {
+      name: 'News',
+      icon: HiOutlineNewspaper,
+      path: '/news',
+      activePaths: ['/news'],
+    },
+  ];
 
   return (
     <div className="hidden lg:flex flex-col w-56 h-full p-4 bg-transparent">
@@ -22,11 +44,37 @@ const SideBar = () => {
         </Link>
       </div>
       <div className="flex flex-col w-full h-full justify-between items-center">
-        <div></div>
+        <div />
+        <div className="relative">
+          <ul className="absolute left-[-114px] -bottom-16 bg-white dark:bg-[#39463E80] rounded-r-3xl py-4">
+            {Links.map((link, index) => {
+              const Icon = link.icon;
+              const isActiveLink = link.activePaths.some(isActive);
+              return (
+                <li
+                  key={index}
+                  className={`flex justify-center items-center space-x-2 px-6 py-4 cursor-pointer relative ${
+                    isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
+                  }`}
+                >
+                  <Link href={link.path}>
+                    <Icon
+                      size={24}
+                      className={
+                        isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
+                      }
+                    />
+                  </Link>
+                  {isActiveLink && (
+                    <span className="absolute right-0 bg-[#148c59] rounded-l-md h-6 w-1"></span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
         <button
-          onClick={() => {
-            handleLogout();
-          }}
+          onClick={handleLogout}
           className="flex justify-center items-center space-x-2 p-4 cursor-pointer text-gray-400 hover:bg-gray-100 rounded-lg"
         >
           <IoIosLogOut size={24} />

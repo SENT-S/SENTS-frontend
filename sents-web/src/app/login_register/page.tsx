@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -6,10 +7,25 @@ import Apple from '@/public/icons/apple.png';
 import Google from '@/public/icons/google.png';
 import Microsoft from '@/public/icons/micro.png';
 import FormComponent from '@/components/authForm/FormComponent';
+import { Button } from '@/components/ui/button';
+import { IoChevronBackOutline } from 'react-icons/io5';
+import { useRouter } from 'next/navigation';
 
 const Auth = () => {
+  const router = useRouter();
   return (
-    <div className="w-full h-full flex justify-center items-center">
+    <div className="w-full h-full flex justify-center items-center relative">
+      <Button
+        variant="outline"
+        size="icon"
+        className="ml-3 absolute top-4 left-4 dark:text-white"
+        onClick={() => {
+          // return to previous page
+          router.back();
+        }}
+      >
+        <IoChevronBackOutline />
+      </Button>
       <Tabs
         defaultValue="sign_In"
         className="w-[558px] rounded-3xl bg-white dark:bg-[#070707] md:shadow p-14 lg:p-24"
