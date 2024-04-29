@@ -20,7 +20,7 @@ const SubNav = ({
       link === selectedLink
         ? `${bgColor ? 'bg-[#E6EEEA] dark:bg-[#39463E] dark:text-white' : 'bg-green-700 text-white'}`
         : ''
-    } text-[39463E]`;
+    } text-[39463E] dark:text-white`;
 
   const containerClasses = `flex flex-wrap justify-around ${
     bgColor ? 'mx-0' : 'mx-10'
