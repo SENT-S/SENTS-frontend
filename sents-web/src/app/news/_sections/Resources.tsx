@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { mockData } from '@/services/mockData/mock';
@@ -12,7 +13,7 @@ export default function Resources() {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             key={newsItem.id}
-            className="flex items-center gap-4 bg-gray-100 dark:text-white dark:bg-[#39463E80] h-auto hover:bg-[#E6EEEA] cursor-pointer rounded-2xl relative"
+            className="flex items-center gap-4 bg-gray-100 dark:text-white dark:bg-[#39463E80] h-auto hover:bg-[#E6EEEA] cursor-pointer rounded-2xl relative transition-colors duration-200 ease-in-out"
             onClick={() => console.log('clicked')}
           >
             <div className="w-64 h-40 relative">
@@ -26,7 +27,7 @@ export default function Resources() {
             </div>
             <div>
               <span
-                className={`${hovered ? 'bg-green-700 text-white' : 'bg-green-200'} px-2 py-1 text-green-600 p-[3px]`}
+                className={`${hovered ? 'bg-green-700 text-white' : 'bg-green-200'} px-2 py-1 text-green-600 p-[3px] transition-colors duration-200 ease-in-out`}
               >
                 Resources
               </span>
@@ -40,7 +41,7 @@ export default function Resources() {
               </p>
             </div>
             <span
-              className={`absolute bottom-0 right-0 ${hovered ? 'bg-green-200 dark:text-black' : 'bg-green-700 text-white'} rounded-tl-2xl rounded-br-2xl px-2 py-1 text-sm `}
+              className={`absolute bottom-0 right-0 ${hovered ? 'bg-green-200 dark:text-black' : 'bg-green-700 text-white'} rounded-tl-2xl rounded-br-2xl px-2 py-1 text-sm transition-colors duration-200 ease-in-out`}
             >
               {newsItem.tag}
             </span>

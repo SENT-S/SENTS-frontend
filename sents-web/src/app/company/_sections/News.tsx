@@ -17,7 +17,7 @@ const News = ({ data }: NewsProps) => {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             key={newsItem.id}
-            className="flex items-center gap-4 bg-white dark:text-white dark:bg-[#39463E80] h-auto hover:bg-[#E6EEEA] cursor-pointer rounded-2xl"
+            className="flex items-center gap-4 bg-white dark:text-white dark:bg-[#39463E80] h-auto hover:bg-[#E6EEEA] cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out"
             onClick={() => console.log('clicked')}
           >
             <div className="w-64 h-40 relative">
@@ -31,7 +31,7 @@ const News = ({ data }: NewsProps) => {
             </div>
             <div>
               <span
-                className={`${hovered ? 'bg-green-700 text-white' : 'bg-green-200'} px-2 py-1 text-green-600 p-[3px]`}
+                className={`${hovered ? 'bg-green-700 text-white' : 'bg-green-200'} px-2 py-1 text-green-600 p-[3px] transition-colors duration-200 ease-in-out`}
               >
                 News
               </span>
