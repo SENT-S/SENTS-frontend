@@ -1,5 +1,5 @@
 import '@/styles/styles.scss';
-import Provider from '@/services/redux/Provider';
+import StoreProvider from '@/app/StoreProvider';
 import ThemeProvider from '../components/themeProvider/ThemeProvider';
 import ThemeToggle from '@/components/themeProvider/ThemeToggle';
 import AuthProvider from '@/components/context/AuthProvider';
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Provider>
+        <StoreProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -30,7 +30,7 @@ export default function RootLayout({
               <>{children}</>
             </AuthProvider>
           </ThemeProvider>
-        </Provider>
+        </StoreProvider>
         <Toaster />
       </body>
     </html>
