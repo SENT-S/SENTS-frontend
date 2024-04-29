@@ -20,8 +20,7 @@ const Auth = () => {
         size="icon"
         className="ml-3 absolute top-4 left-4 dark:text-white"
         onClick={() => {
-          // return to previous page
-          router.back();
+          router.push('/');
         }}
       >
         <IoChevronBackOutline />
