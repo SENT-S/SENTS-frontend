@@ -10,7 +10,7 @@ import Teams from './_sections/Teams';
 
 const links = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
-export default function NewsPage() {
+const NewsPage = () => {
   const [selectedLink, setSelectedLink] = useState(links[0]);
 
   return (
@@ -29,4 +29,6 @@ export default function NewsPage() {
       </div>
     </MainLayout>
   );
-}
+};
+
+export default NewsPage;

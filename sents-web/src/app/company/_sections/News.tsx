@@ -1,5 +1,4 @@
-'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { mockData } from '@/services/mockData/mock';
 
@@ -8,6 +7,12 @@ interface NewsProps {
 }
 
 const News = ({ data }: NewsProps) => {
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 w-full">
       {mockData.map(newsItem => {
@@ -36,7 +41,7 @@ const News = ({ data }: NewsProps) => {
                 News
               </span>
               <h3 className="text-sm md:text-lg font-semibold mt-3">
-                {window.innerWidth < 768
+                {windowWidth < 768
                   ? `${newsItem.title.slice(0, 50)}...`
                   : newsItem.title}
               </h3>

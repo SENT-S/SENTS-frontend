@@ -1,12 +1,17 @@
-'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { mockData } from '@/services/mockData/mock';
 
 export default function Resources() {
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 w-full p-4">
-      {mockData.map(newsItem => {
+      {mockData?.map(newsItem => {
         const [hovered, setHovered] = useState(false);
         return (
           <div
@@ -32,7 +37,7 @@ export default function Resources() {
                 Resources
               </span>
               <h3 className="text-sm md:text-lg font-semibold mt-3">
-                {window.innerWidth < 768
+                {windowWidth < 768
                   ? `${newsItem.title.slice(0, 50)}...`
                   : newsItem.title}
               </h3>

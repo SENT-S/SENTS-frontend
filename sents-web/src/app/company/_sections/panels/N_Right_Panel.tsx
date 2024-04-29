@@ -3,6 +3,17 @@ import Image from 'next/image';
 import Expert1 from '@/public/images/expert1.png';
 import Expert2 from '@/public/images/expert2.png';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const N_Right_Panel = () => {
   return (
@@ -29,10 +40,38 @@ const N_Right_Panel = () => {
         <h1 className="text-4xl text-center font-normal mb-3">
           Subscribe to our Newsletter
         </h1>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button className="absolute left-1/2 z-50 transform -translate-x-1/2 px-8 py-2 hover:bg-green-800 bg-[#148C59] text-white rounded-full text-2xl">
+              Subscribe
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Subscription Confirmation</AlertDialogTitle>
+              <AlertDialogDescription>
+                You are about to subscribe to our service. This will enable you
+                to receive regular updates and exclusive content. Are you sure
+                you want to proceed?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <div
+                onClick={() => {
+                  setTimeout(() => {
+                    alert('You have successfully subscribed!');
+                  }, 1000);
+                }}
+              >
+                <AlertDialogAction className="bg-green-600 text-white hover:bg-green-800">
+                  Confirm Subscription
+                </AlertDialogAction>
+              </div>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-        <Button className="absolute left-1/2 z-50 transform -translate-x-1/2 px-8 py-2 hover:bg-green-800 bg-[#148C59] text-white rounded-full text-2xl">
-          Subscribe
-        </Button>
         <div className="flex justify-end">
           <section className="relative w-auto lg:h-auto">
             <Image src={Expert2} alt="expert" className="object-contain" />
