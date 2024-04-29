@@ -59,7 +59,7 @@ const SideBar = () => {
                 >
                   <Link href={link.path}>
                     <Icon
-                      size={24}
+                      size={30}
                       className={
                         isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
                       }
