@@ -54,39 +54,43 @@ const CustomBar = (props: any) => {
 
 const Financials = ({ data }: FinancialProps) => {
   const { theme } = useTheme();
-  const [selectedMetric, setSelectedMetric] = useState('');
-  const [selectedItem, setSelectedItem] = useState<{
+  const [selectedLink, setSelectedLink] = useState('Financial Summary');
+  const [selectedMetric, setSelectedMetric] = useState<{
     [key: string]: string | number;
   } | null>(null);
   const years = ['FY19', 'FY20', 'FY21', 'FY22', 'FY23'];
 
   const handleViewChart = (item: { [key: string]: string | number }) => {
-    setSelectedItem(item);
+    setSelectedMetric(item);
   };
 
-  const handleSelectChange = (
-    event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
-  ) => {
-    const selectedValue = event.target.value as string; // Adjust the type assertion as necessary
-    setSelectedMetric(selectedValue);
+  const handleSelectMetric = (metricName: string) => {
+    const selectedMetric = selectedData.find(
+      item => item.metrics === metricName,
+    );
+    if (selectedMetric) {
+      setSelectedMetric(selectedMetric);
+    } else {
+      // Handle the case where the metric is not found
+      console.error(`Metric ${metricName} not found`);
+    }
   };
 
-  const chartData = selectedItem
+  const TableData = {
+    'Financial Summary': FinancialData,
+    'Profit & Loss': FinancialData.slice(0, 5),
+    'Balance Sheet': FinancialData.slice(5, 10),
+    'Cashflow Statement': FinancialData.slice(1, 5),
+    'Financial Analysis': FinancialData.slice(5, 10),
+  };
+
+  const selectedData = TableData[selectedLink as keyof typeof TableData];
+
+  const chartData = selectedMetric
     ? years.map(year => ({
         name: year,
-        value: selectedItem[year as keyof typeof selectedItem],
+        value: selectedMetric[year as keyof typeof selectedMetric],
       }))
-    : [];
-
-  const chartData1 = selectedMetric
-    ? FinancialData.filter(item => item.metrics === selectedMetric)
-        .map(item =>
-          years.map(year => ({
-            name: year,
-            value: item[year as keyof typeof item],
-          })),
-        )
-        .flat()
     : [];
 
   return (
@@ -101,7 +105,7 @@ const Financials = ({ data }: FinancialProps) => {
         <span className="font-semibold text-lg">Yearly Financials</span>
       </div>
 
-      {!selectedItem ? (
+      {!selectedMetric ? (
         <div className="space-y-8">
           <SubNav
             links={[
@@ -111,8 +115,8 @@ const Financials = ({ data }: FinancialProps) => {
               'Cashflow Statement',
               'Financial Analysis',
             ]}
-            selectedLink="Financial Summary"
-            setSelectedLink={() => {}}
+            selectedLink={selectedLink}
+            setSelectedLink={setSelectedLink}
             bgColor={true}
           />
           <div className="relative shadow-md rounded-2xl w-full h-auto">
@@ -129,12 +133,12 @@ const Financials = ({ data }: FinancialProps) => {
                 </TableRow>
               </TableHeader>
               <TableBody className="bg-white dark:bg-[#39463E]">
-                {FinancialData.map(
+                {selectedData.map(
                   (item: { [key: string]: string | number }, index: number) => (
                     <TableRow
                       key={index}
                       className={`
-            ${index === FinancialData.length - 1 ? 'rounded-b-xl' : ''}
+            ${index === selectedData.length - 1 ? 'rounded-b-xl' : ''}
             hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
           `}
                     >
@@ -166,7 +170,7 @@ const Financials = ({ data }: FinancialProps) => {
             variant="outline"
             size="icon"
             className="ml-3"
-            onClick={() => setSelectedItem(null)}
+            onClick={() => setSelectedMetric(null)}
           >
             <IoChevronBackOutline />
           </Button>
@@ -176,11 +180,13 @@ const Financials = ({ data }: FinancialProps) => {
                 <h2 className="text-[#9291A5] font-normal text-[18px]">
                   Chart
                 </h2>
-                <h1 className="font-semibold text-[22px]">Revenue</h1>
+                <h1 className="font-semibold text-[22px]">
+                  {selectedMetric?.metrics}
+                </h1>
               </div>
 
               <div>
-                <Select>
+                <Select onValueChange={handleSelectMetric}>
                   <SelectTrigger className="w-[180px] rounded-full flex justify-around border-none dark:text-white bg-[#E6F6F0] dark:bg-[#8D9D93]">
                     <SelectValue
                       placeholder="Select Metric"
