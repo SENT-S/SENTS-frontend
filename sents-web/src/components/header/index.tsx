@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import Link from 'next/link';
 import { IoIosMenu } from 'react-icons/io';
@@ -22,12 +22,53 @@ import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { HiOutlineNewspaper } from 'react-icons/hi2';
+import { getCompanies } from '@/services/apis/companies';
+import { Session } from 'next-auth';
+import Fuse from 'fuse.js';
+import { useRouter } from 'next/navigation';
+
+interface CustomSession extends Session {
+  token?: string;
+}
+
+// Define the type for a company
+type Company = {
+  id: number;
+  company_name: string;
+  company_country: string;
+  stock_symbol: string;
+  sector_or_industry: string;
+};
+
+// Your initial data
+const initialData = [] as Company[];
+
+// Options for Fuse.js
+const options = {
+  keys: [
+    'company_country',
+    'company_name',
+    'stock_symbol',
+    'sector_or_industry',
+  ],
+  includeScore: true,
+};
 
 const Header = () => {
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession() as {
+    data: CustomSession;
+    status: 'loading' | 'authenticated' | 'unauthenticated';
+  };
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
+
+  // for search
+  const [searchData, setSearchData] = useState(initialData);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<Company[]>([]);
+  const [fuse, setFuse] = useState(new Fuse(searchData, options));
 
   const isActive = (path: string) => pathname.startsWith(path);
 
@@ -55,9 +96,40 @@ const Header = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      if (session?.token) {
+        const response = await getCompanies(session.token);
+        if (response.status === 200) {
+          // Flatten the data into a single array of companies
+          const flattenedData = response.data.flatMap(
+            (data: any) => data.list_of_companies,
+          );
+          setSearchData(flattenedData);
+          // Update the fuse instance with the new data
+          setFuse(new Fuse(flattenedData, options));
+        } else {
+          console.error('Failed to fetch companies', response);
+        }
+      }
+    };
+
+    fetchCompanies();
+  }, [session]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    if (e.target.value.trim() !== '') {
+      const result = fuse.search(e.target.value);
+      setResults(result.map(res => res.item));
+    } else {
+      setResults([]);
+    }
+  };
+
   return (
     <>
-      <div className=" bg-white shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
+      <div className="bg-white shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
         <div className="px-4 flex justify-between items-center space-x-4 lg:space-x-0">
           <div className="lg:hidden">
             <Link href="/dashboard">
@@ -66,16 +138,41 @@ const Header = () => {
               </h1>
             </Link>
           </div>
-          <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg w-full lg:w-1/3 overflow-hidden dark:bg-[#39463E80]">
-            <div className="ml-3">
-              <CiSearch />
+          {searchData && searchData.length > 0 ? (
+            <div className="relative w-full lg:w-1/3">
+              <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg overflow-hidden dark:bg-[#39463E80]">
+                <div className="ml-3">
+                  <CiSearch />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search for stocks & more"
+                  className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
+                  value={query}
+                  onChange={handleSearch}
+                />
+              </div>
+              {results.length > 0 && (
+                <div className="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 z-50 overflow-auto dark:bg-[#39463E] dark:text-white">
+                  {results.map((item, index) => (
+                    <div
+                      onClick={() => {
+                        router.push(`/company/${item.id}`);
+                        setResults([]);
+                      }}
+                      key={index}
+                      className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-500"
+                    >
+                      {item.company_name}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            <input
-              type="text"
-              placeholder="Search for stocks & more"
-              className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
-            />
-          </div>
+          ) : (
+            <Skeleton className="w-full lg:w-1/3 rounded-md p-5 relative bg-gray-200 dark:bg-[#0e120f]" />
+          )}
+
           <div className="hidden lg:flex items-center lg:pr-14">
             <button
               className="p-2 bg-gray-100 rounded-full cursor-pointer text-black dark:text-white dark:bg-[#39463E80]"
