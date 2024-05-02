@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Table,
   TableBody,
@@ -31,10 +31,6 @@ import SubNav from '@/components/navigation/SubNav';
 import { Button } from '@/components/ui/button';
 import { IoChevronBackOutline } from 'react-icons/io5';
 
-interface FinancialProps {
-  data: any;
-}
-
 const CustomBar = (props: any) => {
   const { fill, x, y, width, height } = props;
 
@@ -52,9 +48,15 @@ const CustomBar = (props: any) => {
   );
 };
 
-const Financials = ({ data }: FinancialProps) => {
+const Financials = ({
+  data,
+  financialData,
+}: {
+  data: any;
+  financialData: any[];
+}) => {
   const { theme } = useTheme();
-  const [selectedLink, setSelectedLink] = useState('Financial Summary');
+  const [selectedLink, setSelectedLink] = useState<any>('Financial Summary');
   const [selectedMetric, setSelectedMetric] = useState<{
     [key: string]: string | number;
   } | null>(null);
@@ -101,6 +103,19 @@ const Financials = ({ data }: FinancialProps) => {
         }
       })
     : [];
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p>No data available.</p>
+      </div>
+    );
+  }
+
+  const filteredData = useMemo(
+    () => financialData[selectedLink],
+    [financialData, selectedLink],
+  );
 
   return (
     <div className="space-y-8 w-full">

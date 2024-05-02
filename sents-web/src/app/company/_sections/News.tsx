@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { mockData } from '@/services/mockData/mock';
 
 interface NewsProps {
   data: any;
@@ -13,9 +12,17 @@ const News = ({ data }: NewsProps) => {
     setWindowWidth(window.innerWidth);
   }, []);
 
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p>No data available.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full">
-      {mockData.map(newsItem => {
+      {data.map((newsItem: any) => {
         const [hovered, setHovered] = useState(false);
         return (
           <div
@@ -23,12 +30,14 @@ const News = ({ data }: NewsProps) => {
             onMouseLeave={() => setHovered(false)}
             key={newsItem.id}
             className="flex items-center gap-4 bg-white dark:text-white dark:bg-[#39463E80] h-auto hover:bg-[#E6EEEA] cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out"
-            onClick={() => console.log('clicked')}
+            onClick={() => {
+              window.open(newsItem.link_to_news_page, '_blank');
+            }}
           >
             <div className="w-64 h-40 relative">
               <Image
-                src={newsItem.imageUrl}
-                alt={newsItem.title}
+                src="https://source.unsplash.com/random/finance"
+                alt={newsItem.headline}
                 className="w-full h-full object-cover rounded-bl-2xl rounded-tl-2xl"
                 fill={true}
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
@@ -36,17 +45,17 @@ const News = ({ data }: NewsProps) => {
             </div>
             <div>
               <span
-                className={`${hovered ? 'bg-green-700 text-white' : 'bg-green-200'} px-2 py-1 text-green-600 p-[3px] transition-colors duration-200 ease-in-out`}
+                className={`${hovered ? 'bg-green-700 text-white' : 'bg-green-200'} px-2 py-1 text-green-600 p-[3px] transition-colors duration-200 ease-in-out capitalize`}
               >
-                News
+                {newsItem.news_category}
               </span>
               <h3 className="text-sm md:text-lg font-semibold mt-3">
                 {windowWidth < 768
-                  ? `${newsItem.title.slice(0, 50)}...`
-                  : newsItem.title}
+                  ? `${newsItem.headline.slice(0, 50)}...`
+                  : newsItem.headline}
               </h3>
               <p className="text-sm text-gray-600 dark:text-white">
-                {`${newsItem.description.slice(0, 100)}...`}
+                {`${newsItem.short_description.slice(0, 100)}...`}
               </p>
             </div>
           </div>

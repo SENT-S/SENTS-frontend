@@ -39,7 +39,7 @@ const Error: React.FC<ErrorProps> = ({ error, reset }) => {
         </div>
         <div>
           <Link
-            href="/"
+            href="/dashboard"
             className="px-6 py-3 text-lg font-medium text-white bg-green-500 rounded hover:bg-green-600"
           >
             Go Home

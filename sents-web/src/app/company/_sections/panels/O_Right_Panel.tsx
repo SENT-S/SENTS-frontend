@@ -12,6 +12,15 @@ interface AboutProps {
 const O_Right_Panel = ({ data }: AboutProps) => {
   const url = new URL(data?.website_url);
   const cleanedUrl = url.hostname;
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
+        <p>No data available.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
       <h1 className="text-2xl font-bold">About</h1>
