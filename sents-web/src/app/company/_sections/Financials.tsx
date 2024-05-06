@@ -391,7 +391,7 @@ const Financials = ({
                 className={`py-2 w-auto ${theme === 'dark' ? 'bg-[#39463E] text-white' : ''}`}
                 ref={chartRef}
               >
-                <div className="w-full px-6">
+                <div className="w-full px-3 md:px-6">
                   <div className="flex flex-col justify-start">
                     <h2 className="text-[#9291A5] font-normal text-[18px]">
                       Chart
@@ -405,7 +405,7 @@ const Financials = ({
                   </div>
                 </div>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={chartData}>
+                  <BarChart data={chartData} className="-ml-3 md:-ml-0">
                     <CartesianGrid strokeDasharray="6 6" vertical={false} />
                     <XAxis
                       dataKey="name"

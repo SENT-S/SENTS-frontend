@@ -19,7 +19,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => (
         <div className="space-y-8">{children}</div>
       </main>
       {/* trade mark */}
-      <div className="w-full h-12 mt-4 flex justify-center items-center">
+      <div className="w-full mt-4 mb-4 flex justify-center items-center">
         <span className="text-sm text-gray-500">
           © {new Date().getFullYear()} Sents. All rights reserved.
         </span>
