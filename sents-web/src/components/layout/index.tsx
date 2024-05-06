@@ -18,6 +18,12 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => (
       <main className="flex-grow w-full mt-4 px-4 pb-4 lg:px-0 lg:pr-10 space-y-4 bg-transparent">
         <div className="space-y-8">{children}</div>
       </main>
+      {/* trade mark */}
+      <div className="w-full h-12 mt-4 flex justify-center items-center">
+        <span className="text-sm text-gray-500">
+          © {new Date().getFullYear()} Sents. All rights reserved.
+        </span>
+      </div>
     </div>
   </div>
 );
