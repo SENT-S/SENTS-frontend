@@ -326,7 +326,9 @@ const Financials = ({
                         <TableCell className="py-2">{item.metrics}</TableCell>
                         {years.map(year => (
                           <TableCell key={year} className="flex-grow py-2">
-                            {item[year]}
+                            {isNaN(Number(item[year]))
+                              ? '__'
+                              : Number(item[year]).toLocaleString()}
                           </TableCell>
                         ))}
                         <TableCell className="w-2/6 py-2">
