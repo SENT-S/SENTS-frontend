@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import { getCompanies } from '@/services/apis/companies';
 import { Session } from 'next-auth';
 import { Skeleton } from '@/components/ui/skeleton';
+import Pagination from '@/components/pagination';
 
 interface CustomSession extends Session {
   token?: string;
@@ -116,28 +117,34 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-          <TableComponent
-            columns={[
-              {
-                field: 'company_name',
-                label: 'Company Name',
-                width: 'w-1/2',
-              },
-              {
-                field: 'stock_symbol',
-                label: 'Stock Symbol',
-                width: 'w-1/4',
-              },
-              {
-                field: 'sector_or_industry',
-                label: 'Sector/Industry',
-                width: 'w-1/3',
-              },
-            ]}
-            onRowClick={row => {
-              router.push(`/company/${row.id}`);
-            }}
-            rows={filteredCompanies}
+          <Pagination
+            items={filteredCompanies}
+            itemsPerPage={6}
+            render={currentItems => (
+              <TableComponent
+                columns={[
+                  {
+                    field: 'company_name',
+                    label: 'Company Name',
+                    width: 'w-1/2',
+                  },
+                  {
+                    field: 'stock_symbol',
+                    label: 'Stock Symbol',
+                    width: 'w-1/4',
+                  },
+                  {
+                    field: 'sector_or_industry',
+                    label: 'Sector/Industry',
+                    width: 'w-1/3',
+                  },
+                ]}
+                onRowClick={row => {
+                  router.push(`/company/${row.id}`);
+                }}
+                rows={currentItems}
+              />
+            )}
           />
         </div>
       )}

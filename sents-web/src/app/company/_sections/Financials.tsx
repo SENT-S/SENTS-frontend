@@ -35,6 +35,7 @@ import { TooltipProps } from 'recharts';
 import { PiMicrosoftExcelLogoDuotone } from 'react-icons/pi';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
+import Pagination from '@/components/pagination';
 
 // Define types for better type checking
 type FormattedMetric = {
@@ -290,65 +291,73 @@ const Financials = ({
               </Button>
             </div>
           )}
-          <div className="relative shadow-md rounded-2xl w-full h-auto">
-            <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
-              <TableHeader>
-                <TableRow className="text-black font-semibold">
-                  <TableHead className="w-1/6 py-2">Metrics</TableHead>
-                  {years.map(year => (
-                    <TableHead key={year} className="w-[13%] py-2">
-                      {year}
-                    </TableHead>
-                  ))}
-                  <TableHead className="w-1/3 py-2">Chart</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="bg-white dark:bg-[#39463E]">
-                {selectedData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="py-8 text-center">
-                      No data available
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  selectedData.map(
-                    (
-                      item: { [key: string]: string | number },
-                      index: number,
-                    ) => (
-                      <TableRow
-                        key={index}
-                        className={`
-            ${index === selectedData.length - 1 ? 'rounded-b-xl' : ''}
-            hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
-          `}
-                      >
-                        <TableCell className="py-2">{item.metrics}</TableCell>
-                        {years.map(year => (
-                          <TableCell key={year} className="flex-grow py-2">
-                            {isNaN(Number(item[year]))
-                              ? '__'
-                              : Number(item[year]).toLocaleString()}
-                          </TableCell>
-                        ))}
-                        <TableCell className="w-2/6 py-2">
-                          <a
-                            href="#"
-                            onClick={() =>
-                              handleViewChart(item as FormattedMetric)
-                            }
-                            className="text-[#148C59] z-50"
-                          >
-                            view chart
-                          </a>
+          <Pagination
+            items={selectedData}
+            itemsPerPage={10}
+            render={currentItems => (
+              <div className="relative shadow-md rounded-2xl w-full h-auto">
+                <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
+                  <TableHeader>
+                    <TableRow className="text-black font-semibold">
+                      <TableHead className="w-1/6 py-2">Metrics</TableHead>
+                      {years.map(year => (
+                        <TableHead key={year} className="w-[13%] py-2">
+                          {year}
+                        </TableHead>
+                      ))}
+                      <TableHead className="w-1/3 py-2">Chart</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody className="bg-white dark:bg-[#39463E]">
+                    {currentItems.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="py-8 text-center">
+                          No data available
                         </TableCell>
                       </TableRow>
-                    ),
-                  )
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                    ) : (
+                      currentItems.map(
+                        (
+                          item: { [key: string]: string | number },
+                          index: number,
+                        ) => (
+                          <TableRow
+                            key={index}
+                            className={`
+            ${index === currentItems.length - 1 ? 'rounded-b-xl' : ''}
+            hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
+          `}
+                          >
+                            <TableCell className="py-2">
+                              {item.metrics}
+                            </TableCell>
+                            {years.map(year => (
+                              <TableCell key={year} className="flex-grow py-2">
+                                {isNaN(Number(item[year]))
+                                  ? '__'
+                                  : Number(item[year]).toLocaleString()}
+                              </TableCell>
+                            ))}
+                            <TableCell className="w-2/6 py-2">
+                              <a
+                                href="#"
+                                onClick={() =>
+                                  handleViewChart(item as FormattedMetric)
+                                }
+                                className="text-[#148C59] z-50"
+                              >
+                                view chart
+                              </a>
+                            </TableCell>
+                          </TableRow>
+                        ),
+                      )
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          />
         </div>
       ) : (
         <>
