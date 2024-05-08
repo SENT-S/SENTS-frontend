@@ -423,6 +423,23 @@ const Financials = ({
                       axisLine={false}
                       tickLine={false}
                       tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
+                      tickFormatter={value => {
+                        if (value >= 1e18) {
+                          return Math.round(value / 1e18) + ' ' + 'Qi';
+                        } else if (value >= 1e15) {
+                          return Math.round(value / 1e15) + ' ' + 'Qa';
+                        } else if (value >= 1e12) {
+                          return Math.round(value / 1e12) + ' ' + 'T';
+                        } else if (value >= 1e9) {
+                          return Math.round(value / 1e9) + ' ' + 'B';
+                        } else if (value >= 1e6) {
+                          return Math.round(value / 1e6) + ' ' + 'M';
+                        } else if (value >= 1e3) {
+                          return Math.round(value / 1e3) + ' ' + 'K';
+                        } else {
+                          return value;
+                        }
+                      }}
                     />
                     <Tooltip content={<CustomTooltip />} />
                     <Bar
