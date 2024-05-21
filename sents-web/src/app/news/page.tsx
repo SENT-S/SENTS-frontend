@@ -7,14 +7,10 @@ import News from './_sections/News';
 import Events from './_sections/Events';
 import Resources from './_sections/Resources';
 import Teams from './_sections/Teams';
-import { Session } from 'next-auth';
 import { getAllCompanyNews } from '@/services/apis/companies';
 import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
-
-interface CustomSession extends Session {
-  token?: string;
-}
+import { CustomSession } from '@/utils/types';
 
 const links = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 

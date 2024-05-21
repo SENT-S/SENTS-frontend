@@ -23,13 +23,9 @@ import { usePathname } from 'next/navigation';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { HiOutlineNewspaper } from 'react-icons/hi2';
 import { getCompanies } from '@/services/apis/companies';
-import { Session } from 'next-auth';
 import Fuse from 'fuse.js';
 import { useRouter } from 'next/navigation';
-
-interface CustomSession extends Session {
-  token?: string;
-}
+import { CustomSession } from '@/utils/types';
 
 // Define the type for a company
 type Company = {
@@ -138,39 +134,44 @@ const Header = () => {
               </h1>
             </Link>
           </div>
-          {searchData && searchData.length > 0 ? (
-            <div className="relative w-full lg:w-1/3">
-              <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg overflow-hidden dark:bg-[#39463E80]">
-                <div className="ml-3">
-                  <CiSearch />
+          {/* Admin Feature added */}
+          {session.role !== 'admin' ? (
+            searchData && searchData.length > 0 ? (
+              <div className="relative w-full lg:w-1/3">
+                <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg overflow-hidden dark:bg-[#39463E80]">
+                  <div className="ml-3">
+                    <CiSearch />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search for stocks & more"
+                    className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
+                    value={query}
+                    onChange={handleSearch}
+                  />
                 </div>
-                <input
-                  type="text"
-                  placeholder="Search for stocks & more"
-                  className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
-                  value={query}
-                  onChange={handleSearch}
-                />
+                {results.length > 0 && (
+                  <div className="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 z-50 overflow-auto dark:bg-[#39463E] dark:text-white">
+                    {results.map((item, index) => (
+                      <div
+                        onClick={() => {
+                          router.push(`/company/${item.id}`);
+                          setResults([]);
+                        }}
+                        key={index}
+                        className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-500"
+                      >
+                        {item.company_name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              {results.length > 0 && (
-                <div className="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 z-50 overflow-auto dark:bg-[#39463E] dark:text-white">
-                  {results.map((item, index) => (
-                    <div
-                      onClick={() => {
-                        router.push(`/company/${item.id}`);
-                        setResults([]);
-                      }}
-                      key={index}
-                      className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-500"
-                    >
-                      {item.company_name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            ) : (
+              <Skeleton className="w-full lg:w-1/3 rounded-md p-5 relative bg-gray-200 dark:bg-[#0e120f]" />
+            )
           ) : (
-            <Skeleton className="w-full lg:w-1/3 rounded-md p-5 relative bg-gray-200 dark:bg-[#0e120f]" />
+            <div />
           )}
 
           <div className="hidden lg:flex items-center lg:pr-14">

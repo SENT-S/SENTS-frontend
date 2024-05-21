@@ -7,13 +7,12 @@ import { countryData } from '@/services/mockData/mock';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { getCompanies } from '@/services/apis/companies';
-import { Session } from 'next-auth';
 import { Skeleton } from '@/components/ui/skeleton';
 import Pagination from '@/components/pagination';
-
-interface CustomSession extends Session {
-  token?: string;
-}
+import { CustomSession } from '@/utils/types';
+import { RxPlus } from 'react-icons/rx';
+import { FiEdit } from 'react-icons/fi';
+import { Button } from '@/components/ui/button';
 
 interface Company {
   company_country: string;
@@ -36,6 +35,7 @@ const Dashboard = () => {
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const isAdmin = session?.user?.role === 'admin';
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -74,49 +74,82 @@ const Dashboard = () => {
             <Skeleton className="w-full h-14 rounded-xl bg-slate-200 p-4" />
           </div>
           <Skeleton className="w-full h-96 rounded-xl bg-slate-200 p-4">
-            {
-              // array of 5 items
-              Array.from({ length: 7 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between space-x-3 items-center w-full h-12 border-b border-slate-200"
-                >
-                  <Skeleton className="w-1/2 h-8 rounded-xl bg-slate-200" />
-                  <Skeleton className="w-1/4 h-8 rounded-xl bg-slate-200" />
-                  <Skeleton className="w-1/3 h-8 rounded-xl bg-slate-200" />
-                </div>
-              ))
-            }
+            {Array.from({ length: 7 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex justify-between space-x-3 items-center w-full h-12 border-b border-slate-200"
+              >
+                <Skeleton className="w-1/2 h-8 rounded-xl bg-slate-200" />
+                <Skeleton className="w-1/4 h-8 rounded-xl bg-slate-200" />
+                <Skeleton className="w-1/3 h-8 rounded-xl bg-slate-200" />
+              </div>
+            ))}
           </Skeleton>
         </div>
       ) : (
         <div className="space-y-8">
           <div className="text-2xl font-medium text-[#0D4222] dark:text-[#E6F6F0] text-left">
-            Dashboard
+            {isAdmin ? 'Admin Dashboard' : 'Dashboard'}
           </div>
-          <div className="grid grid-cols-2 gap-6 md:gap-8 mt-4">
-            {companyCountries?.map(item => (
-              <div
-                key={item.country}
-                className={`w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]'} border border-transparent hover:border-[#148C59]`}
-                onClick={() => setSelectedCountry(item.country)}
+          {/* admin features */}
+          <div
+            className={`${isAdmin && 'flex flex-col-reverse md:grid md:grid-cols-9 gap-6 md:gap-8 mt-4'}`}
+          >
+            <div
+              className={`grid grid-cols-${
+                companyCountries.length >= 2 ? 2 : companyCountries.length
+              } gap-6 md:gap-8 col-span-8`}
+            >
+              {companyCountries?.map(item => (
+                <div
+                  key={item.country}
+                  className={`w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]'} border border-[#148c5a33] hover:border-[#148C59]`}
+                  onClick={() => setSelectedCountry(item.country)}
+                >
+                  <div className="flex flex-col text-left">
+                    <h1 className="font-medium">{item.country}</h1>
+                    <span className="text-xl font-bold">{item.total}</span>
+                  </div>
+                  <div className="relative w-10 h-10 md:h-12 md:w-12">
+                    <Image
+                      src={item.flag}
+                      alt={item.country}
+                      fill={true}
+                      loading="eager"
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div
+              className={`${isAdmin ? 'flex' : 'hidden'} col-span-1 justify-end`}
+            >
+              <Button
+                className="p-4 rounded-2xl w-[120px] h-[86px] bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80] border border-[#148c5a33] hover:border-[#148C59] hover:bg-white"
+                onClick={() => null}
               >
-                <div className="flex flex-col text-left">
-                  <h1 className="font-medium">{item.country}</h1>
-                  <span className="text-xl font-bold">{item.total}</span>
-                </div>
-                <div className="relative w-10 h-10 md:h-12 md:w-12">
-                  <Image
-                    src={item.flag}
-                    alt={item.country}
-                    fill={true}
-                    loading="eager"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            ))}
+                <RxPlus className="text-[#148C59]" size={30} />
+              </Button>
+            </div>
           </div>
+          {/* Admin features */}
+          {isAdmin && (
+            <div className="flex justify-between items-center">
+              <Button
+                className="bg-[#39463E] text-white p-8 rounded-xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
+                onClick={() => null}
+              >
+                Add New Company <RxPlus className="ml-3" size={18} />
+              </Button>
+              <Button
+                className="bg-[#E6EEEA] text-[#39463E] p-8 rounded-xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+                onClick={() => null}
+              >
+                Edit Company <FiEdit className="ml-3" size={18} />
+              </Button>
+            </div>
+          )}
           <Pagination
             items={filteredCompanies}
             itemsPerPage={6}

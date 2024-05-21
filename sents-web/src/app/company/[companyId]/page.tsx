@@ -6,7 +6,6 @@ import {
   getCompanyNews,
   getCompanyFinancials,
 } from '@/services/apis/companies';
-import { Session } from 'next-auth';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/components/layout';
 import SubNav from '@/components/navigation/SubNav';
@@ -16,11 +15,7 @@ import News from '../_sections/News';
 import O_Right_Panel from '../_sections/panels/O_Right_Panel';
 import F_Right_Panel from '../_sections/panels/F_Right_Panel';
 import N_Right_Panel from '../_sections/panels/N_Right_Panel';
-
-interface CustomSession extends Session {
-  token?: string;
-}
-
+import { CustomSession } from '@/utils/types';
 interface CompanyDetailsProps {
   params: { companyId: string };
 }

@@ -6,10 +6,61 @@ import { signOut } from 'next-auth/react';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { HiOutlineNewspaper } from 'react-icons/hi2';
 import { usePathname } from 'next/navigation';
+import { CustomSession } from '@/utils/types';
+import { useSession } from 'next-auth/react';
+import { FiPieChart } from 'react-icons/fi';
+import { PiChartLineUpLight } from 'react-icons/pi';
+
+const UserLinks = [
+  {
+    name: 'Dashboard',
+    icon: LuLayoutDashboard,
+    path: '/dashboard',
+    activePaths: ['/dashboard', '/company'],
+  },
+  {
+    name: 'News',
+    icon: HiOutlineNewspaper,
+    path: '/news',
+    activePaths: ['/news'],
+  },
+];
+
+const AdminLinks = [
+  {
+    name: 'Dashboard',
+    icon: LuLayoutDashboard,
+    path: '/dashboard',
+    activePaths: ['/dashboard', '/company'],
+  },
+  {
+    name: 'Overview',
+    icon: FiPieChart,
+    path: '/overview',
+    activePaths: ['/overview'],
+  },
+  {
+    name: 'Financials',
+    icon: PiChartLineUpLight,
+    path: '/financials',
+    activePaths: ['/financials'],
+  },
+  {
+    name: 'News',
+    icon: HiOutlineNewspaper,
+    path: '/news',
+    activePaths: ['/news'],
+  },
+];
 
 const SideBar = () => {
+  const { data: session, status } = useSession() as {
+    data: CustomSession;
+    status: 'loading' | 'authenticated' | 'unauthenticated';
+  };
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
+  const isAdmin = session?.user?.role === 'admin';
 
   const isActive = (path: string) => pathname.startsWith(path);
 
@@ -18,21 +69,6 @@ const SideBar = () => {
     await signOut();
     setLoading(false);
   };
-
-  const Links = [
-    {
-      name: 'Dashboard',
-      icon: LuLayoutDashboard,
-      path: '/dashboard',
-      activePaths: ['/dashboard', '/company'],
-    },
-    {
-      name: 'News',
-      icon: HiOutlineNewspaper,
-      path: '/news',
-      activePaths: ['/news'],
-    },
-  ];
 
   return (
     <div className="hidden lg:flex flex-col w-56 h-full p-4 bg-transparent">
@@ -47,23 +83,29 @@ const SideBar = () => {
         <div />
         <div className="relative">
           <ul className="absolute left-[-114px] -bottom-16 bg-white dark:bg-[#39463E80] rounded-r-3xl py-4">
-            {Links.map((link, index) => {
+            {(isAdmin ? AdminLinks : UserLinks).map((link, index) => {
               const Icon = link.icon;
               const isActiveLink = link.activePaths.some(isActive);
               return (
                 <li
                   key={index}
-                  className={`flex justify-center items-center space-x-2 px-6 py-4 cursor-pointer relative ${
+                  className={`flex ${isAdmin ? 'justify-start' : 'justify-center'} items-center space-x-2 px-6 py-4 cursor-pointer relative ${
                     isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
                   }`}
                 >
-                  <Link href={link.path}>
+                  <Link
+                    href={link.path}
+                    className={`${isAdmin ? 'flex items-center' : ''}`}
+                  >
                     <Icon
-                      size={30}
+                      size={isAdmin ? 20 : 30}
                       className={
                         isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
                       }
                     />
+                    <span className={`${isAdmin ? 'ml-2 block' : 'hidden'}`}>
+                      {link.name}
+                    </span>
                   </Link>
                   {isActiveLink && (
                     <span className="absolute right-0 bg-[#148c59] rounded-l-md h-6 w-1"></span>
