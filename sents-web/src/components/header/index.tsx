@@ -64,6 +64,8 @@ const Header = () => {
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
 
+  console.log('session', session);
+
   // for search
   const [searchData, setSearchData] = useState(initialData);
   const [query, setQuery] = useState('');
