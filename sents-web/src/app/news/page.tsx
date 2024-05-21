@@ -21,6 +21,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 const links = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
@@ -123,7 +131,7 @@ const NewsPage = () => {
           </div>
 
           {/* Admin features */}
-          {isAdmin && (
+          {isAdmin && selectedLink === 'Top News' && (
             <div className="flex gap-6 items-center">
               <Select onValueChange={handleSelectCountry}>
                 <SelectTrigger className="md:w-[280px] rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
