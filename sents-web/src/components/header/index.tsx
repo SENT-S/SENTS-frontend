@@ -26,6 +26,8 @@ import { getCompanies } from '@/services/apis/companies';
 import Fuse from 'fuse.js';
 import { useRouter } from 'next/navigation';
 import { CustomSession } from '@/utils/types';
+import { FiPieChart } from 'react-icons/fi';
+import { PiChartLineUpLight } from 'react-icons/pi';
 
 // Define the type for a company
 type Company = {
@@ -50,6 +52,48 @@ const options = {
   includeScore: true,
 };
 
+const UserLinks = [
+  {
+    name: 'Dashboard',
+    icon: LuLayoutDashboard,
+    path: '/dashboard',
+    activePaths: ['/dashboard', '/company'],
+  },
+  {
+    name: 'News',
+    icon: HiOutlineNewspaper,
+    path: '/news',
+    activePaths: ['/news'],
+  },
+];
+
+const AdminLinks = [
+  {
+    name: 'Dashboard',
+    icon: LuLayoutDashboard,
+    path: '/dashboard',
+    activePaths: ['/dashboard', '/company'],
+  },
+  {
+    name: 'Overview',
+    icon: FiPieChart,
+    path: '/overview',
+    activePaths: ['/overview'],
+  },
+  {
+    name: 'Financials',
+    icon: PiChartLineUpLight,
+    path: '/financials',
+    activePaths: ['/financials'],
+  },
+  {
+    name: 'News',
+    icon: HiOutlineNewspaper,
+    path: '/news',
+    activePaths: ['/news'],
+  },
+];
+
 const Header = () => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
@@ -59,6 +103,7 @@ const Header = () => {
   };
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
+  const isAdmin = session?.user?.role === 'admin';
 
   // for search
   const [searchData, setSearchData] = useState(initialData);
@@ -76,21 +121,6 @@ const Header = () => {
     setLoading(true);
     signOut().then(() => setLoading(false));
   };
-
-  const Links = [
-    {
-      name: 'Dashboard',
-      icon: LuLayoutDashboard,
-      path: '/dashboard',
-      activePaths: ['/dashboard', '/company'],
-    },
-    {
-      name: 'News',
-      icon: HiOutlineNewspaper,
-      path: '/news',
-      activePaths: ['/news'],
-    },
-  ];
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -135,7 +165,7 @@ const Header = () => {
             </Link>
           </div>
           {/* Admin Feature added */}
-          {session.role !== 'admin' ? (
+          {!isAdmin ? (
             searchData && searchData.length > 0 ? (
               <div className="relative w-full lg:w-1/3">
                 <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg overflow-hidden dark:bg-[#39463E80]">
@@ -261,7 +291,7 @@ const Header = () => {
                     </button>
                   </div>
                   <ul className="w-full space-y-3">
-                    {Links.map((link, index) => {
+                    {(isAdmin ? AdminLinks : UserLinks).map((link, index) => {
                       const Icon = link.icon;
                       const isActiveLink = link.activePaths.some(isActive);
                       return (

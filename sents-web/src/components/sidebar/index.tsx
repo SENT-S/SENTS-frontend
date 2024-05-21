@@ -10,6 +10,7 @@ import { CustomSession } from '@/utils/types';
 import { useSession } from 'next-auth/react';
 import { FiPieChart } from 'react-icons/fi';
 import { PiChartLineUpLight } from 'react-icons/pi';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const UserLinks = [
   {
@@ -83,36 +84,50 @@ const SideBar = () => {
         <div />
         <div className="relative">
           <ul className="absolute left-[-114px] -bottom-16 bg-white dark:bg-[#39463E80] rounded-r-3xl py-4">
-            {(isAdmin ? AdminLinks : UserLinks).map((link, index) => {
-              const Icon = link.icon;
-              const isActiveLink = link.activePaths.some(isActive);
-              return (
-                <li
-                  key={index}
-                  className={`flex ${isAdmin ? 'justify-start' : 'justify-center'} items-center space-x-2 px-6 py-4 cursor-pointer relative ${
-                    isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
-                  }`}
-                >
-                  <Link
-                    href={link.path}
-                    className={`${isAdmin ? 'flex items-center' : ''}`}
-                  >
-                    <Icon
-                      size={isAdmin ? 20 : 30}
-                      className={
+            {status !== 'loading'
+              ? (isAdmin ? AdminLinks : UserLinks).map((link, index) => {
+                  const Icon = link.icon;
+                  const isActiveLink = link.activePaths.some(isActive);
+                  return (
+                    <li
+                      key={index}
+                      className={`flex ${isAdmin ? 'justify-start' : 'justify-center'} items-center space-x-2 px-6 py-4 cursor-pointer relative ${
                         isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
-                      }
+                      }`}
+                    >
+                      <Link
+                        href={link.path}
+                        className={`${isAdmin ? 'flex items-center' : ''}`}
+                      >
+                        <Icon
+                          size={isAdmin ? 20 : 30}
+                          className={
+                            isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
+                          }
+                        />
+                        <span
+                          className={`${isAdmin ? 'ml-2 block' : 'hidden'}`}
+                        >
+                          {link.name}
+                        </span>
+                      </Link>
+                      {isActiveLink && (
+                        <span className="absolute right-0 bg-[#148c59] rounded-l-md h-6 w-1"></span>
+                      )}
+                    </li>
+                  );
+                })
+              : Array.from({ length: 4 }).map((_, index) => (
+                  <li
+                    key={index}
+                    className={`flex ${isAdmin ? 'justify-start' : 'justify-center'} items-center space-x-2 px-6 py-4 cursor-pointer relative text-gray-400`}
+                  >
+                    <Skeleton className="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#0e120f]" />
+                    <Skeleton
+                      className={`${isAdmin ? 'ml-2 w-20' : 'w-24'} h-8 rounded-xl bg-gray-200 dark:bg-[#0e120f]`}
                     />
-                    <span className={`${isAdmin ? 'ml-2 block' : 'hidden'}`}>
-                      {link.name}
-                    </span>
-                  </Link>
-                  {isActiveLink && (
-                    <span className="absolute right-0 bg-[#148c59] rounded-l-md h-6 w-1"></span>
-                  )}
-                </li>
-              );
-            })}
+                  </li>
+                ))}
           </ul>
         </div>
         <button
