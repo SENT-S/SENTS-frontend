@@ -388,7 +388,7 @@ const Financials = ({
                     className="text-center w-full"
                   />
                 </SelectTrigger>
-                <SelectContent className="z-50 bg-white">
+                <SelectContent className="z-50 bg-[#E6F6F0] rounded-xl">
                   {selectedData.map((item, index) => (
                     <SelectItem key={index} value={item.metrics}>
                       {item.metrics}

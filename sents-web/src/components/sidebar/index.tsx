@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import { CustomSession } from '@/utils/types';
 import { useSession } from 'next-auth/react';
 import { FiPieChart } from 'react-icons/fi';
-import { PiChartLineUpLight } from 'react-icons/pi';
+import { TbChartHistogram } from 'react-icons/tb';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const UserLinks = [
@@ -42,7 +42,7 @@ const AdminLinks = [
   },
   {
     name: 'Financials',
-    icon: PiChartLineUpLight,
+    icon: TbChartHistogram,
     path: '/financials',
     activePaths: ['/financials'],
   },

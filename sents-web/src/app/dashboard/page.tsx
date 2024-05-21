@@ -126,7 +126,7 @@ const Dashboard = () => {
               className={`${isAdmin ? 'flex' : 'hidden'} col-span-1 justify-end`}
             >
               <Button
-                className="p-4 rounded-2xl w-[120px] h-[86px] bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80] border border-[#148c5a33] hover:border-[#148C59] hover:bg-white"
+                className="p-4 rounded-2xl w-[70px] h-[60px] md:w-[120px] md:h-[86px] bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80] border border-[#148c5a33] hover:border-[#148C59] hover:bg-white"
                 onClick={() => null}
               >
                 <RxPlus className="text-[#148C59]" size={30} />
@@ -137,13 +137,13 @@ const Dashboard = () => {
           {isAdmin && (
             <div className="flex justify-between items-center">
               <Button
-                className="bg-[#39463E] text-white p-8 rounded-xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
+                className="bg-[#39463E] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
                 onClick={() => null}
               >
                 Add New Company <RxPlus className="ml-3" size={18} />
               </Button>
               <Button
-                className="bg-[#E6EEEA] text-[#39463E] p-8 rounded-xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+                className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
                 onClick={() => null}
               >
                 Edit Company <FiEdit className="ml-3" size={18} />
