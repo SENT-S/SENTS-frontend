@@ -13,6 +13,16 @@ import { CustomSession } from '@/utils/types';
 import { RxPlus } from 'react-icons/rx';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
+import AddCountryForm from '@/components/admin/forms/Add_country';
+import AddCompanyForm from '@/components/admin/forms/Add_company';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 interface Company {
   company_country: string;
@@ -125,23 +135,40 @@ const Dashboard = () => {
             <div
               className={`${isAdmin ? 'flex' : 'hidden'} col-span-1 justify-end`}
             >
-              <Button
-                className="p-4 rounded-2xl w-[70px] h-[60px] md:w-[120px] md:h-[86px] bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80] border border-[#148c5a33] hover:border-[#148C59] hover:bg-white"
-                onClick={() => null}
-              >
-                <RxPlus className="text-[#148C59]" size={30} />
-              </Button>
+              <Dialog>
+                <DialogTrigger className="p-4 flex justify-center items-center rounded-2xl w-[70px] h-[60px] md:w-[120px] md:h-[86px] bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80] border border-[#148c5a33] hover:border-[#148C59] hover:bg-white">
+                  <RxPlus className="text-[#148C59]" size={30} />
+                </DialogTrigger>
+                <DialogContent className="bg-white space-y-3">
+                  <DialogTitle className="text-center">
+                    Add a new Country
+                  </DialogTitle>
+                  <DialogDescription>
+                    {/* Add Country form */}
+                    <AddCountryForm />
+                  </DialogDescription>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
           {/* Admin features */}
           {isAdmin && (
             <div className="flex justify-between items-center">
-              <Button
-                className="bg-[#39463E] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
-                onClick={() => null}
-              >
-                Add New Company <RxPlus className="ml-3" size={18} />
-              </Button>
+              <Dialog>
+                <DialogTrigger className="bg-[#39463E] flex items-center text-white p-2 md:p-4 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white">
+                  Add New Company <RxPlus className="ml-3" size={18} />
+                </DialogTrigger>
+                <DialogContent className="bg-white space-y-3">
+                  <DialogTitle className="text-center">
+                    Add a new Company
+                  </DialogTitle>
+                  <DialogDescription>
+                    {/* Add Company form */}
+                    <AddCompanyForm />
+                  </DialogDescription>
+                </DialogContent>
+              </Dialog>
+
               <Button
                 className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
                 onClick={() => null}

@@ -14,6 +14,7 @@ import { CustomSession } from '@/utils/types';
 import { Button } from '@/components/ui/button';
 import { RxPlus } from 'react-icons/rx';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import AddNewsForm from '@/components/admin/forms/Add_news';
 import {
   Select,
   SelectContent,
@@ -57,6 +58,7 @@ const NewsPage = () => {
   const isAdmin = session?.user?.role === 'admin';
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [selectedCompany, setSelectedCompany] = useState('Company');
+  const [showCheckbox, setShowCheckbox] = useState(false);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -88,6 +90,10 @@ const NewsPage = () => {
     setSelectedCompany(value);
   };
 
+  const handleDeleteNews = () => {
+    setShowCheckbox(false);
+  };
+
   return (
     <MainLayout>
       {isLoading ? (
@@ -106,20 +112,47 @@ const NewsPage = () => {
           {/* Admin features */}
           {isAdmin && (
             <div className="flex justify-between items-center">
-              <Button
-                className="bg-[#39463E] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
-                onClick={() => null}
-              >
-                Create new News
-                <RxPlus className="ml-3" size={18} />
-              </Button>
-              <Button
-                className="bg-[#F5ECEC] text-[#EA0000] p-2 md:p-7 rounded-2xl hover:bg-[#f5e5e5] hover:text-[39463E]"
-                onClick={() => null}
-              >
-                Delete News
-                <RiDeleteBin6Line className="ml-3" size={18} />
-              </Button>
+              <Dialog>
+                <DialogTrigger className="bg-[#39463E] flex items-center text-white p-2 md:p-4 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white">
+                  Create new News
+                  <RxPlus className="ml-3" size={18} />
+                </DialogTrigger>
+                <DialogContent className="bg-white space-y-3">
+                  <DialogTitle className="text-center">
+                    Add a new News
+                  </DialogTitle>
+                  <DialogDescription>
+                    {/* Add News form */}
+                    <AddNewsForm onSubmit={handleDeleteNews} />
+                  </DialogDescription>
+                </DialogContent>
+              </Dialog>
+
+              {showCheckbox ? (
+                <Dialog>
+                  <DialogTrigger className="bg-[#EA0000] flex items-center text-white p-2 md:p-4 rounded-2xl hover:bg-[#EA0000]">
+                    Delete News
+                    <RiDeleteBin6Line className="ml-3" size={18} />
+                  </DialogTrigger>
+                  <DialogContent className="bg-white space-y-3">
+                    <DialogTitle className="text-center">
+                      Are you sure you want to delete the selected news?
+                    </DialogTitle>
+                    <DialogDescription>
+                      {/* Add News form */}
+                      <AddNewsForm onSubmit={handleDeleteNews} />
+                    </DialogDescription>
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                <Button
+                  className="bg-[#F5ECEC] text-[#EA0000] p-2 md:p-7 rounded-2xl hover:bg-[#f5e5e5] hover:text-[39463E]"
+                  onClick={() => setShowCheckbox(true)}
+                >
+                  Delete News
+                  <RiDeleteBin6Line className="ml-3" size={18} />
+                </Button>
+              )}
             </div>
           )}
           <div>
@@ -171,7 +204,9 @@ const NewsPage = () => {
           )}
 
           <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
-            {selectedLink === 'Top News' && <TopNews data={selectedNewsData} />}
+            {selectedLink === 'Top News' && (
+              <TopNews data={selectedNewsData} showCheckbox={showCheckbox} />
+            )}
             {selectedLink === 'News' && <News data={selectedNewsData} />}
             {selectedLink === 'Events' && <Events data={selectedNewsData} />}
             {selectedLink === 'Resources' && (
