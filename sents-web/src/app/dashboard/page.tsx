@@ -14,15 +14,8 @@ import { RxPlus } from 'react-icons/rx';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import AddCountryForm from '@/components/admin/forms/contents/Add_country';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import ModalForms from '@/components/admin/forms/layout';
+import { MdDone } from 'react-icons/md';
 
 interface Company {
   company_country: string;
@@ -50,6 +43,7 @@ const Dashboard = () => {
     status: 'loading' | 'authenticated' | 'unauthenticated';
   };
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
+  const [showEdit, setShowEdit] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'admin';
@@ -83,6 +77,10 @@ const Dashboard = () => {
 
   const handleAddCountry = () => {
     console.log('Add Country');
+  };
+
+  const handleEditCompany = () => {
+    setShowEdit(false);
   };
 
   return (
@@ -169,12 +167,21 @@ const Dashboard = () => {
               >
                 Add New Company <RxPlus className="ml-3" size={18} />
               </Button>
-              <Button
-                className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
-                onClick={() => null}
-              >
-                Edit Company <FiEdit className="ml-3" size={18} />
-              </Button>
+              {showEdit ? (
+                <Button
+                  className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#148C59ed9] hover:text-white"
+                  onClick={handleEditCompany}
+                >
+                  Done <MdDone className="ml-3" size={20} />
+                </Button>
+              ) : (
+                <Button
+                  className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+                  onClick={() => setShowEdit(!showEdit)}
+                >
+                  Edit Company <FiEdit className="ml-3" size={18} />
+                </Button>
+              )}
             </div>
           )}
           <Pagination
@@ -182,6 +189,7 @@ const Dashboard = () => {
             itemsPerPage={6}
             render={currentItems => (
               <TableComponent
+                showEdit={showEdit}
                 columns={[
                   {
                     field: 'company_name',
@@ -200,7 +208,9 @@ const Dashboard = () => {
                   },
                 ]}
                 onRowClick={row => {
-                  router.push(`/company/${row.id}`);
+                  {
+                    isAdmin ? null : router.push(`/company/${row.id}`);
+                  }
                 }}
                 rows={currentItems}
               />
