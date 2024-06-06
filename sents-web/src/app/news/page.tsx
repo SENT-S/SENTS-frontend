@@ -14,7 +14,6 @@ import { CustomSession } from '@/utils/types';
 import { Button } from '@/components/ui/button';
 import { RxPlus } from 'react-icons/rx';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import AddNewsForm from '@/components/admin/forms/Add_news';
 import {
   Select,
   SelectContent,
@@ -22,16 +21,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import ModalForms from '@/components/admin/forms/layout';
+import AddNewsFormContent from '@/components/admin/forms/contents/Add_news';
 
-const links = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
+const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
 const countryList = [
   { label: 'Uganda', value: 'Uganda' },
@@ -53,12 +46,14 @@ const NewsPage = () => {
     status: 'loading' | 'authenticated' | 'unauthenticated';
   };
   const [newsData, setNewsData] = useState<any[]>([]);
-  const [selectedLink, setSelectedLink] = useState<any>(links[0]);
+  const [selectedLink, setSelectedLink] = useState<any>(Categories[0]);
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'admin';
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [selectedCompany, setSelectedCompany] = useState('Company');
+  const [selectedCategory, setSelectedCategory] = useState('Top News');
   const [showCheckbox, setShowCheckbox] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([] as string[]);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -82,6 +77,10 @@ const NewsPage = () => {
     [newsData, selectedLink],
   );
 
+  const handleSelectCategory = (value: string) => {
+    setSelectedCategory(value);
+  };
+
   const handleSelectCountry = (value: string) => {
     setSelectedCountry(value);
   };
@@ -92,6 +91,16 @@ const NewsPage = () => {
 
   const handleDeleteNews = () => {
     setShowCheckbox(false);
+    setSelectedIds([]);
+  };
+
+  const handleCancelDeleteNews = () => {
+    setShowCheckbox(false);
+    setSelectedIds([]);
+  };
+
+  const handleCreateNews = () => {
+    console.log('Creating news');
   };
 
   return (
@@ -112,38 +121,35 @@ const NewsPage = () => {
           {/* Admin features */}
           {isAdmin && (
             <div className="flex justify-between items-center">
-              <Dialog>
-                <DialogTrigger className="bg-[#39463E] flex items-center text-white p-2 md:p-4 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white">
-                  Create new News
-                  <RxPlus className="ml-3" size={18} />
-                </DialogTrigger>
-                <DialogContent className="bg-white space-y-3">
-                  <DialogTitle className="text-center">
-                    Add a new News
-                  </DialogTitle>
-                  <DialogDescription>
-                    {/* Add News form */}
-                    <AddNewsForm onSubmit={handleDeleteNews} />
-                  </DialogDescription>
-                </DialogContent>
-              </Dialog>
+              <ModalForms
+                ButtonText="Create new News"
+                FormTitle="Add a new News"
+                Icon={<RxPlus className="ml-3" size={18} />}
+                onSubmit={handleCreateNews}
+              >
+                <AddNewsFormContent
+                  Categories={Categories}
+                  countryList={countryList}
+                  companyList={companyList}
+                  handleSelectCountry={handleSelectCountry}
+                  handleSelectCategory={handleSelectCategory}
+                  selectedCountry={selectedCountry}
+                  selectedCategory={selectedCategory}
+                />
+              </ModalForms>
 
               {showCheckbox ? (
-                <Dialog>
-                  <DialogTrigger className="bg-[#EA0000] flex items-center text-white p-2 md:p-4 rounded-2xl hover:bg-[#EA0000]">
-                    Delete News
-                    <RiDeleteBin6Line className="ml-3" size={18} />
-                  </DialogTrigger>
-                  <DialogContent className="bg-white space-y-3">
-                    <DialogTitle className="text-center">
-                      Are you sure you want to delete the selected news?
-                    </DialogTitle>
-                    <DialogDescription>
-                      {/* Add News form */}
-                      <AddNewsForm onSubmit={handleDeleteNews} />
-                    </DialogDescription>
-                  </DialogContent>
-                </Dialog>
+                <ModalForms
+                  ButtonText="Delete News"
+                  FormTitle="Are you sure you want to delete the selected news?"
+                  ButtonStyle="bg-[#EA0000] text-white hover:bg-[#EA0000]"
+                  Icon={<RiDeleteBin6Line className="ml-3" size={18} />}
+                  onSubmit={handleDeleteNews}
+                  onCancel={handleCancelDeleteNews}
+                  SubmitText="Yes"
+                  CancelText="No"
+                  SubmitButtonStyle="bg-[#EA0000]"
+                />
               ) : (
                 <Button
                   className="bg-[#F5ECEC] text-[#EA0000] p-2 md:p-7 rounded-2xl hover:bg-[#f5e5e5] hover:text-[39463E]"
@@ -157,7 +163,7 @@ const NewsPage = () => {
           )}
           <div>
             <SubNav
-              links={links}
+              links={Categories}
               selectedLink={selectedLink}
               setSelectedLink={setSelectedLink}
             />
@@ -205,14 +211,75 @@ const NewsPage = () => {
 
           <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
             {selectedLink === 'Top News' && (
-              <TopNews data={selectedNewsData} showCheckbox={showCheckbox} />
+              <TopNews
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
             )}
-            {selectedLink === 'News' && <News data={selectedNewsData} />}
-            {selectedLink === 'Events' && <Events data={selectedNewsData} />}
+            {selectedLink === 'News' && (
+              <News
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
+            )}
+            {selectedLink === 'Events' && (
+              <Events
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
+            )}
             {selectedLink === 'Resources' && (
-              <Resources data={selectedNewsData} />
+              <Resources
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
             )}
-            {selectedLink === 'Teams' && <Teams data={selectedNewsData} />}
+            {selectedLink === 'Teams' && (
+              <Teams
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
+            )}
           </div>
         </>
       )}
