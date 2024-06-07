@@ -113,11 +113,7 @@ const NewsPage = () => {
       ) : (
         <>
           {/* Admin features */}
-          {isAdmin && (
-            <div className="text-2xl font-medium text-[#0D4222] dark:text-[#E6F6F0] text-left">
-              News
-            </div>
-          )}
+          {isAdmin && <h1 className="dark:text-[#E6F6F0] text-left">News</h1>}
           {/* Admin features */}
           {isAdmin && (
             <div className="flex justify-between items-center">

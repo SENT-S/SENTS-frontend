@@ -32,7 +32,7 @@ const AdminLinks = [
     name: 'Dashboard',
     icon: LuLayoutDashboard,
     path: '/dashboard',
-    activePaths: ['/dashboard', '/company'],
+    activePaths: ['/dashboard', '/company', 'new_company'],
   },
   {
     name: 'Overview',
@@ -63,7 +63,7 @@ const SideBar = () => {
   const pathname = usePathname();
   const isAdmin = session?.user?.role === 'admin';
 
-  const isActive = (path: string) => pathname.startsWith(path);
+  const isActive = (path: string) => pathname.includes(path);
 
   const handleLogout = async () => {
     setLoading(true);

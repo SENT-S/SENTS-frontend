@@ -107,9 +107,9 @@ const Dashboard = () => {
         </div>
       ) : (
         <div className="space-y-8">
-          <div className="text-2xl font-medium text-[#0D4222] dark:text-[#E6F6F0] text-left">
+          <h1 className=" dark:text-[#E6F6F0] text-left">
             {isAdmin ? 'Admin Dashboard' : 'Dashboard'}
-          </div>
+          </h1>
           {/* admin features */}
           <div
             className={`${isAdmin && 'flex flex-col-reverse md:grid md:grid-cols-9 gap-6 md:gap-8 mt-4'}`}
@@ -126,7 +126,7 @@ const Dashboard = () => {
                   onClick={() => setSelectedCountry(item.country)}
                 >
                   <div className="flex flex-col text-left">
-                    <h1 className="font-medium">{item.country}</h1>
+                    <h2 className="font-medium">{item.country}</h2>
                     <span className="text-xl font-bold">{item.total}</span>
                   </div>
                   <div className="relative w-10 h-10 md:h-12 md:w-12">
@@ -163,7 +163,7 @@ const Dashboard = () => {
             <div className="flex justify-between items-center">
               <Button
                 className="bg-[#39463E] flex items-center text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
-                onClick={() => null}
+                onClick={() => router.push(`/new_company`)}
               >
                 Add New Company <RxPlus className="ml-3" size={18} />
               </Button>

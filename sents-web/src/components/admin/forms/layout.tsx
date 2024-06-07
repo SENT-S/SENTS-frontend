@@ -46,7 +46,9 @@ const layout = (props: Props) => {
         ref={ref}
         className="bg-white space-y-3 max-w-md p-12 dark:bg-[#1E1E1E] dark:text-white"
       >
-        <DialogTitle className="text-center">{props.FormTitle}</DialogTitle>
+        <DialogTitle className="text-center text-[#39463E]">
+          {props.FormTitle}
+        </DialogTitle>
         <div>
           <form onSubmit={props.onSubmit}>
             {props.children}
