@@ -56,7 +56,9 @@ const Overview = () => {
         ))
       ) : (
         <form className="space-y-8">
-          <h1 className="dark:text-[#E6F6F0] text-left">Overview</h1>
+          <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
+            Overview
+          </h1>
           <div className="flex gap-6 items-center">
             <Select onValueChange={handleSelectCountry}>
               <SelectTrigger className="rounded-2xl p-7 flex justify-between border border-[#8D9D93] dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">

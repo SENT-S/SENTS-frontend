@@ -107,7 +107,7 @@ const Dashboard = () => {
         </div>
       ) : (
         <div className="space-y-8">
-          <h1 className=" dark:text-[#E6F6F0] text-left">
+          <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
             {isAdmin ? 'Admin Dashboard' : 'Dashboard'}
           </h1>
           {/* admin features */}
