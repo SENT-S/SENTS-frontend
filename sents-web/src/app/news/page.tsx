@@ -23,22 +23,9 @@ import {
 } from '@/components/ui/select';
 import ModalForms from '@/components/admin/forms/layout';
 import AddNewsFormContent from '@/components/admin/forms/contents/Add_news';
+import { countryList, companyList } from '@/services/mockData/mock';
 
 const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
-
-const countryList = [
-  { label: 'Uganda', value: 'Uganda' },
-  { label: 'Kenya', value: 'Kenya' },
-  { label: 'Tanzania', value: 'Tanzania' },
-  { label: 'Rwanda', value: 'Rwanda' },
-];
-
-const companyList = [
-  { label: 'Company', value: 'Company' },
-  { label: 'Company 1', value: 'Company 1' },
-  { label: 'Company 2', value: 'Company 2' },
-  { label: 'Company 3', value: 'Company 3' },
-];
 
 const NewsPage = () => {
   const { data: session, status } = useSession() as {

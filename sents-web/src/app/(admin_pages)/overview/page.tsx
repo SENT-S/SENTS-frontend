@@ -15,20 +15,7 @@ import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/utils/types';
 import { Skeleton } from '@/components/ui/skeleton';
-
-const countryList = [
-  { label: 'Uganda', value: 'Uganda' },
-  { label: 'Kenya', value: 'Kenya' },
-  { label: 'Tanzania', value: 'Tanzania' },
-  { label: 'Rwanda', value: 'Rwanda' },
-];
-
-const companyList = [
-  { label: 'Company', value: 'Company' },
-  { label: 'Company 1', value: 'Company 1' },
-  { label: 'Company 2', value: 'Company 2' },
-  { label: 'Company 3', value: 'Company 3' },
-];
+import { countryList, companyList } from '@/services/mockData/mock';
 
 const Overview = () => {
   const { data: session, status } = useSession() as {
