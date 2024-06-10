@@ -47,7 +47,7 @@ const Overview = () => {
         ))
       ) : (
         <form className="space-y-8">
-          <h1 className="text-[#0D4222] dark:text-gray-300 dark:text-[#E6F6F0] text-left">
+          <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
             Overview
           </h1>
           <div className="flex gap-6 items-center">
