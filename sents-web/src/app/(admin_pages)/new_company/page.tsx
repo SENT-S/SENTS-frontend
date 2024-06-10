@@ -20,16 +20,25 @@ const page = () => {
         {/* Display steps */}
         {step === 1 && <Step_1 />}
         {step === 2 && <Step_2 />}
-        {step === 3 && <Step_3 />}
+        {step === 3 && <Step_3 setStep={setStep} step={step} />}
         {step === 4 && <Step_4 />}
 
-        {/* Button to change / increase steps but should not pass the length of steps */}
-        <Button
-          onClick={() => setStep(step + 1)}
-          className="bg-[#148C59] text-white w-full p-3 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
-        >
-          Next
-        </Button>
+        {step !== 3 && (
+          <Button
+            onClick={() => {
+              if (step === 4) {
+                alert('Company added successfully');
+                // back to step 1
+                setStep(1);
+                return;
+              }
+              setStep(step + 1);
+            }}
+            className="bg-[#148C59] text-white w-full p-3 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
+          >
+            {step === 4 ? 'Finish' : 'Next'}
+          </Button>
+        )}
       </div>
     </MainLayout>
   );

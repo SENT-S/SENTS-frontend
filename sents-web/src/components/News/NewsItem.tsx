@@ -40,7 +40,7 @@ const NewsItem = ({
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
           />
         </div>
-        <div className="max-w-xl">
+        <div className="max-w-xl text-left">
           <span
             className={`${hovered ? 'bg-green-700 text-white' : 'bg-green-200'} px-2 py-1 text-green-600 p-[3px] transition-colors duration-200 ease-in-out`}
           >
@@ -48,19 +48,19 @@ const NewsItem = ({
           </span>
           <h3 className="text-sm md:text-lg font-semibold mt-3">
             {windowWidth < 768
-              ? `${newsItem.headline.slice(0, 40)}...`
-              : newsItem.headline}
+              ? `${newsItem?.headline.slice(0, 40)}...`
+              : newsItem?.headline}
           </h3>
           <p className="text-sm text-gray-600 dark:text-white">
             {windowWidth < 768
-              ? `${newsItem.short_description.slice(0, 50)}...`
-              : newsItem.short_description}
+              ? `${newsItem?.short_description.slice(0, 50)}...`
+              : newsItem?.short_description}
           </p>
         </div>
         <span
           className={`absolute md:w-auto bottom-0 right-0 ${hovered ? 'bg-green-200 dark:text-black' : 'bg-green-700 text-white'} rounded-tl-2xl rounded-br-2xl px-2 py-1 text-sm transition-colors duration-200 ease-in-out`}
         >
-          {newsItem.news_source}
+          {newsItem?.news_source}
         </span>
       </div>
       {showCheckbox && (
@@ -68,8 +68,8 @@ const NewsItem = ({
           type="checkbox"
           className="bg-gray-700 ml-2 -mr-2 cursor-pointer checked:bg-gray-700 checked:border-transparent checked:text-white transition-colors duration-200 ease-in-out"
           id={`news-${newsItem.id}`}
-          onChange={e => onCheckboxChange(newsItem.id, e.target.checked)}
-          checked={selectedIds?.includes(newsItem.id)}
+          onChange={e => onCheckboxChange(newsItem?.id, e.target.checked)}
+          checked={selectedIds?.includes(newsItem?.id)}
         />
       )}
     </div>
