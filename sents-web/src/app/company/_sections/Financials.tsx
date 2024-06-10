@@ -36,23 +36,12 @@ import { PiMicrosoftExcelLogoDuotone } from 'react-icons/pi';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import Pagination from '@/components/pagination';
+import formatData from '@/utils/formatTableData';
 
 // Define types for better type checking
 type FormattedMetric = {
   metrics: string;
   [key: string]: string | number;
-};
-
-type YearData = {
-  value: string;
-};
-
-type MetricData = {
-  [year: string]: YearData;
-};
-
-type FinancialData = {
-  [metric: string]: MetricData;
 };
 
 type TableData = {
@@ -96,24 +85,6 @@ const CustomTooltip: React.FC<TooltipProps<any, any>> = ({
   return null;
 };
 
-// Function to format the data
-const formatData = (data: FinancialData): FormattedMetric[] => {
-  if (!data) {
-    return [];
-  }
-
-  return Object.keys(data).map(metric => {
-    const formattedMetric: FormattedMetric = {
-      metrics: metric,
-    };
-    const yearData = data[metric];
-    Object.keys(yearData).forEach(year => {
-      formattedMetric[`FY${year.slice(-2)}`] = yearData[year].value;
-    });
-    return formattedMetric;
-  });
-};
-
 const Financials = ({
   data,
   financialData,
@@ -133,7 +104,7 @@ const Financials = ({
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: 5 },
-    (_, i) => `FY${String(currentYear - i - 1).slice(-2)}`,
+    (_, i) => `FY’${String(currentYear - i - 1).slice(-2)}`,
   ).reverse();
 
   const chartYears = Array.from(

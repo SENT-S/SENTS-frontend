@@ -13,7 +13,7 @@ const page = () => {
   const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
   return (
     <MainLayout>
-      <div className="space-y-4 text-center">
+      <div className="space-y-8 text-center">
         <h1>Add new Company</h1>
         <Stepper currentStep={step} steps={steps} />
 

@@ -16,6 +16,7 @@ import O_Right_Panel from '../_sections/panels/O_Right_Panel';
 import F_Right_Panel from '../_sections/panels/F_Right_Panel';
 import N_Right_Panel from '../_sections/panels/N_Right_Panel';
 import { CustomSession } from '@/utils/types';
+
 interface CompanyDetailsProps {
   params: { companyId: string };
 }

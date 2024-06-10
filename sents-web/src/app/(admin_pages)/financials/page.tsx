@@ -1,6 +1,6 @@
 'use client';
 import MainLayout from '@/components/layout';
-import { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Select,
   SelectContent,
@@ -8,6 +8,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import Pagination from '@/components/pagination';
 import SubNav from '@/components/admin/Navs/SubNav';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
@@ -19,11 +28,31 @@ import {
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import ModalForms from '@/components/admin/forms/layout';
 import AddNewStatementContent from '@/components/admin/forms/contents/Add_new_statement';
+import formatData from '@/utils/formatTableData';
+import { useSession } from 'next-auth/react';
+import { CustomSession } from '@/utils/types';
+import { getCompanyFinancials } from '@/services/apis/companies';
+import { MdDone } from 'react-icons/md';
+import { GoPlusCircle } from 'react-icons/go';
+
+type FormattedMetric = {
+  metrics: string;
+  [key: string]: string | number;
+};
+
+type TableData = {
+  [key: string]: FormattedMetric[];
+};
 
 const Financials = () => {
+  const { data: session } = useSession() as {
+    data: CustomSession;
+    status: 'loading' | 'authenticated' | 'unauthenticated';
+  };
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [selectedCompany, setSelectedCompany] = useState('Company');
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
+  const [FinancialData, setFinancialData] = useState({} as any);
   const [showEdit, setShowEdit] = useState(false);
 
   const handleSelectCountry = (value: string) => {
@@ -33,6 +62,45 @@ const Financials = () => {
   const handleSelectCompany = (value: string) => {
     setSelectedCompany(value);
   };
+
+  const handleEditCompany = () => {
+    setShowEdit(!showEdit);
+  };
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from(
+    { length: 5 },
+    (_, i) => `FY’${String(currentYear - i - 1).slice(-2)}`,
+  ).reverse();
+
+  const fetchCompanies = useCallback(async () => {
+    if (session?.token) {
+      const financialResponse = await getCompanyFinancials(session.token, 5);
+      if (financialResponse.status === 200) {
+        setFinancialData(financialResponse.data);
+      } else {
+        console.error('Failed to fetch company');
+      }
+    }
+  }, [session]);
+
+  useEffect(() => {
+    fetchCompanies();
+  }, [fetchCompanies]);
+
+  const TableData: TableData = {
+    'Financial Summary': formatData(FinancialData['Financial Summary' as any]),
+    'Profit & Loss': formatData(FinancialData['Profit & Loss' as any]),
+    'Balance Sheet': formatData(FinancialData['Balance Sheet' as any]),
+    'Cashflow Statement': formatData(
+      FinancialData['Cashflow Statement' as any],
+    ),
+    'Financial Analysis': formatData(
+      FinancialData['Financial Analysis' as any],
+    ),
+  };
+
+  const selectedData = TableData[selectedLink];
 
   return (
     <MainLayout>
@@ -89,15 +157,125 @@ const Financials = () => {
           setSelectedLink={setSelectedLink}
           bgColor={false}
         />
-        {/* Edit Button */}
-        <Button
-          className="bg-[#39463E] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#46554c] hover:text-[39463E]"
-          onClick={() => setShowEdit(!showEdit)}
-        >
-          Edit Table <FiEdit className="ml-3" size={18} />
-        </Button>
+
+        <div className="flex justify-between items-center">
+          {showEdit ? (
+            <Button
+              className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#148C59ed9] hover:text-white"
+              onClick={handleEditCompany}
+            >
+              Done <MdDone className="ml-3" size={20} />
+            </Button>
+          ) : (
+            <Button
+              className="bg-[#39463E] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#46554c] hover:text-[39463E]"
+              onClick={() => setShowEdit(!showEdit)}
+            >
+              Edit Table <FiEdit className="ml-3" size={18} />
+            </Button>
+          )}
+
+          {showEdit && (
+            <div className="flex gap-4 items-center">
+              <Button
+                className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+                onClick={() => setShowEdit(!showEdit)}
+              >
+                Add row <GoPlusCircle className="ml-3" size={18} />
+              </Button>
+              <Button
+                className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+                onClick={() => setShowEdit(!showEdit)}
+              >
+                Add column <GoPlusCircle className="ml-3" size={18} />
+              </Button>
+            </div>
+          )}
+        </div>
 
         {/* Table */}
+        <Pagination
+          items={selectedData}
+          itemsPerPage={10}
+          render={currentItems => (
+            <div className="relative shadow-md rounded-2xl w-full h-auto">
+              <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
+                <TableHeader>
+                  <TableRow className="text-black text-lg font-bold">
+                    <TableHead className="w-1/6 py-2">Metrics</TableHead>
+                    {years.map(year => (
+                      <TableHead key={year} className="w-[13%] py-2">
+                        {year}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="bg-white dark:bg-[#39463E]">
+                  {currentItems.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="py-8 text-center">
+                        No data available
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    currentItems.map(
+                      (
+                        item: { [key: string]: string | number },
+                        index: number,
+                      ) => (
+                        <TableRow
+                          key={index}
+                          className={`
+            ${index === currentItems.length - 1 ? 'rounded-b-xl' : ''}
+            hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
+          `}
+                        >
+                          {showEdit ? (
+                            <TableCell className="py-2">
+                              <input
+                                className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl bg-[#F8FAF9]"
+                                value={item.metrics}
+                                onChange={() => null}
+                              />
+                            </TableCell>
+                          ) : (
+                            <TableCell className="py-2">
+                              {item.metrics}
+                            </TableCell>
+                          )}
+
+                          {showEdit
+                            ? years.map(year => (
+                                <TableCell
+                                  key={year}
+                                  className="flex-grow py-2"
+                                >
+                                  <input
+                                    className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl bg-[#F8FAF9]"
+                                    value={item[year]}
+                                    onChange={() => null}
+                                  />
+                                </TableCell>
+                              ))
+                            : years.map(year => (
+                                <TableCell
+                                  key={year}
+                                  className="flex-grow py-2"
+                                >
+                                  {isNaN(Number(item[year]))
+                                    ? '__'
+                                    : Number(item[year]).toLocaleString()}
+                                </TableCell>
+                              ))}
+                        </TableRow>
+                      ),
+                    )
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        />
 
         {/* Statements */}
         <div>

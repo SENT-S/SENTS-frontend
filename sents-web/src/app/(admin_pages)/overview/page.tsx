@@ -15,6 +15,10 @@ import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/utils/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { HiOutlineUsers } from 'react-icons/hi2';
+import { HiOutlineUser } from 'react-icons/hi2';
+import { MdOutlineDateRange } from 'react-icons/md';
+import { MdOutlineWebAsset } from 'react-icons/md';
 import { countryList, companyList } from '@/services/mockData/mock';
 
 const Overview = () => {
@@ -91,14 +95,20 @@ const Overview = () => {
           </div>
           <div className="grid grid-cols-2 gap-6 md:gap-8">
             <div className="space-y-3">
-              <Label className="text-2xl font-medium">CEO</Label>
+              <div className="flex items-center text-[#0D4222]">
+                <HiOutlineUser size={20} className="mr-2" />
+                <Label className="text-2xl font-medium">CEO</Label>
+              </div>
               <Input
                 placeholder="Enter CEO Name"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
               />
             </div>
             <div className="space-y-3">
-              <Label className="text-2xl font-medium">Employees</Label>
+              <div className="flex items-center text-[#0D4222]">
+                <HiOutlineUsers size={20} className="mr-2" />
+                <Label className="text-2xl font-medium">Employees</Label>
+              </div>
               <Input
                 placeholder="Enter Number of Employees"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
@@ -107,14 +117,20 @@ const Overview = () => {
           </div>
           <div className="grid grid-cols-2 gap-6 md:gap-8">
             <div className="space-y-3">
-              <Label className="text-2xl font-medium">Founded</Label>
+              <div className="flex items-center text-[#0D4222]">
+                <MdOutlineDateRange size={20} className="mr-2" />
+                <Label className="text-2xl font-medium">Founded</Label>
+              </div>
               <Input
                 placeholder="Enter Founded Year"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
               />
             </div>
             <div className="space-y-3">
-              <Label className="text-2xl font-medium">Website</Label>
+              <div className="flex items-center text-[#0D4222]">
+                <MdOutlineWebAsset size={20} className="mr-2" />
+                <Label className="text-2xl font-medium">Website</Label>
+              </div>
               <Input
                 placeholder="Enter Website"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"

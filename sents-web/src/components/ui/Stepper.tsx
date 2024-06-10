@@ -22,7 +22,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, steps }) => {
                   {step}
                 </div>
                 <div
-                  className={`w-2.5 h-2.5 flex items-center justify-center rounded-full z-50 ${dotClasses}`}
+                  className={`w-2.5 h-2.5 flex items-center justify-center rounded-full z-30 ${dotClasses}`}
                 >
                   {isCompleted && (
                     <span className="text-sm font-semibold text-white"></span>
