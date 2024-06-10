@@ -47,7 +47,7 @@ const Overview = () => {
         ))
       ) : (
         <form className="space-y-8">
-          <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
+          <h1 className="text-[#0D4222] dark:text-gray-300 dark:text-[#E6F6F0] text-left">
             Overview
           </h1>
           <div className="flex gap-6 items-center">
@@ -87,7 +87,9 @@ const Overview = () => {
             </Select>
           </div>
           <div className="space-y-3">
-            <Label className="text-2xl font-medium">About</Label>
+            <Label className="text-2xl font-medium text-[#0D4222] dark:text-gray-300">
+              About
+            </Label>
             <Textarea
               placeholder="About"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
@@ -95,7 +97,7 @@ const Overview = () => {
           </div>
           <div className="grid grid-cols-2 gap-6 md:gap-8">
             <div className="space-y-3">
-              <div className="flex items-center text-[#0D4222]">
+              <div className="flex items-center text-[#0D4222] dark:text-gray-300">
                 <HiOutlineUser size={20} className="mr-2" />
                 <Label className="text-2xl font-medium">CEO</Label>
               </div>
@@ -105,7 +107,7 @@ const Overview = () => {
               />
             </div>
             <div className="space-y-3">
-              <div className="flex items-center text-[#0D4222]">
+              <div className="flex items-center text-[#0D4222] dark:text-gray-300">
                 <HiOutlineUsers size={20} className="mr-2" />
                 <Label className="text-2xl font-medium">Employees</Label>
               </div>
@@ -117,7 +119,7 @@ const Overview = () => {
           </div>
           <div className="grid grid-cols-2 gap-6 md:gap-8">
             <div className="space-y-3">
-              <div className="flex items-center text-[#0D4222]">
+              <div className="flex items-center text-[#0D4222] dark:text-gray-300">
                 <MdOutlineDateRange size={20} className="mr-2" />
                 <Label className="text-2xl font-medium">Founded</Label>
               </div>
@@ -127,7 +129,7 @@ const Overview = () => {
               />
             </div>
             <div className="space-y-3">
-              <div className="flex items-center text-[#0D4222]">
+              <div className="flex items-center text-[#0D4222] dark:text-gray-300">
                 <MdOutlineWebAsset size={20} className="mr-2" />
                 <Label className="text-2xl font-medium">Website</Label>
               </div>

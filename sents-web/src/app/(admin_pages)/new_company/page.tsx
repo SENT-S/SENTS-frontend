@@ -34,9 +34,9 @@ const page = () => {
               }
               setStep(step + 1);
             }}
-            className="bg-[#148C59] text-white w-full p-3 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
+            className="bg-[#148C59] text-white w-full px-3 py-7 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
           >
-            {step === 4 ? 'Finish' : 'Next'}
+            {step === 4 ? 'Complete' : 'Next'}
           </Button>
         )}
       </div>

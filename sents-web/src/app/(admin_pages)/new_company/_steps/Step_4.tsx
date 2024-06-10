@@ -135,7 +135,7 @@ const Step_4 = () => {
             financialStatements.map((statement, index) => (
               <li
                 key={index}
-                className={`flex items-center justify-between p-2 ${index !== financialStatements.length - 1 ? 'border-b border-[#E6EEEA] dark:border-[#39463E]' : ''}`}
+                className={`flex items-center justify-between p-2  ${index !== financialStatements.length - 1 ? 'border-b border-[#E6EEEA] dark:border-[#39463E]' : ''}`}
               >
                 <span>{statement.name}</span>
                 <ModalForms

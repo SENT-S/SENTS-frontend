@@ -15,7 +15,7 @@ const Step_2 = () => {
       </h2>
       <div className="space-y-8">
         <div className="space-y-3">
-          <div className="text-left text-[#0D4222]">
+          <div className="text-left text-[#0D4222] dark:text-gray-300">
             <Label className="text-2xl font-medium">About</Label>
           </div>
           <Textarea
@@ -25,7 +25,7 @@ const Step_2 = () => {
         </div>
         <div className="grid grid-cols-2 gap-6 md:gap-8">
           <div className="space-y-3">
-            <div className="flex items-center text-[#0D4222]">
+            <div className="flex items-center text-[#0D4222] dark:text-gray-300">
               <HiOutlineUser size={20} className="mr-2" />
               <Label className="text-2xl font-medium">CEO</Label>
             </div>
@@ -35,7 +35,7 @@ const Step_2 = () => {
             />
           </div>
           <div className="space-y-3">
-            <div className="flex items-center text-[#0D4222]">
+            <div className="flex items-center text-[#0D4222] dark:text-gray-300">
               <HiOutlineUsers size={20} className="mr-2" />
               <Label className="text-2xl font-medium">Employees</Label>
             </div>
@@ -47,7 +47,7 @@ const Step_2 = () => {
         </div>
         <div className="grid grid-cols-2 gap-6 md:gap-8">
           <div className="space-y-3">
-            <div className="flex items-center text-[#0D4222]">
+            <div className="flex items-center text-[#0D4222] dark:text-gray-300">
               <MdOutlineDateRange size={20} className="mr-2" />
               <Label className="text-2xl font-medium">Founded</Label>
             </div>
@@ -57,7 +57,7 @@ const Step_2 = () => {
             />
           </div>
           <div className="space-y-3">
-            <div className="flex items-center text-[#0D4222]">
+            <div className="flex items-center text-[#0D4222] dark:text-gray-300">
               <MdOutlineWebAsset size={20} className="mr-2" />
               <Label className="text-2xl font-medium">Website</Label>
             </div>
