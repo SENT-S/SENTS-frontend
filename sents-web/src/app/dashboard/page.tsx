@@ -209,7 +209,9 @@ const Dashboard = () => {
                 ]}
                 onRowClick={row => {
                   {
-                    isAdmin ? null : router.push(`/company/${row.id}`);
+                    isAdmin
+                      ? router.push(`/edit_company/${row.id}`)
+                      : router.push(`/company/${row.id}`);
                   }
                 }}
                 rows={currentItems}

@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import MainLayout from '@/components/layout';
 import {
   Select,
   SelectContent,
@@ -37,7 +36,7 @@ const Overview = () => {
     setSelectedCompany(value);
   };
   return (
-    <MainLayout>
+    <>
       {status === 'loading' ? (
         Array.from({ length: 5 }).map((_, index) => (
           <Skeleton
@@ -147,7 +146,7 @@ const Overview = () => {
           </Button>
         </form>
       )}
-    </MainLayout>
+    </>
   );
 };
 

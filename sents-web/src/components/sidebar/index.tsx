@@ -32,25 +32,13 @@ const AdminLinks = [
     name: 'Dashboard',
     icon: LuLayoutDashboard,
     path: '/dashboard',
-    activePaths: ['/dashboard', '/company', 'new_company'],
-  },
-  {
-    name: 'Overview',
-    icon: FiPieChart,
-    path: '/overview',
-    activePaths: ['/overview'],
-  },
-  {
-    name: 'Financials',
-    icon: TbChartHistogram,
-    path: '/financials',
-    activePaths: ['/financials'],
+    activePaths: ['/dashboard', '/company', 'new_company', 'edit_company'],
   },
   {
     name: 'News',
     icon: HiOutlineNewspaper,
     path: '/news',
-    activePaths: ['/news'],
+    activePaths: ['/news', 'create_news'],
   },
 ];
 
