@@ -210,7 +210,9 @@ const Dashboard = () => {
                 onRowClick={row => {
                   {
                     isAdmin
-                      ? router.push(`/edit_company/${row.id}`)
+                      ? showEdit
+                        ? null
+                        : router.push(`/edit_company/${row.id}`)
                       : router.push(`/company/${row.id}`);
                   }
                 }}

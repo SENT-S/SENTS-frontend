@@ -9,7 +9,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { countryList } from '@/services/mockData/mock';
 
-const Step_1 = () => {
+const Section_1 = () => {
   const [selectedSector, setSelectedSector] = useState('Uganda');
 
   const handleSelectSector = (value: string) => {
@@ -49,4 +49,4 @@ const Step_1 = () => {
   );
 };
 
-export default Step_1;
+export default Section_1;

@@ -7,7 +7,7 @@ import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
 import { MdOutlineWebAsset } from 'react-icons/md';
 
-const Step_2 = () => {
+const Section_2 = () => {
   return (
     <div>
       <h2 className="text-[#0D4222] text-center dark:text-[#E6F6F0]">
@@ -92,4 +92,4 @@ const Step_2 = () => {
   );
 };
 
-export default Step_2;
+export default Section_2;

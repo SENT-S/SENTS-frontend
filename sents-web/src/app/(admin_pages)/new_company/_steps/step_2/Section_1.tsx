@@ -25,7 +25,7 @@ type TableData = {
   [key: string]: FormattedMetric[];
 };
 
-const Step_4 = () => {
+const Section_1 = () => {
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
   const [FinancialData, setFinancialData] = useState({} as any);
   const currentYear = new Date().getFullYear();
@@ -169,7 +169,7 @@ const Step_4 = () => {
             ButtonText="Add New Statement"
             FormTitle="Add a New Statement"
             onSubmit={() => null}
-            ButtonStyle="bg-[#39463E] text-white p-4 md:p-7 rounded-2xl hover:bg-[#1d6346] hover:text-[39463E]"
+            ButtonStyle="bg-[#39463E] text-white p-4 rounded-2xl hover:bg-[#39463ece]"
           >
             <AddNewStatementContent />
           </ModalForms>
@@ -179,4 +179,4 @@ const Step_4 = () => {
   );
 };
 
-export default Step_4;
+export default Section_1;
