@@ -126,8 +126,8 @@ const Dashboard = () => {
                   onClick={() => setSelectedCountry(item.country)}
                 >
                   <div className="flex flex-col text-left">
-                    <h2 className="font-medium">{item.country}</h2>
-                    <span className="text-xl font-bold">{item.total}</span>
+                    <h2 className="font-thin">{item.country}</h2>
+                    <span className="text-xl font-semibold">{item.total}</span>
                   </div>
                   <div className="relative w-10 h-10 md:h-12 md:w-12">
                     <Image

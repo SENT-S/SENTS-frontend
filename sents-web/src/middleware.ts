@@ -10,12 +10,11 @@ interface Token {
 export const config = {
   matcher: [
     '/dashboard',
-    '/company',
     '/company/:path*',
+    '/edit_company/:path*',
     '/new_company',
+    '/create_news',
     '/news',
-    '/overview',
-    '/financials',
   ],
 };
 
