@@ -22,7 +22,7 @@ const Preview = ({
         <Button
           className="bg-[#39463E] flex items-center text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
           onClick={() => {
-            setInnerStep(innerStep - 1);
+            setInnerStep(innerStep - 2);
           }}
         >
           Add New Company <RxPlus className="ml-3" size={18} />

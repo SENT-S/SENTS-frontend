@@ -112,7 +112,7 @@ const Dashboard = () => {
           </h1>
           {/* admin features */}
           <div
-            className={`${isAdmin && 'flex flex-col-reverse md:grid md:grid-cols-9 gap-6 md:gap-8 mt-4'}`}
+            className={`${isAdmin && 'grid grid-cols-2 gap-6 md:gap-8 mt-4'}`}
           >
             <div
               className={`grid grid-cols-${
@@ -141,7 +141,7 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-            <div
+            {/* <div
               className={`${isAdmin ? 'flex' : 'hidden'} col-span-1 justify-end`}
             >
               <ModalForms
@@ -156,7 +156,7 @@ const Dashboard = () => {
                   selectedCountry={selectedCountry}
                 />
               </ModalForms>
-            </div>
+            </div> */}
           </div>
           {/* Admin features */}
           {isAdmin && (

@@ -31,6 +31,23 @@ const Section_1 = () => {
       <Select onValueChange={handleSelectSector}>
         <SelectTrigger className="rounded-2xl p-7 flex justify-between border border-[#8D9D93] dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
           <SelectValue
+            placeholder="Select Country"
+            className="text-center w-full"
+          >
+            {selectedSector}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
+          {countryList.map((item, index) => (
+            <SelectItem key={index} value={item.value}>
+              {item.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Select onValueChange={handleSelectSector}>
+        <SelectTrigger className="rounded-2xl p-7 flex justify-between border border-[#8D9D93] dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
+          <SelectValue
             placeholder="Select Sector"
             className="text-center w-full"
           >

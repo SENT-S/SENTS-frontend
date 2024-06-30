@@ -27,16 +27,16 @@ export const providers = [
 
         if (response?.status === 202) {
           const { user_data, token } = response.user_data;
-          let role = 'user'; // default role
+          let user_role = 'CLIENT'; // default role
 
           // Check for admin role
           if (user_data.role) {
-            role = user_data.role;
+            user_role = user_data.user_role;
           } else if (username === 'clerk@gmail.com') {
-            role = 'admin';
+            user_role = 'ADMIN';
           }
 
-          return { ...user_data, token, role };
+          return { ...user_data, token, user_role };
         }
 
         // throw the message from the response
