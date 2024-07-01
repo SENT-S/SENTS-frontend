@@ -37,7 +37,7 @@ const NewsPage = () => {
   const [newsData, setNewsData] = useState<any[]>([]);
   const [selectedLink, setSelectedLink] = useState<any>(Categories[0]);
   const [isLoading, setIsLoading] = useState(true);
-  const isAdmin = session?.user?.role === 'admin';
+  const isAdmin = session?.user?.role === 'ADMIN';
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [selectedCompany, setSelectedCompany] = useState('Company');
   const [selectedCategory, setSelectedCategory] = useState('News');

@@ -103,7 +103,7 @@ const Header = () => {
   };
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
-  const isAdmin = session?.user?.role === 'admin';
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   // for search
   const [searchData, setSearchData] = useState(initialData);

@@ -49,7 +49,7 @@ const SideBar = () => {
   };
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
-  const isAdmin = session?.user?.role === 'admin';
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   const isActive = (path: string) => pathname.includes(path);
 

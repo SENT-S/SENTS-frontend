@@ -46,7 +46,7 @@ const Dashboard = () => {
   const [showEdit, setShowEdit] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const isAdmin = session?.user?.role === 'admin';
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   useEffect(() => {
     const fetchCompanies = async () => {

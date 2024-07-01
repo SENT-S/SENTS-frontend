@@ -71,7 +71,7 @@ export const callbacks = {
     session.user = {
       ...session.user,
       name: `${token.firstname} ${token.last_name}`,
-      role: token.role,
+      role: token.user_role,
     };
     session.token = token.token;
     return session;
