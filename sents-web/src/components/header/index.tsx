@@ -23,13 +23,11 @@ import { usePathname } from 'next/navigation';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { HiOutlineNewspaper } from 'react-icons/hi2';
 import { getCompanies } from '@/services/apis/companies';
-import { Session } from 'next-auth';
 import Fuse from 'fuse.js';
 import { useRouter } from 'next/navigation';
-
-interface CustomSession extends Session {
-  token?: string;
-}
+import { CustomSession } from '@/utils/types';
+import { FiPieChart } from 'react-icons/fi';
+import { PiChartLineUpLight } from 'react-icons/pi';
 
 // Define the type for a company
 type Company = {
@@ -54,6 +52,48 @@ const options = {
   includeScore: true,
 };
 
+const UserLinks = [
+  {
+    name: 'Dashboard',
+    icon: LuLayoutDashboard,
+    path: '/dashboard',
+    activePaths: ['/dashboard', '/company'],
+  },
+  {
+    name: 'News',
+    icon: HiOutlineNewspaper,
+    path: '/news',
+    activePaths: ['/news'],
+  },
+];
+
+const AdminLinks = [
+  {
+    name: 'Dashboard',
+    icon: LuLayoutDashboard,
+    path: '/dashboard',
+    activePaths: ['/dashboard', '/company'],
+  },
+  {
+    name: 'Overview',
+    icon: FiPieChart,
+    path: '/overview',
+    activePaths: ['/overview'],
+  },
+  {
+    name: 'Financials',
+    icon: PiChartLineUpLight,
+    path: '/financials',
+    activePaths: ['/financials'],
+  },
+  {
+    name: 'News',
+    icon: HiOutlineNewspaper,
+    path: '/news',
+    activePaths: ['/news'],
+  },
+];
+
 const Header = () => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
@@ -63,6 +103,7 @@ const Header = () => {
   };
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   // for search
   const [searchData, setSearchData] = useState(initialData);
@@ -80,21 +121,6 @@ const Header = () => {
     setLoading(true);
     signOut().then(() => setLoading(false));
   };
-
-  const Links = [
-    {
-      name: 'Dashboard',
-      icon: LuLayoutDashboard,
-      path: '/dashboard',
-      activePaths: ['/dashboard', '/company'],
-    },
-    {
-      name: 'News',
-      icon: HiOutlineNewspaper,
-      path: '/news',
-      activePaths: ['/news'],
-    },
-  ];
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -129,7 +155,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="bg-white shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
+      <div className="bg-white z-50 shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
         <div className="px-4 flex justify-between items-center space-x-4 lg:space-x-0">
           <div className="lg:hidden">
             <Link href="/dashboard">
@@ -138,39 +164,44 @@ const Header = () => {
               </h1>
             </Link>
           </div>
-          {searchData && searchData.length > 0 ? (
-            <div className="relative w-full lg:w-1/3">
-              <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg overflow-hidden dark:bg-[#39463E80]">
-                <div className="ml-3">
-                  <CiSearch />
+          {/* Admin Feature added */}
+          {!isAdmin ? (
+            searchData && searchData.length > 0 ? (
+              <div className="relative w-full lg:w-1/3">
+                <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg overflow-hidden dark:bg-[#39463E80]">
+                  <div className="ml-3">
+                    <CiSearch />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search for stocks & more"
+                    className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
+                    value={query}
+                    onChange={handleSearch}
+                  />
                 </div>
-                <input
-                  type="text"
-                  placeholder="Search for stocks & more"
-                  className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
-                  value={query}
-                  onChange={handleSearch}
-                />
+                {results.length > 0 && (
+                  <div className="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 z-50 overflow-auto dark:bg-[#39463E] dark:text-white">
+                    {results.map((item, index) => (
+                      <div
+                        onClick={() => {
+                          router.push(`/company/${item.id}`);
+                          setResults([]);
+                        }}
+                        key={index}
+                        className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-500"
+                      >
+                        {item.company_name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              {results.length > 0 && (
-                <div className="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 z-50 overflow-auto dark:bg-[#39463E] dark:text-white">
-                  {results.map((item, index) => (
-                    <div
-                      onClick={() => {
-                        router.push(`/company/${item.id}`);
-                        setResults([]);
-                      }}
-                      key={index}
-                      className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-500"
-                    >
-                      {item.company_name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            ) : (
+              <Skeleton className="w-full lg:w-1/3 rounded-md p-5 relative bg-gray-200 dark:bg-[#0e120f]" />
+            )
           ) : (
-            <Skeleton className="w-full lg:w-1/3 rounded-md p-5 relative bg-gray-200 dark:bg-[#0e120f]" />
+            <div />
           )}
 
           <div className="hidden lg:flex items-center lg:pr-14">
@@ -260,7 +291,7 @@ const Header = () => {
                     </button>
                   </div>
                   <ul className="w-full space-y-3">
-                    {Links.map((link, index) => {
+                    {(isAdmin ? AdminLinks : UserLinks).map((link, index) => {
                       const Icon = link.icon;
                       const isActiveLink = link.activePaths.some(isActive);
                       return (

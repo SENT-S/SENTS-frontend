@@ -37,6 +37,20 @@ export const tableData = [
   },
 ];
 
+export const countryList = [
+  { label: 'Uganda', value: 'Uganda' },
+  { label: 'Kenya', value: 'Kenya' },
+  { label: 'Tanzania', value: 'Tanzania' },
+  { label: 'Rwanda', value: 'Rwanda' },
+];
+
+export const companyList = [
+  { label: 'Company', value: 'Company' },
+  { label: 'Company 1', value: 'Company 1' },
+  { label: 'Company 2', value: 'Company 2' },
+  { label: 'Company 3', value: 'Company 3' },
+];
+
 export const financialStatements = [
   { name: 'Annual Report 2023', file: 'annual_report_2023.pdf' },
   { name: 'Q1 Financials 2023', file: 'Q1_financials_2023.pdf' },

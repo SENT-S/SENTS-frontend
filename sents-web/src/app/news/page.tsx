@@ -6,26 +6,43 @@ import TopNews from './_sections/TopNews';
 import News from './_sections/News';
 import Events from './_sections/Events';
 import Resources from './_sections/Resources';
+import { Button } from '@/components/ui/button';
 import Teams from './_sections/Teams';
-import { Session } from 'next-auth';
 import { getAllCompanyNews } from '@/services/apis/companies';
 import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { CustomSession } from '@/utils/types';
+import { RxPlus } from 'react-icons/rx';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { useRouter } from 'next/navigation';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import ModalForms from '@/components/admin/forms/layout';
+import AddNewsFormContent from '@/components/admin/forms/contents/Add_news';
+import { countryList, companyList } from '@/services/mockData/mock';
 
-interface CustomSession extends Session {
-  token?: string;
-}
-
-const links = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
+const Categories = ['News', 'Events', 'Resources', 'Teams'];
 
 const NewsPage = () => {
+  const router = useRouter();
   const { data: session, status } = useSession() as {
     data: CustomSession;
     status: 'loading' | 'authenticated' | 'unauthenticated';
   };
   const [newsData, setNewsData] = useState<any[]>([]);
-  const [selectedLink, setSelectedLink] = useState<any>(links[0]);
+  const [selectedLink, setSelectedLink] = useState<any>(Categories[0]);
   const [isLoading, setIsLoading] = useState(true);
+  const isAdmin = session?.user?.role === 'ADMIN';
+  const [selectedCountry, setSelectedCountry] = useState('Uganda');
+  const [selectedCompany, setSelectedCompany] = useState('Company');
+  const [selectedCategory, setSelectedCategory] = useState('News');
+  const [showCheckbox, setShowCheckbox] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([] as string[]);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -49,6 +66,32 @@ const NewsPage = () => {
     [newsData, selectedLink],
   );
 
+  const handleSelectCategory = (value: string) => {
+    setSelectedCategory(value);
+  };
+
+  const handleSelectCountry = (value: string) => {
+    setSelectedCountry(value);
+  };
+
+  const handleSelectCompany = (value: string) => {
+    setSelectedCompany(value);
+  };
+
+  const handleDeleteNews = () => {
+    setShowCheckbox(false);
+    setSelectedIds([]);
+  };
+
+  const handleCancelDeleteNews = () => {
+    setShowCheckbox(false);
+    setSelectedIds([]);
+  };
+
+  const handleCreateNews = () => {
+    router.push('/create_news');
+  };
+
   return (
     <MainLayout>
       {isLoading ? (
@@ -58,21 +101,154 @@ const NewsPage = () => {
         </>
       ) : (
         <>
-          <div className="pt-3">
+          {/* Admin features */}
+          {isAdmin && (
+            <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
+              News
+            </h1>
+          )}
+
+          {/* Admin features */}
+          {isAdmin && (
+            <div className="flex justify-between items-center">
+              <Button
+                className="bg-[#39463E] flex items-center text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
+                onClick={handleCreateNews}
+              >
+                Create new News
+                <RxPlus className="ml-3" size={18} />
+              </Button>
+
+              {showCheckbox ? (
+                <ModalForms
+                  ButtonText="Delete News"
+                  FormTitle="Are you sure you want to delete the selected news?"
+                  ButtonStyle="bg-[#EA0000] text-white hover:bg-[#EA0000]"
+                  Icon={<RiDeleteBin6Line className="ml-3" size={18} />}
+                  onSubmit={handleDeleteNews}
+                  onCancel={handleCancelDeleteNews}
+                  SubmitText="Yes"
+                  CancelText="No"
+                  SubmitButtonStyle="bg-[#EA0000]"
+                />
+              ) : (
+                <Button
+                  className="bg-[#F5ECEC] text-[#EA0000] p-2 md:p-7 rounded-2xl hover:bg-[#f5e5e5] hover:text-[39463E]"
+                  onClick={() => setShowCheckbox(true)}
+                >
+                  Delete News
+                  <RiDeleteBin6Line className="ml-3" size={18} />
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* Admin features */}
+          {isAdmin && (
+            <div className="flex gap-6 items-center">
+              <Select onValueChange={handleSelectCountry}>
+                <SelectTrigger className="md:w-[280px] rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
+                  <SelectValue
+                    placeholder="Select Country"
+                    className="text-center w-full"
+                  >
+                    {selectedCountry}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
+                  {countryList.map((item, index) => (
+                    <SelectItem key={index} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select onValueChange={handleSelectCompany}>
+                <SelectTrigger className="md:w-[280px] rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
+                  <SelectValue
+                    placeholder="Select Country"
+                    className="text-center w-full"
+                  >
+                    {selectedCompany}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
+                  {companyList.map((item, index) => (
+                    <SelectItem key={index} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Nav */}
+          <div>
             <SubNav
-              links={links}
+              links={Categories}
               selectedLink={selectedLink}
               setSelectedLink={setSelectedLink}
             />
           </div>
+
           <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
-            {selectedLink === 'Top News' && <TopNews data={selectedNewsData} />}
-            {selectedLink === 'News' && <News data={selectedNewsData} />}
-            {selectedLink === 'Events' && <Events data={selectedNewsData} />}
-            {selectedLink === 'Resources' && (
-              <Resources data={selectedNewsData} />
+            {selectedLink === 'News' && (
+              <News
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
             )}
-            {selectedLink === 'Teams' && <Teams data={selectedNewsData} />}
+            {selectedLink === 'Events' && (
+              <Events
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
+            )}
+            {selectedLink === 'Resources' && (
+              <Resources
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
+            )}
+            {selectedLink === 'Teams' && (
+              <Teams
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
+            )}
           </div>
         </>
       )}
