@@ -30,10 +30,8 @@ export const providers = [
           let user_role = 'CLIENT'; // default role
 
           // Check for admin role
-          if (user_data.role) {
+          if (user_data.user_role) {
             user_role = user_data.user_role;
-          } else if (username === 'clerk@gmail.com') {
-            user_role = 'ADMIN';
           }
 
           return { ...user_data, token, user_role };

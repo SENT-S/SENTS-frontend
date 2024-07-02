@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout';
 import Image from 'next/image';
 import TableComponent from '@/components/table';
-import { countryData } from '@/services/mockData/mock';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { getCompanies } from '@/services/apis/companies';
@@ -13,13 +12,12 @@ import { CustomSession } from '@/utils/types';
 import { RxPlus } from 'react-icons/rx';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
-import AddCountryForm from '@/components/admin/forms/contents/Add_country';
-import ModalForms from '@/components/admin/forms/layout';
 import { MdDone } from 'react-icons/md';
 
 interface Company {
   company_country: string;
   num_of_companies: number;
+  company_country_code: string;
   list_of_companies: {
     id: number;
     company_name: string;
@@ -65,19 +63,15 @@ const Dashboard = () => {
   }, [session]);
 
   const companyCountries = companies.map((item: Company) => ({
-    country: item.company_country,
-    total: item.num_of_companies,
-    flag: `https://flagsapi.com/${countryData.find((country: any) => item.company_country.toLocaleLowerCase() === country.country.toLocaleLowerCase())?.code?.toLocaleUpperCase()}/flat/64.png`,
+    country: item?.company_country,
+    total: item?.num_of_companies,
+    flag: `https://flagsapi.com/${item?.company_country_code}/flat/64.png`,
   }));
 
   const filteredCompanies = companies
     .filter((item: Company) => item.company_country === selectedCountry)
     .map((item: Company) => item.list_of_companies)
     .flat();
-
-  const handleAddCountry = () => {
-    console.log('Add Country');
-  };
 
   const handleEditCompany = () => {
     setShowEdit(false);
@@ -122,41 +116,25 @@ const Dashboard = () => {
               {companyCountries?.map(item => (
                 <div
                   key={item.country}
-                  className={`w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]'} border border-[#148c5a33] hover:border-[#148C59]`}
+                  className={`relative w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]'} border border-[#148c5a33] hover:border-[#148C59]`}
                   onClick={() => setSelectedCountry(item.country)}
                 >
                   <div className="flex flex-col text-left">
                     <h2 className="font-thin">{item.country}</h2>
                     <span className="text-xl font-semibold">{item.total}</span>
                   </div>
-                  <div className="relative w-10 h-10 md:h-12 md:w-12">
+                  <div className="relative w-10 h-10 md:h-12 md:w-12 overflow-hidden">
                     <Image
                       src={item.flag}
                       alt={item.country}
-                      fill={true}
+                      layout="fill"
+                      objectFit="cover"
                       loading="eager"
-                      className="object-cover"
                     />
                   </div>
                 </div>
               ))}
             </div>
-            {/* <div
-              className={`${isAdmin ? 'flex' : 'hidden'} col-span-1 justify-end`}
-            >
-              <ModalForms
-                FormTitle="Add a new Country"
-                onSubmit={handleAddCountry}
-                ButtonStyle="p-4 flex justify-center items-center rounded-2xl w-[70px] h-[60px] md:w-[120px] md:h-[86px] bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80] border border-[#148c5a33] hover:border-[#148C59] hover:bg-white"
-                Icon={<RxPlus className="text-[#148C59]" size={30} />}
-              >
-                <AddCountryForm
-                  countryList={countryList}
-                  handleSelectCountry={() => null}
-                  selectedCountry={selectedCountry}
-                />
-              </ModalForms>
-            </div> */}
           </div>
           {/* Admin features */}
           {isAdmin && (
