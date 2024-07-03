@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 const Auth = () => {
   const router = useRouter();
   return (
-    <div className="w-full h-full flex justify-center items-center relative">
+    <div className="w-full h-full overflow-y-auto flex justify-center items-center relative">
       <Button
         variant="outline"
         size="icon"

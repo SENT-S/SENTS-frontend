@@ -14,23 +14,28 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { countryList, companyList } from '@/services/mockData/mock';
+import {
+  updateNewsField,
+  resetNewsFields,
+} from '@/lib/ReduxSlices/create_news';
+import { useDispatch, useSelector } from '@/lib/utils';
 
 const page = () => {
-  const [selectedSector, setSelectedSector] = useState('Uganda');
-  const [showList, setShowList] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState('Uganda');
-  const [selectedCompany, setSelectedCompany] = useState('Company');
+  const dispatch = useDispatch();
+  const newsFields = useSelector(state => state.news);
 
-  const handleSelectCountry = (value: string) => {
-    setSelectedCountry(value);
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+    dispatch(updateNewsField({ field: 'image', value: file }));
   };
 
-  const handleSelectCompany = (value: string) => {
-    setSelectedCompany(value);
+  const handleInputChange = (field: any, value: any) => {
+    dispatch(updateNewsField({ field, value }));
   };
 
-  const handleSelectSector = (value: string) => {
-    setSelectedSector(value);
+  const handleSubmit = () => {
+    alert('News Submitted');
+    dispatch(resetNewsFields());
   };
 
   return (
@@ -41,13 +46,18 @@ const page = () => {
 
       <div className="space-y-8">
         <div className="flex gap-6 items-center">
-          <Select onValueChange={handleSelectCountry}>
+          <Select
+            onValueChange={(value: string) =>
+              handleInputChange('country', value)
+            }
+            value={newsFields.country}
+          >
             <SelectTrigger className="rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
               <SelectValue
                 placeholder="Select Country"
                 className="text-center w-full"
               >
-                {selectedCountry}
+                {newsFields.country}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
@@ -58,13 +68,18 @@ const page = () => {
               ))}
             </SelectContent>
           </Select>
-          <Select onValueChange={handleSelectCompany}>
+          <Select
+            onValueChange={(value: string) =>
+              handleInputChange('company', value)
+            }
+            value={newsFields.company}
+          >
             <SelectTrigger className="rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
               <SelectValue
-                placeholder="Select Country"
+                placeholder="Select Company"
                 className="text-center w-full"
               >
-                {selectedCompany}
+                {newsFields.company}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
@@ -76,13 +91,18 @@ const page = () => {
             </SelectContent>
           </Select>
         </div>
-        <Select onValueChange={handleSelectSector}>
+        <Select
+          onValueChange={(value: string) =>
+            handleInputChange('category', value)
+          }
+          value={newsFields.category}
+        >
           <SelectTrigger className="rounded-2xl p-7 flex justify-between border border-[#8D9D93] dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
             <SelectValue
               placeholder="Select Category"
               className="text-center w-full"
             >
-              {selectedSector}
+              {newsFields.category}
             </SelectValue>
           </SelectTrigger>
           <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
@@ -94,39 +114,50 @@ const page = () => {
           </SelectContent>
         </Select>
         <Input
+          type="url"
+          value={newsFields.news_url}
+          onChange={e => handleInputChange('news_url', e.target.value)}
           placeholder="Enter News URL"
           className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
         />
         <Input
+          type="text"
+          value={newsFields.news_source}
+          onChange={e => handleInputChange('news_source', e.target.value)}
           placeholder="Enter News Source"
           className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
         />
         <Input
+          type="text"
+          value={newsFields.news_title}
+          onChange={e => handleInputChange('news_title', e.target.value)}
           placeholder="Enter News Title"
           className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
         />
         <Textarea
+          value={newsFields.news_summary}
+          onChange={e => handleInputChange('news_summary', e.target.value)}
           placeholder="Enter News Summary"
           className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
         />
         <div className="flex items-center rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-4 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white">
-          <input
+          <Input
             type="file"
             accept="image/*"
             id="fileUpload"
-            className="w-full border-none"
-            style={{ display: 'none' }}
+            className="w-full border-none hidden"
+            onChange={handleFileChange}
           />
           <Label
             htmlFor="fileUpload"
             className="w-full flex justify-center items-center border-none cursor-pointer"
           >
-            Upload Image
+            {newsFields.image ? newsFields.image.name : 'Upload Image'}
             <IoImageOutline className="ml-2" size={18} />
           </Label>
         </div>
         <Button
-          onClick={() => setShowList(true)}
+          onClick={handleSubmit}
           className="bg-[#148C59] text-white w-full px-3 py-7 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
         >
           Submit

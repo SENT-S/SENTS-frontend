@@ -2,11 +2,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import darkModeSlice from './ReduxSlices/darkMode';
 import companySlice from './ReduxSlices/create_company';
+import newsFormSlice from './ReduxSlices/create_news';
 
 export const store = configureStore({
   reducer: {
     darkMode: darkModeSlice,
     company: companySlice,
+    news: newsFormSlice,
   },
 });
 
