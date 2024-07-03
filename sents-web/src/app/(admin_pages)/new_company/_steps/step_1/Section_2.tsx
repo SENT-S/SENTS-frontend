@@ -6,19 +6,31 @@ import { HiOutlineUsers } from 'react-icons/hi2';
 import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
 import { MdOutlineWebAsset } from 'react-icons/md';
+import { updateCompanyField } from '@/lib/ReduxSlices/create_company';
+import { useDispatch, useSelector } from '@/lib/utils';
 
 const Section_2 = () => {
+  const dispatch = useDispatch();
+  const companyFields = useSelector(state => state.company);
+
+  const handleInputChange = (field: any, value: any) => {
+    dispatch(updateCompanyField({ field, value }));
+  };
+
   return (
     <div>
       <h2 className="text-[#0D4222] text-center dark:text-[#E6F6F0]">
         Overview
       </h2>
+
       <div className="space-y-8">
         <div className="space-y-3">
           <div className="text-left text-[#0D4222] dark:text-gray-300">
             <Label className="text-2xl font-medium">About</Label>
           </div>
           <Textarea
+            value={companyFields.about}
+            onChange={e => handleInputChange('about', e.target.value)}
             placeholder="About"
             className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
           />
@@ -29,6 +41,10 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">Mission Statement</Label>
             </div>
             <Textarea
+              value={companyFields.mission_statement}
+              onChange={e =>
+                handleInputChange('mission_statement', e.target.value)
+              }
               placeholder="Mission Statement"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -38,6 +54,10 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">Vision Statement</Label>
             </div>
             <Textarea
+              value={companyFields.vision_statement}
+              onChange={e =>
+                handleInputChange('vision_statement', e.target.value)
+              }
               placeholder="Vision Statement"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -50,6 +70,8 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">CEO</Label>
             </div>
             <Input
+              value={companyFields.CEO}
+              onChange={e => handleInputChange('CEO', e.target.value)}
               placeholder="Enter CEO Name"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -60,6 +82,9 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">Employees</Label>
             </div>
             <Input
+              type="number"
+              value={companyFields.employees}
+              onChange={e => handleInputChange('employees', e.target.value)}
               placeholder="Enter Number of Employees"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -72,6 +97,9 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">Founded</Label>
             </div>
             <Input
+              type="text"
+              value={companyFields.founded}
+              onChange={e => handleInputChange('founded', e.target.value)}
               placeholder="Enter Founded Year"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -82,6 +110,9 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">Website</Label>
             </div>
             <Input
+              type="text"
+              value={companyFields.website}
+              onChange={e => handleInputChange('website', e.target.value)}
               placeholder="Enter Website"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />

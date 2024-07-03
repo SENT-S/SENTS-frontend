@@ -1,10 +1,12 @@
 // store.tsx
 import { configureStore } from '@reduxjs/toolkit';
 import darkModeSlice from './ReduxSlices/darkMode';
+import companySlice from './ReduxSlices/create_company';
 
 export const store = configureStore({
   reducer: {
     darkMode: darkModeSlice,
+    company: companySlice,
   },
 });
 
