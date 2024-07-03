@@ -7,7 +7,7 @@ import {
   getCompanyFinancials,
 } from '@/services/apis/companies';
 import { Skeleton } from '@/components/ui/skeleton';
-import MainLayout from '@/components/layout';
+import MainLayout from '@/layouts';
 import SubNav from '@/components/navigation/SubNav';
 import Overview from '../_sections/Overview';
 import Financial from '../_sections/Financials';

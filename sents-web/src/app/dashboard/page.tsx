@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import MainLayout from '@/components/layout';
+import MainLayout from '@/layouts';
 import Image from 'next/image';
 import TableComponent from '@/components/table';
 import { useRouter } from 'next/navigation';

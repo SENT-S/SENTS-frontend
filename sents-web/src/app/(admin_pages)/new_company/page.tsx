@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import MainLayout from '@/components/layout';
+import MainLayout from '@/layouts';
 import Stepper from '@/components/ui/Stepper';
 import Step_1 from './_steps/step_1';
 import Step_2 from './_steps/step_2';

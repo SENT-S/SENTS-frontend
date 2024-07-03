@@ -11,7 +11,7 @@ import SubNav from '@/components/navigation/SubNav';
 import Overview from '../../_components/overview';
 import Financial from '../../_components/financials';
 import News from '../../_components/news';
-import MainLayout from '@/components/layout';
+import MainLayout from '@/layouts';
 
 interface CompanyDetailsProps {
   params: { companyId: string };

@@ -234,7 +234,7 @@ const Financials = ({ FinancialData }: { FinancialData: any }) => {
             ButtonText="Add New Statement"
             FormTitle="Add a New Statement"
             onSubmit={() => null}
-            ButtonStyle="bg-[#148C59] text-white p-4 md:p-7 rounded-2xl hover:bg-[#1d6346] hover:text-[39463E]"
+            ButtonStyle="bg-[#148C59] text-white p-4 rounded-2xl hover:bg-[#1d6346] hover:text-[39463E]"
           >
             <AddNewStatementContent />
           </ModalForms>

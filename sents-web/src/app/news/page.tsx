@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useMemo } from 'react';
-import MainLayout from '@/components/layout';
+import MainLayout from '@/layouts';
 import SubNav from '@/components/navigation/SubNav';
 import TopNews from './_sections/TopNews';
 import News from './_sections/News';
