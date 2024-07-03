@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import Header from '../components/header';
-import SideBar from '../components/sidebar';
+import Header from '@/components/header';
+import SideBar from '@/components/sidebar';
 
 interface MainLayoutProps {
   children: React.ReactNode;
