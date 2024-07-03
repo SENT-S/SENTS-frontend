@@ -39,7 +39,6 @@ const StoreProvider = ({ children }: ProviderProps) => {
 
   // Handle sign out if token has expired
   if (isTokenExpired()) {
-    console.info('Token has expired. Signing out...');
     signOut();
   }
 
