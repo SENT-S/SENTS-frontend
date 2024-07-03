@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import NewsItem from '@/components/News/NewsItem';
+import NewsItem from '@/components/NewsItem/NewsItem';
 
 export default function Events({
   data,

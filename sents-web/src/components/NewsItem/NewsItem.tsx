@@ -34,7 +34,7 @@ const NewsItem = ({
         <div className="w-64 h-40 relative">
           <Image
             src={imgURL}
-            alt={newsItem.headline}
+            alt={newsItem?.news_source}
             className="w-full  h-full object-cover rounded-bl-2xl rounded-tl-2xl"
             fill={true}
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
