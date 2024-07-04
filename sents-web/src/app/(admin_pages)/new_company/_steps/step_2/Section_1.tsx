@@ -214,7 +214,7 @@ const Section_1 = () => {
                         }
                         value={row.metrics}
                       >
-                        <SelectTrigger className="rounded-lg p-2 flex justify-between border dark:text-white bg-[#E6EEEA] dark:bg-[#39463E]">
+                        <SelectTrigger className="rounded-lg p-2 flex justify-between border dark:text-white dark:bg-[#39463E]">
                           <SelectValue
                             placeholder="Metrics"
                             className="text-center w-full"
@@ -249,7 +249,7 @@ const Section_1 = () => {
                         }
                         value={row.category}
                       >
-                        <SelectTrigger className="rounded-lg p-2 flex justify-between border dark:text-white bg-[#E6EEEA] dark:bg-[#39463E]">
+                        <SelectTrigger className="rounded-lg p-2 flex justify-between border dark:text-white dark:bg-[#39463E]">
                           <SelectValue
                             placeholder="Category"
                             className="text-center w-full"
