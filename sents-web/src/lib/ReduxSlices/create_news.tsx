@@ -31,7 +31,11 @@ const newsFormSlice = createSlice({
       action: PayloadAction<{ field: keyof FormDataState; value: string }>,
     ) => {
       const { field, value } = action.payload;
-      (state[field] as any) = value;
+      if (field === 'image') {
+        state.image = value as any;
+      } else {
+        (state[field] as any) = value;
+      }
     },
     resetNewsFields: state => {
       Object.assign(state, initialState);

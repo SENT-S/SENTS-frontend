@@ -26,7 +26,7 @@ interface Props {
   loading?: boolean;
 }
 
-const layout = (props: Props) => {
+const Index = (props: Props) => {
   const ref = useRef(null);
   useOutsideClick(ref, () => {
     if (props.onCancel) {
@@ -54,6 +54,7 @@ const layout = (props: Props) => {
             {props.children}
             <footer className="w-full mt-4 space-y-3">
               <button
+                typeof="submit"
                 className={`${props.SubmitButtonStyle ? props.SubmitButtonStyle : 'bg-[#148C59]'} text-white w-full p-3 rounded-2xl flex justify-center items-center`}
                 type="submit"
               >
@@ -76,4 +77,4 @@ const layout = (props: Props) => {
   );
 };
 
-export default layout;
+export default Index;

@@ -22,8 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import ModalForms from '@/components/admin/forms/layout';
-import AddNewsFormContent from '@/components/admin/forms/contents/Add_news';
+import ModalForms from '@/components/admin/modal';
 import { countryList, companyList } from '@/services/mockData/mock';
 
 const Categories = ['News', 'Events', 'Resources', 'Teams'];

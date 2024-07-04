@@ -1,7 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { GoPlusCircle } from 'react-icons/go';
-import ModalForms from '@/components/admin/forms/layout';
+import ModalForms from '@/components/admin/modal';
 
 interface SubNavProps {
   links: string[];

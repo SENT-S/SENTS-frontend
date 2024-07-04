@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { Button } from '@/components/ui/button';
-import ModalForms from '@/components/admin/forms/layout';
-import AddNewStatementContent from '@/components/admin/forms/contents/Add_new_statement';
+import ModalForms from '@/components/admin/modal';
+import AddNewStatementContent from '@/components/admin/Add_new_statement';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { financialStatements } from '@/services/mockData/mock';
 import {
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/table';
 import Pagination from '@/components/pagination';
 import formatData from '@/utils/formatTableData';
+import { useSelector } from '@/lib/utils';
 
 type FormattedMetric = {
   metrics: string;
@@ -26,6 +27,7 @@ type TableData = {
 };
 
 const Section_1 = () => {
+  const companyFinancialFields = useSelector(state => state.companyFinancial);
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
   const [FinancialData, setFinancialData] = useState({} as any);
   const currentYear = new Date().getFullYear();
@@ -165,14 +167,7 @@ const Section_1 = () => {
         </ul>
 
         <div className="flex justify-center items-center">
-          <ModalForms
-            ButtonText="Add New Statement"
-            FormTitle="Add a New Statement"
-            onSubmit={() => null}
-            ButtonStyle="bg-[#39463E] text-white p-4 rounded-2xl hover:bg-[#39463ece]"
-          >
-            <AddNewStatementContent />
-          </ModalForms>
+          <AddNewStatementContent />
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { RiArrowRightSLine, RiDeleteBinLine } from 'react-icons/ri';
 import { Input } from '@/components/ui/input';
-import ModalForms from '@/components/admin/forms/layout';
+import ModalForms from '@/components/admin/modal';
 
 interface TableColumn {
   field: string;
