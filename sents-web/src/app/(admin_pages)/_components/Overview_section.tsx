@@ -1,12 +1,4 @@
-'use client';
-import { useState } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import React from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,21 +10,18 @@ import { HiOutlineUsers } from 'react-icons/hi2';
 import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
 import { MdOutlineWebAsset } from 'react-icons/md';
-import { countryList, companyList } from '@/services/mockData/mock';
-import { updateCompanyField } from '@/lib/ReduxSlices/create_company';
-import { useDispatch, useSelector } from '@/lib/utils';
 
-const Overview = () => {
+const Overview_section = ({ companyID }: { companyID: any }) => {
   const { data: session, status } = useSession() as {
     data: CustomSession;
     status: 'loading' | 'authenticated' | 'unauthenticated';
   };
 
-  const dispatch = useDispatch();
-  const companyFields = useSelector(state => state.company);
-
-  const handleInputChange = (field: any, value: any) => {
-    dispatch(updateCompanyField({ field, value }));
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+    console.log(data);
   };
 
   return (
@@ -45,7 +34,7 @@ const Overview = () => {
           />
         ))
       ) : (
-        <div className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8">
           <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
             Overview
           </h1>
@@ -55,8 +44,7 @@ const Overview = () => {
               <Label className="text-2xl font-medium">About</Label>
             </div>
             <Textarea
-              value={companyFields.about}
-              onChange={e => handleInputChange('about', e.target.value)}
+              name="about"
               placeholder="About"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -69,10 +57,7 @@ const Overview = () => {
                 </Label>
               </div>
               <Textarea
-                value={companyFields.mission_statement}
-                onChange={e =>
-                  handleInputChange('mission_statement', e.target.value)
-                }
+                name="mission_statement"
                 placeholder="Mission Statement"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
               />
@@ -82,10 +67,7 @@ const Overview = () => {
                 <Label className="text-2xl font-medium">Vision Statement</Label>
               </div>
               <Textarea
-                value={companyFields.vision_statement}
-                onChange={e =>
-                  handleInputChange('vision_statement', e.target.value)
-                }
+                name="vision_statement"
                 placeholder="Vision Statement"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
               />
@@ -98,8 +80,8 @@ const Overview = () => {
                 <Label className="text-2xl font-medium">CEO</Label>
               </div>
               <Input
-                value={companyFields.CEO}
-                onChange={e => handleInputChange('CEO', e.target.value)}
+                type="text"
+                name="CEO"
                 placeholder="Enter CEO Name"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
               />
@@ -111,8 +93,7 @@ const Overview = () => {
               </div>
               <Input
                 type="number"
-                value={companyFields.employees}
-                onChange={e => handleInputChange('employees', e.target.value)}
+                name="employees"
                 placeholder="Enter Number of Employees"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
               />
@@ -126,8 +107,7 @@ const Overview = () => {
               </div>
               <Input
                 type="text"
-                value={companyFields.founded}
-                onChange={e => handleInputChange('founded', e.target.value)}
+                name="founded"
                 placeholder="Enter Founded Year"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
               />
@@ -139,23 +119,23 @@ const Overview = () => {
               </div>
               <Input
                 type="text"
-                value={companyFields.website}
-                onChange={e => handleInputChange('website', e.target.value)}
+                name="website"
                 placeholder="Enter Website"
                 className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
               />
             </div>
           </div>
           <Button
+            type="submit"
             className="bg-[#148C59] w-full text-white p-2 md:p-7 rounded-2xl hover:bg-green-600"
             onClick={() => null}
           >
             Save
           </Button>
-        </div>
+        </form>
       )}
     </>
   );
 };
 
-export default Overview;
+export default Overview_section;

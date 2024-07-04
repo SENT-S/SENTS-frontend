@@ -8,9 +8,9 @@ import {
   getCompanyFinancials,
 } from '@/services/apis/companies';
 import SubNav from '@/components/navigation/SubNav';
-import Overview from '../../_components/overview';
-import Financial from '../../_components/financials';
-import News from '../../_components/news';
+import Overview_section from '../../_components/Overview_section';
+import Financial_section from '../../_components/Financial_section';
+import News_section from '../../_components/News_section';
 import MainLayout from '@/layouts';
 
 interface CompanyDetailsProps {
@@ -61,11 +61,16 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const renderSection = () => {
     switch (selectedLink) {
       case 'Overview':
-        return <Overview />;
+        return <Overview_section companyID={params.companyId} />;
       case 'Financials':
-        return <Financial FinancialData={financialData} />;
+        return (
+          <Financial_section
+            companyID={params.companyId}
+            FinancialData={financialData}
+          />
+        );
       case 'News':
-        return <News />;
+        return <News_section companyID={params.companyId} />;
       default:
         return null;
     }

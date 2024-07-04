@@ -32,7 +32,13 @@ type TableData = {
   [key: string]: FormattedMetric[];
 };
 
-const Financials = ({ FinancialData }: { FinancialData: any }) => {
+const Financial_section = ({
+  FinancialData,
+  companyID,
+}: {
+  FinancialData: any;
+  companyID: any;
+}) => {
   const { data: session } = useSession() as {
     data: CustomSession;
     status: 'loading' | 'authenticated' | 'unauthenticated';
@@ -244,4 +250,4 @@ const Financials = ({ FinancialData }: { FinancialData: any }) => {
   );
 };
 
-export default Financials;
+export default Financial_section;
