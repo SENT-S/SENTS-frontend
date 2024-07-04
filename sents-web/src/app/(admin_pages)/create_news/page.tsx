@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import MainLayout from '@/layouts';
+import { useRouter } from 'next/navigation';
 import {
   Select,
   SelectContent,
@@ -14,8 +15,10 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { countryList, companyList } from '@/services/mockData/mock';
+import { IoArrowBack } from 'react-icons/io5';
 
 const page = () => {
+  const router = useRouter();
   const [news_image, setNewsImage] = useState<File | null>(null);
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
@@ -42,6 +45,17 @@ const page = () => {
 
   return (
     <MainLayout>
+      <div className="flex items-center justify-between">
+        <Button
+          variant="outline"
+          size="icon"
+          className="ml-3"
+          onClick={() => router.back()}
+        >
+          <IoArrowBack />
+        </Button>
+      </div>
+
       <h2 className="text-[#0D4222] text-center dark:text-[#E6F6F0] mt-4">
         Add News
       </h2>

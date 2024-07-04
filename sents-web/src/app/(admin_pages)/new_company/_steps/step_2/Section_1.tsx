@@ -25,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { countryList } from '@/services/mockData/mock';
 
 type Row = {
   metrics: string;
