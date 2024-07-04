@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { Button } from '@/components/ui/button';
 import ModalForms from '@/components/admin/modal';
@@ -33,22 +33,71 @@ type Row = {
   [key: string]: string;
 };
 
+const category = [
+  'Profit & Loss',
+  'Sales Revenue',
+  'Operating Expenses',
+  'Net Income',
+  'Gross Margin',
+];
+
+const metrics = [
+  'Revenue',
+  'Cost of Goods Sold',
+  'Gross Profit',
+  'Operating Expenses',
+  'Net Income',
+];
+
 const Section_1 = () => {
-  const [yearRange, setYearRange] = useState('' as any);
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: 5 },
     (_, i) => `FY’${String(currentYear - i - 1).slice(-2)}`,
   ).reverse();
+  let startYear = currentYear - 1; // Start from the year before the current year
+  let endYear = 2000; // End at the year 2000
+
+  const yearRanges = [];
+
+  for (let i = startYear; i >= endYear; i -= 5) {
+    // Ensure the range does not go below the end year
+    const rangeStart = Math.max(i - 4, endYear);
+    yearRanges.push(
+      `FY'${String(rangeStart).slice(-2)} - FY'${String(i).slice(-2)}`,
+    );
+  }
+
+  const [yearRange, setYearRange] = useState(yearRanges[0]);
+  const [newYears, setNewYears] = useState<string[]>([]);
+
+  useEffect(() => {
+    const [start, end] = yearRange
+      .split(' - ')
+      .map(year => Number('20' + year.slice(-2)));
+    const rangeYears = Array.from(
+      { length: end - start + 1 },
+      (_, i) => `FY’${String(start + i).slice(-2)}`,
+    );
+    setNewYears(rangeYears);
+  }, [yearRange]);
 
   // Initialize rows state with one empty row
-  const [rows, setRows] = useState<Row[]>([{ metrics: '', category: '' }]);
+  const [rows, setRows] = useState<Row[]>([getEmptyRow(newYears)]);
 
-  console.log('rows:', rows);
+  function getEmptyRow(years: string[]) {
+    let row: Row = { metrics: '', category: '' };
+    years.forEach(year => {
+      const actualYear = '20' + year.slice(3);
+      row[actualYear] = '';
+    });
+    return row;
+  }
 
   // Function to handle adding a new row
+  // Function to handle adding a new row
   const addRow = () => {
-    setRows(prevRows => [...prevRows, { metrics: '', category: '' }]);
+    setRows(prevRows => [...prevRows, getEmptyRow(newYears)]);
   };
 
   // Function to handle input change in the table
@@ -117,9 +166,9 @@ const Section_1 = () => {
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-              {countryList.map((item, index) => (
-                <SelectItem key={index} value={item.value}>
-                  {item.label}
+              {yearRanges.map((range, index) => (
+                <SelectItem key={index} value={range}>
+                  {range}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -128,17 +177,18 @@ const Section_1 = () => {
       </div>
       {/* table */}
       <Pagination
-        items={[]}
-        itemsPerPage={10}
+        items={rows}
+        itemsPerPage={5}
         render={currentItems => (
           <div className="relative shadow-md rounded-2xl w-full h-auto">
             <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
+              {/* table header */}
               <TableHeader>
                 <TableRow className="text-black text-lg font-bold">
                   <TableHead className="w-1/6 py-2 text-center">
                     Metrics
                   </TableHead>
-                  {years.map(year => (
+                  {newYears.map(year => (
                     <TableHead key={year} className="w-[13%] py-2 text-center">
                       {year}
                     </TableHead>
@@ -153,8 +203,10 @@ const Section_1 = () => {
                   )}
                 </TableRow>
               </TableHeader>
+
+              {/* table body */}
               <TableBody className="bg-white dark:bg-[#39463E]">
-                {rows.map((row, rowIndex) => (
+                {currentItems.map((row, rowIndex) => (
                   <TableRow key={rowIndex}>
                     <TableCell className="text-center">
                       <Select
@@ -172,15 +224,15 @@ const Section_1 = () => {
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                          {countryList.map((item, index) => (
-                            <SelectItem key={index} value={item.value}>
-                              {item.label}
+                          {metrics.map((item, index) => (
+                            <SelectItem key={index} value={item}>
+                              {item}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    {years.map((year, yearIndex) => (
+                    {newYears.map((year, yearIndex) => (
                       <TableCell key={year} className="text-center">
                         <Input
                           type="text"
@@ -207,9 +259,9 @@ const Section_1 = () => {
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                          {countryList.map((item, index) => (
-                            <SelectItem key={index} value={item.value}>
-                              {item.label}
+                          {category.map((item, index) => (
+                            <SelectItem key={index} value={item}>
+                              {item}
                             </SelectItem>
                           ))}
                         </SelectContent>
