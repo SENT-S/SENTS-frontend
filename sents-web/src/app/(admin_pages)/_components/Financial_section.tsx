@@ -236,14 +236,7 @@ const Financial_section = ({
         </ul>
 
         <div className="flex justify-center items-center">
-          <ModalForms
-            ButtonText="Add New Statement"
-            FormTitle="Add a New Statement"
-            onSubmit={() => null}
-            ButtonStyle="bg-[#148C59] text-white p-4 rounded-2xl hover:bg-[#1d6346] hover:text-[39463E]"
-          >
-            <AddNewStatementContent />
-          </ModalForms>
+          <AddNewStatementContent />
         </div>
       </div>
     </div>
