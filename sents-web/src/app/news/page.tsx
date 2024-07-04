@@ -25,7 +25,7 @@ import {
 import ModalForms from '@/components/admin/modal';
 import { countryList, companyList } from '@/services/mockData/mock';
 
-const Categories = ['News', 'Events', 'Resources', 'Teams'];
+const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
 const NewsPage = () => {
   const router = useRouter();
@@ -192,6 +192,20 @@ const NewsPage = () => {
           </div>
 
           <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
+            {selectedLink === 'Top News' && (
+              <TopNews
+                data={selectedNewsData}
+                showCheckbox={showCheckbox}
+                selectedIDs={selectedIds}
+                onCheckboxChange={(id: string, checked: boolean) => {
+                  if (checked) {
+                    setSelectedIds([...selectedIds, id]);
+                  } else {
+                    setSelectedIds(selectedIds.filter(item => item !== id));
+                  }
+                }}
+              />
+            )}
             {selectedLink === 'News' && (
               <News
                 data={selectedNewsData}
