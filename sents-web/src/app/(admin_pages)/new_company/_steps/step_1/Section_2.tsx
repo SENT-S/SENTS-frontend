@@ -35,7 +35,7 @@ const Section_2 = () => {
             className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
           />
         </div>
-        <div className="grid grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           <div className="space-y-3">
             <div className="text-left text-[#0D4222] dark:text-gray-300">
               <Label className="text-2xl font-medium">Mission Statement</Label>
@@ -63,7 +63,7 @@ const Section_2 = () => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           <div className="space-y-3">
             <div className="flex items-center text-[#0D4222] dark:text-gray-300">
               <HiOutlineUser size={20} className="mr-2" />
@@ -90,7 +90,7 @@ const Section_2 = () => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           <div className="space-y-3">
             <div className="flex items-center text-[#0D4222] dark:text-gray-300">
               <MdOutlineDateRange size={20} className="mr-2" />
