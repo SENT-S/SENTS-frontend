@@ -60,6 +60,7 @@ export default function FormComponent({
         if (result?.error) {
           toast.error(result.error, {
             style: { background: 'red', color: 'white', border: 'none' },
+            position: 'top-center',
           });
         } else {
           toast.success('User authenticated successfully', {
@@ -68,6 +69,7 @@ export default function FormComponent({
               color: 'white',
               border: 'none',
             },
+            position: 'top-center',
             duration: 5000,
           });
 
@@ -83,6 +85,7 @@ export default function FormComponent({
           toast.success('Registration successful, redirecting...', {
             style: { background: 'green', color: 'white', border: 'none' },
             duration: 5000,
+            position: 'top-center',
           });
 
           // Redirect to success page after 2 seconds
@@ -93,6 +96,7 @@ export default function FormComponent({
           toast.error('Registration failed, please try again', {
             style: { background: 'red', color: 'white', border: 'none' },
             duration: 5000,
+            position: 'top-center',
           });
         }
       }
@@ -100,6 +104,7 @@ export default function FormComponent({
       toast.error('An error occurred during the process', {
         style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
+        position: 'top-center',
       });
     } finally {
       setLoading(false);
