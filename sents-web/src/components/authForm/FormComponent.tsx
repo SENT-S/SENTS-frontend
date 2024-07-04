@@ -16,19 +16,28 @@ import { useRouter } from 'next/navigation';
 import { registerUser } from '@/services/apis/registerUser';
 import { toast } from 'sonner';
 import { ScaleLoader } from 'react-spinners';
+import Apple from '@/public/icons/apple.png';
+import Google from '@/public/icons/google.png';
+import Microsoft from '@/public/icons/micro.png';
 
 interface FormComponent {
   title: string;
   children: React.ReactNode;
   footerText: string;
-  socialButtons: { id: string; icon: StaticImageData; name: string }[];
+  socialButtons?: { id: string; icon: StaticImageData; name: string }[];
 }
+
+const defaultSocialButtons = [
+  { id: 'apple', icon: Apple, name: 'Apple' },
+  { id: 'google', icon: Google, name: 'Google' },
+  { id: 'microsoft', icon: Microsoft, name: 'Microsoft' },
+];
 
 export default function FormComponent({
   title,
   children,
   footerText,
-  socialButtons,
+  socialButtons = defaultSocialButtons,
 }: FormComponent) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
