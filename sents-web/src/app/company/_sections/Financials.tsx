@@ -37,6 +37,7 @@ import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import Pagination from '@/components/pagination';
 import { formatData } from '@/utils/tableFunctions';
+import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
 
 // Define types for better type checking
 type FormattedMetric = {
@@ -100,17 +101,21 @@ const Financials = ({
   const [selectedMetric, setSelectedMetric] = useState<FormattedMetric | null>(
     null,
   );
-
   const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: 5 },
-    (_, i) => `FY’${String(currentYear - i - 1).slice(-2)}`,
-  ).reverse();
+  const yearRanges = getYearRanges();
 
   const chartYears = Array.from(
     { length: 5 },
     (_, i) => `${currentYear - i - 1}`,
   ).reverse();
+
+  const [yearRange, setYearRange] = useState(yearRanges[0]);
+  const [newYears, setNewYears] = useState<string[]>([]);
+
+  useEffect(() => {
+    const rangeYears = getRangeYears(yearRange);
+    setNewYears(rangeYears);
+  }, [yearRange]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -156,7 +161,7 @@ const Financials = ({
   };
 
   const chartData = selectedMetric
-    ? years.map((year, index) => {
+    ? newYears.map((year, index) => {
         const value = selectedMetric[year];
         // Check if the value is a percentage
         if (typeof value === 'string' && value.endsWith('%')) {
@@ -250,7 +255,29 @@ const Financials = ({
             bgColor={true}
           />
           {selectedData && selectedData.length > 0 && (
-            <div className="flex justify-end gap-3 items-center">
+            <div className="flex justify-between gap-3 items-center">
+              <div>
+                <Select
+                  onValueChange={value => setYearRange(value)}
+                  defaultValue={yearRanges[0]}
+                >
+                  <SelectTrigger className="rounded-2xl p-2 md:p-4 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
+                    <SelectValue
+                      placeholder="Range"
+                      className="text-center w-full"
+                    >
+                      {yearRange}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
+                    {yearRanges.map((range, index) => (
+                      <SelectItem key={index} value={range}>
+                        {range}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <Button
                 className="bg-green-600 text-white hover:bg-green-700"
                 onClick={() => {
@@ -271,7 +298,7 @@ const Financials = ({
                   <TableHeader>
                     <TableRow className="text-black font-semibold">
                       <TableHead className="w-1/6 py-2">Metrics</TableHead>
-                      {years.map(year => (
+                      {newYears.map(year => (
                         <TableHead key={year} className="w-[13%] py-2">
                           {year}
                         </TableHead>
@@ -302,7 +329,7 @@ const Financials = ({
                             <TableCell className="py-2">
                               {item.metrics}
                             </TableCell>
-                            {years.map(year => (
+                            {newYears.map(year => (
                               <TableCell key={year} className="flex-grow py-2">
                                 {isNaN(Number(item[year]))
                                   ? '__'

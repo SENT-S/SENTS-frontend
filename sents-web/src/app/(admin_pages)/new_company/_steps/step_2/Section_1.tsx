@@ -137,7 +137,7 @@ const Section_1 = () => {
         <Add_new_metric />
         <div>
           <Select onValueChange={value => setYearRange(value)}>
-            <SelectTrigger className="rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
+            <SelectTrigger className="rounded-2xl p-2 md:p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
               <SelectValue placeholder="Range" className="text-center w-full">
                 {yearRange}
               </SelectValue>
