@@ -2,7 +2,17 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import FormModal from './modal';
 
-const Add_new_category = () => {
+type Add_new_categoryProps = {
+  ButtonText?: string;
+  Icon?: React.ReactNode;
+  ButtonStyle?: string;
+};
+
+const Add_new_category = ({
+  ButtonText,
+  Icon,
+  ButtonStyle,
+}: Add_new_categoryProps) => {
   const [document, setDocument] = useState<File | null>(null);
 
   const handleSubmit = async (e: any) => {
@@ -19,10 +29,14 @@ const Add_new_category = () => {
 
   return (
     <FormModal
-      ButtonText="Add Category"
+      ButtonText={ButtonText}
       FormTitle="Add a New Category"
       onSubmit={handleSubmit}
-      ButtonStyle="bg-[#E6EEEA] text-[#39463E] p-2 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+      Icon={Icon}
+      ButtonStyle={
+        ButtonStyle ||
+        'bg-[#E6EEEA] text-[#39463E] p-2 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]'
+      }
     >
       <div className="space-y-3">
         <Input

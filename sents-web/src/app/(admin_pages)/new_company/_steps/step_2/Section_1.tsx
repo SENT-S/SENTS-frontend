@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
 
 type Row = {
   metrics: string;
@@ -49,35 +50,13 @@ const metrics = [
 ];
 
 const Section_1 = () => {
-  const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: 5 },
-    (_, i) => `FY’${String(currentYear - i - 1).slice(-2)}`,
-  ).reverse();
-  let startYear = currentYear - 1; // Start from the year before the current year
-  let endYear = 2000; // End at the year 2000
-
-  const yearRanges = [];
-
-  for (let i = startYear; i >= endYear; i -= 5) {
-    // Ensure the range does not go below the end year
-    const rangeStart = Math.max(i - 4, endYear);
-    yearRanges.push(
-      `FY'${String(rangeStart).slice(-2)} - FY'${String(i).slice(-2)}`,
-    );
-  }
+  const yearRanges = getYearRanges();
 
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
 
   useEffect(() => {
-    const [start, end] = yearRange
-      .split(' - ')
-      .map(year => Number('20' + year.slice(-2)));
-    const rangeYears = Array.from(
-      { length: end - start + 1 },
-      (_, i) => `FY’${String(start + i).slice(-2)}`,
-    );
+    const rangeYears = getRangeYears(yearRange);
     setNewYears(rangeYears);
   }, [yearRange]);
 
@@ -93,7 +72,6 @@ const Section_1 = () => {
     return row;
   }
 
-  // Function to handle adding a new row
   // Function to handle adding a new row
   const addRow = () => {
     setRows(prevRows => [...prevRows, getEmptyRow(newYears)]);
@@ -155,7 +133,7 @@ const Section_1 = () => {
         >
           Add row <GoPlusCircle className="ml-3" size={18} />
         </Button>
-        <Add_new_category />
+        <Add_new_category ButtonText="Add Category" />
         <Add_new_metric />
         <div>
           <Select onValueChange={value => setYearRange(value)}>
@@ -214,7 +192,7 @@ const Section_1 = () => {
                         }
                         value={row.metrics}
                       >
-                        <SelectTrigger className="rounded-lg p-2 flex justify-between border dark:text-white dark:bg-[#39463E]">
+                        <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl">
                           <SelectValue
                             placeholder="Metrics"
                             className="text-center w-full"
@@ -236,6 +214,7 @@ const Section_1 = () => {
                         <Input
                           type="text"
                           value={row['20' + year.slice(3)] || ''}
+                          className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl"
                           onChange={e =>
                             handleInputChange(e, rowIndex, '20' + year.slice(3))
                           }
@@ -249,7 +228,7 @@ const Section_1 = () => {
                         }
                         value={row.category}
                       >
-                        <SelectTrigger className="rounded-lg p-2 flex justify-between border dark:text-white dark:bg-[#39463E]">
+                        <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl">
                           <SelectValue
                             placeholder="Category"
                             className="text-center w-full"

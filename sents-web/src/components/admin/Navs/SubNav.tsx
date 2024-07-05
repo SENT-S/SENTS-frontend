@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { GoPlusCircle } from 'react-icons/go';
-import ModalForms from '@/components/admin/modal';
+import Add_new_category from '@/components/admin/Add_new_category';
 
 interface SubNavProps {
   links: string[];
@@ -33,20 +33,15 @@ const SubNav = ({ links, selectedLink, setSelectedLink }: SubNavProps) => {
           {link}
         </div>
       ))}
-
-      <ModalForms
-        FormTitle="Add ..."
-        onSubmit={() => null}
-        ButtonStyle="p-0 m-0"
+      <Add_new_category
         Icon={
-          <div className="flex items-center">
-            <GoPlusCircle
-              size={30}
-              className="text-[#148C59] dark:text-white text-xl cursor-pointer"
-            />
-          </div>
+          <GoPlusCircle
+            size={30}
+            className="text-[#148C59] dark:text-white text-xl cursor-pointer"
+          />
         }
-      ></ModalForms>
+        ButtonStyle="bg-none"
+      />
     </div>
   );
 };

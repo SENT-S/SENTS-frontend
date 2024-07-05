@@ -36,7 +36,7 @@ import { PiMicrosoftExcelLogoDuotone } from 'react-icons/pi';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import Pagination from '@/components/pagination';
-import formatData from '@/utils/formatTableData';
+import { formatData } from '@/utils/tableFunctions';
 
 // Define types for better type checking
 type FormattedMetric = {
