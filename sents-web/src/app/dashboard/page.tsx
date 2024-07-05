@@ -27,13 +27,6 @@ interface Company {
   }[];
 }
 
-const countryList = [
-  { label: 'Uganda', value: 'Uganda' },
-  { label: 'Kenya', value: 'Kenya' },
-  { label: 'Tanzania', value: 'Tanzania' },
-  { label: 'Rwanda', value: 'Rwanda' },
-];
-
 const Dashboard = () => {
   const router = useRouter();
   const { data: session, status } = useSession() as {
@@ -120,16 +113,18 @@ const Dashboard = () => {
                   onClick={() => setSelectedCountry(item.country)}
                 >
                   <div className="flex flex-col text-left">
-                    <h2 className="font-thin">{item.country}</h2>
+                    <h2 className="font-thin text-[18px] md:text-[24px]">
+                      {item.country}
+                    </h2>
                     <span className="text-xl font-semibold">{item.total}</span>
                   </div>
                   <div className="relative w-10 h-10 md:h-12 md:w-12 overflow-hidden">
                     <Image
                       src={item.flag}
                       alt={item.country}
-                      layout="fill"
-                      objectFit="cover"
-                      loading="eager"
+                      width={64}
+                      height={64}
+                      loading="lazy"
                     />
                   </div>
                 </div>

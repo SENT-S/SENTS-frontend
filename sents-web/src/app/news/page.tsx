@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/select';
 import ModalForms from '@/components/admin/modal';
 import { countryList, companyList } from '@/services/mockData/mock';
+import Pagination from '@/components/pagination';
 
 const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
@@ -39,7 +40,6 @@ const NewsPage = () => {
   const isAdmin = session?.user?.role === 'ADMIN';
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [selectedCompany, setSelectedCompany] = useState('Company');
-  const [selectedCategory, setSelectedCategory] = useState('News');
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectedIds, setSelectedIds] = useState([] as string[]);
 
@@ -64,10 +64,6 @@ const NewsPage = () => {
     () => newsData[selectedLink],
     [newsData, selectedLink],
   );
-
-  const handleSelectCategory = (value: string) => {
-    setSelectedCategory(value);
-  };
 
   const handleSelectCountry = (value: string) => {
     setSelectedCountry(value);
@@ -191,78 +187,84 @@ const NewsPage = () => {
             />
           </div>
 
-          <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
-            {selectedLink === 'Top News' && (
-              <TopNews
-                data={selectedNewsData}
-                showCheckbox={showCheckbox}
-                selectedIDs={selectedIds}
-                onCheckboxChange={(id: string, checked: boolean) => {
-                  if (checked) {
-                    setSelectedIds([...selectedIds, id]);
-                  } else {
-                    setSelectedIds(selectedIds.filter(item => item !== id));
-                  }
-                }}
-              />
+          <Pagination
+            items={selectedNewsData}
+            itemsPerPage={4}
+            render={currentItems => (
+              <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
+                {selectedLink === 'Top News' && (
+                  <TopNews
+                    data={currentItems}
+                    showCheckbox={showCheckbox}
+                    selectedIDs={selectedIds}
+                    onCheckboxChange={(id: string, checked: boolean) => {
+                      if (checked) {
+                        setSelectedIds([...selectedIds, id]);
+                      } else {
+                        setSelectedIds(selectedIds.filter(item => item !== id));
+                      }
+                    }}
+                  />
+                )}
+                {selectedLink === 'News' && (
+                  <News
+                    data={currentItems}
+                    showCheckbox={showCheckbox}
+                    selectedIDs={selectedIds}
+                    onCheckboxChange={(id: string, checked: boolean) => {
+                      if (checked) {
+                        setSelectedIds([...selectedIds, id]);
+                      } else {
+                        setSelectedIds(selectedIds.filter(item => item !== id));
+                      }
+                    }}
+                  />
+                )}
+                {selectedLink === 'Events' && (
+                  <Events
+                    data={currentItems}
+                    showCheckbox={showCheckbox}
+                    selectedIDs={selectedIds}
+                    onCheckboxChange={(id: string, checked: boolean) => {
+                      if (checked) {
+                        setSelectedIds([...selectedIds, id]);
+                      } else {
+                        setSelectedIds(selectedIds.filter(item => item !== id));
+                      }
+                    }}
+                  />
+                )}
+                {selectedLink === 'Resources' && (
+                  <Resources
+                    data={currentItems || []}
+                    showCheckbox={showCheckbox}
+                    selectedIDs={selectedIds}
+                    onCheckboxChange={(id: string, checked: boolean) => {
+                      if (checked) {
+                        setSelectedIds([...selectedIds, id]);
+                      } else {
+                        setSelectedIds(selectedIds.filter(item => item !== id));
+                      }
+                    }}
+                  />
+                )}
+                {selectedLink === 'Teams' && (
+                  <Teams
+                    data={currentItems}
+                    showCheckbox={showCheckbox}
+                    selectedIDs={selectedIds}
+                    onCheckboxChange={(id: string, checked: boolean) => {
+                      if (checked) {
+                        setSelectedIds([...selectedIds, id]);
+                      } else {
+                        setSelectedIds(selectedIds.filter(item => item !== id));
+                      }
+                    }}
+                  />
+                )}
+              </div>
             )}
-            {selectedLink === 'News' && (
-              <News
-                data={selectedNewsData}
-                showCheckbox={showCheckbox}
-                selectedIDs={selectedIds}
-                onCheckboxChange={(id: string, checked: boolean) => {
-                  if (checked) {
-                    setSelectedIds([...selectedIds, id]);
-                  } else {
-                    setSelectedIds(selectedIds.filter(item => item !== id));
-                  }
-                }}
-              />
-            )}
-            {selectedLink === 'Events' && (
-              <Events
-                data={selectedNewsData}
-                showCheckbox={showCheckbox}
-                selectedIDs={selectedIds}
-                onCheckboxChange={(id: string, checked: boolean) => {
-                  if (checked) {
-                    setSelectedIds([...selectedIds, id]);
-                  } else {
-                    setSelectedIds(selectedIds.filter(item => item !== id));
-                  }
-                }}
-              />
-            )}
-            {selectedLink === 'Resources' && (
-              <Resources
-                data={selectedNewsData}
-                showCheckbox={showCheckbox}
-                selectedIDs={selectedIds}
-                onCheckboxChange={(id: string, checked: boolean) => {
-                  if (checked) {
-                    setSelectedIds([...selectedIds, id]);
-                  } else {
-                    setSelectedIds(selectedIds.filter(item => item !== id));
-                  }
-                }}
-              />
-            )}
-            {selectedLink === 'Teams' && (
-              <Teams
-                data={selectedNewsData}
-                showCheckbox={showCheckbox}
-                selectedIDs={selectedIds}
-                onCheckboxChange={(id: string, checked: boolean) => {
-                  if (checked) {
-                    setSelectedIds([...selectedIds, id]);
-                  } else {
-                    setSelectedIds(selectedIds.filter(item => item !== id));
-                  }
-                }}
-              />
-            )}
-          </div>
+          />
         </>
       )}
     </MainLayout>

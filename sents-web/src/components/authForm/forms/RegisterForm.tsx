@@ -19,6 +19,7 @@ const RegisterForm = () => {
           id="email"
           placeholder="JoneDoe@gmail.com"
           name="email"
+          autoComplete="email"
         />
       </div>
       <div className="flex items-center space-x-6">

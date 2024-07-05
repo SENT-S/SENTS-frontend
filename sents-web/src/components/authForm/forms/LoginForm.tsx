@@ -20,6 +20,7 @@ const LoginForm = () => {
           placeholder="JoneDoe@gmail.com"
           name="email"
           type="email"
+          autoComplete="email"
         />
       </div>
       <div className="space-y-1">
@@ -33,6 +34,7 @@ const LoginForm = () => {
             placeholder="Enter Password"
             name="password"
             type={showPassword ? 'text' : 'password'}
+            autoComplete="current-password"
           />
           <button
             type="button"
