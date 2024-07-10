@@ -32,7 +32,7 @@ const AdminLinks = [
     name: 'Dashboard',
     icon: LuLayoutDashboard,
     path: '/dashboard',
-    activePaths: ['/dashboard', '/company', 'new_company', 'edit_company'],
+    activePaths: ['', '/dashboard', '/company', 'new_company', 'edit_company'],
   },
   {
     name: 'News',

@@ -1,8 +1,8 @@
 import React from 'react';
-import LandingPage from './landing/page';
+import Dashboard from './dashboard/page';
 
 const Index = () => {
-  return <LandingPage />;
+  return <Dashboard />;
 };
 
 export default Index;

@@ -6,7 +6,6 @@ const nextConfig = {
       { protocol: 'https', hostname: 'flagsapi.com' },
       { protocol: 'https', hostname: 'unsplash.com' },
     ],
-    domains: ['source.unsplash.com', 'flagsapi.com', 'unsplash.com'],
   },
 };
 
