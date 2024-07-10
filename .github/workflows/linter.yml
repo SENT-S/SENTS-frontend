@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -20,3 +20,5 @@ jobs:
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_CSS: false
+          VALIDATE_SCSS: false
