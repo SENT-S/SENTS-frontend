@@ -36,7 +36,12 @@
     "src/app/api/auth/[...nextauth]/**/*.ts",
     "src/lib/**/*.ts",
     "src/utils/**/*.ts",
-    "src/services/**/*.ts"
+    "src/services/**/*.ts",
+    "src/app/api/auth/[...nextauth]/options.ts",
+    "src/app/api/auth/[...nextauth]/route.ts",
+    "src/lib/utils.ts",
+    "src/middleware.ts",
+    "src/utils/types.ts"
   ],
   "exclude": ["node_modules"]
 }
