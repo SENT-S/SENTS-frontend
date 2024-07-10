@@ -94,6 +94,18 @@ const AdminLinks = [
   },
 ];
 
+const SkeletonComponent = ({
+  height,
+  width,
+}: {
+  height: string;
+  width: string;
+}) => (
+  <Skeleton
+    className={`h-${height} w-${width} rounded-full bg-gray-200 dark:bg-[#0e120f]`}
+  />
+);
+
 const Header = () => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
@@ -104,6 +116,7 @@ const Header = () => {
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
   const isAdmin = session?.user?.role === 'ADMIN';
+  const { image = '', name, email } = session?.user || {};
 
   // for search
   const [searchData, setSearchData] = useState(initialData);
@@ -214,23 +227,21 @@ const Header = () => {
             </button>
             {status === 'loading' ? (
               <div className="flex items-center space-x-4 ml-2">
-                <Skeleton className="h-12 w-12 rounded-full bg-gray-200 dark:bg-[#0e120f]" />
+                <SkeletonComponent height="12" width="12" />
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-[100px] bg-gray-200 dark:bg-[#0e120f]" />
-                  <Skeleton className="h-4 w-[150px] bg-gray-200 dark:bg-[#0e120f]" />
+                  <SkeletonComponent height="4" width="[100px]" />
+                  <SkeletonComponent height="4" width="[150px]" />
                 </div>
               </div>
             ) : (
               <div className="flex items-center ml-4">
                 <Avatar style={{ boxShadow: '0 0 0 1px #148c59' }}>
-                  <AvatarImage src={session?.user?.image || ''} />
+                  <AvatarImage src={image} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <div className="ml-2 dark:text-white">
-                  <p className="font-bold">{session?.user?.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {session?.user?.email}
-                  </p>
+                  <p className="font-bold">{name}</p>
+                  <p className="text-sm text-gray-500">{email}</p>
                 </div>
               </div>
             )}

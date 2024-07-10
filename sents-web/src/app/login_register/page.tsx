@@ -16,7 +16,7 @@ const Auth = () => {
         size="icon"
         className="ml-3 absolute top-4 left-4 dark:text-white"
         onClick={() => {
-          router.push('/');
+          router.push('/landing');
         }}
       >
         <IoChevronBackOutline />

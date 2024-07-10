@@ -87,6 +87,14 @@ const NewsPage = () => {
     router.push('/create_news');
   };
 
+  const handleCheckboxChange = (id: string, checked: boolean) => {
+    if (checked) {
+      setSelectedIds([...selectedIds, id]);
+    } else {
+      setSelectedIds(selectedIds.filter(item => item !== id));
+    }
+  };
+
   return (
     <MainLayout>
       {isLoading ? (
@@ -197,13 +205,7 @@ const NewsPage = () => {
                     data={currentItems}
                     showCheckbox={showCheckbox}
                     selectedIDs={selectedIds}
-                    onCheckboxChange={(id: string, checked: boolean) => {
-                      if (checked) {
-                        setSelectedIds([...selectedIds, id]);
-                      } else {
-                        setSelectedIds(selectedIds.filter(item => item !== id));
-                      }
-                    }}
+                    onCheckboxChange={handleCheckboxChange}
                   />
                 )}
                 {selectedLink === 'News' && (
@@ -211,13 +213,7 @@ const NewsPage = () => {
                     data={currentItems}
                     showCheckbox={showCheckbox}
                     selectedIDs={selectedIds}
-                    onCheckboxChange={(id: string, checked: boolean) => {
-                      if (checked) {
-                        setSelectedIds([...selectedIds, id]);
-                      } else {
-                        setSelectedIds(selectedIds.filter(item => item !== id));
-                      }
-                    }}
+                    onCheckboxChange={handleCheckboxChange}
                   />
                 )}
                 {selectedLink === 'Events' && (
@@ -225,13 +221,7 @@ const NewsPage = () => {
                     data={currentItems}
                     showCheckbox={showCheckbox}
                     selectedIDs={selectedIds}
-                    onCheckboxChange={(id: string, checked: boolean) => {
-                      if (checked) {
-                        setSelectedIds([...selectedIds, id]);
-                      } else {
-                        setSelectedIds(selectedIds.filter(item => item !== id));
-                      }
-                    }}
+                    onCheckboxChange={handleCheckboxChange}
                   />
                 )}
                 {selectedLink === 'Resources' && (
@@ -239,13 +229,7 @@ const NewsPage = () => {
                     data={currentItems || []}
                     showCheckbox={showCheckbox}
                     selectedIDs={selectedIds}
-                    onCheckboxChange={(id: string, checked: boolean) => {
-                      if (checked) {
-                        setSelectedIds([...selectedIds, id]);
-                      } else {
-                        setSelectedIds(selectedIds.filter(item => item !== id));
-                      }
-                    }}
+                    onCheckboxChange={handleCheckboxChange}
                   />
                 )}
                 {selectedLink === 'Teams' && (
@@ -253,13 +237,7 @@ const NewsPage = () => {
                     data={currentItems}
                     showCheckbox={showCheckbox}
                     selectedIDs={selectedIds}
-                    onCheckboxChange={(id: string, checked: boolean) => {
-                      if (checked) {
-                        setSelectedIds([...selectedIds, id]);
-                      } else {
-                        setSelectedIds(selectedIds.filter(item => item !== id));
-                      }
-                    }}
+                    onCheckboxChange={handleCheckboxChange}
                   />
                 )}
               </div>
