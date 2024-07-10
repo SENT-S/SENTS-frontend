@@ -19,5 +19,4 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: false
-          IGNORE_GITIGNORED_FILES: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
