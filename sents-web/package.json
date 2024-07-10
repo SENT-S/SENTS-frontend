@@ -55,6 +55,7 @@
     "eslint-config-prettier": "^9.1.0",
     "install": "^0.13.0",
     "postcss": "^8",
+    "postcss-scss": "^4.0.9",
     "prettier": "^3.2.5",
     "sass": "^1.74.1",
     "stylelint-config-recommended": "^14.0.1",
