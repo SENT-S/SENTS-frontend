@@ -28,23 +28,34 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const [companyData, setCompanyData] = useState<any>({});
   const [newsData, setNewsData] = useState<any>([]);
   const [financialData, setFinancialData] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const companyId = parseInt(params.companyId);
 
   const fetchCompanies = useCallback(async () => {
+    setIsLoading(true);
+
     try {
       const companyData = await getCompany(companyId);
       const newsData = await getCompanyNews(companyId);
       const financialData = await getCompanyFinancials(companyId);
 
-      setCompanyData(companyData);
+      if (
+        companyData.status !== 200 ||
+        newsData.status !== 200 ||
+        financialData.status !== 200
+      ) {
+        throw new Error('Failed to fetch data');
+      }
+
+      setCompanyData(companyData.data.company_details);
       setNewsData(newsData);
       setFinancialData(financialData);
-      setIsLoading(false);
     } catch (error) {
       console.error('Failed to fetch company', error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [companyId]); // Assuming companyId is available in the scope
+  }, [companyId]);
 
   useEffect(() => {
     fetchCompanies();
@@ -53,7 +64,13 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const renderSection = () => {
     switch (selectedLink) {
       case 'Overview':
-        return <Overview_section companyID={params.companyId} />;
+        return (
+          <Overview_section
+            isLoading={isLoading}
+            companyData={companyData}
+            companyID={params.companyId}
+          />
+        );
       case 'Financials':
         return (
           <Financial_section
