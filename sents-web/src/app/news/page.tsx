@@ -45,19 +45,17 @@ const NewsPage = () => {
 
   useEffect(() => {
     const fetchNews = async () => {
-      if (session?.token) {
-        const response = await getAllCompanyNews(session.token);
-        if (response.status === 200) {
-          setNewsData(response.data);
-          setIsLoading(false);
-        } else {
-          console.error('Failed to fetch news', response);
-        }
+      const response = await getAllCompanyNews();
+      if (response.status === 200) {
+        setNewsData(response.data);
+        setIsLoading(false);
+      } else {
+        console.error('Failed to fetch news', response);
       }
     };
 
     fetchNews();
-  }, [session]);
+  }, []);
 
   // Get the news data for the selected link
   const selectedNewsData = useMemo(

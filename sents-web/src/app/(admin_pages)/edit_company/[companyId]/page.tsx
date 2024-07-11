@@ -33,12 +33,9 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const fetchCompanies = useCallback(async () => {
     if (session?.token) {
       const companyId = parseInt(params.companyId);
-      const response = await getCompany(session.token, companyId);
-      const newsResponse = await getCompanyNews(session.token, companyId);
-      const financialResponse = await getCompanyFinancials(
-        session.token,
-        companyId,
-      );
+      const response = await getCompany(companyId);
+      const newsResponse = await getCompanyNews(companyId);
+      const financialResponse = await getCompanyFinancials(companyId);
       if (
         response.status === 200 &&
         newsResponse.status === 200 &&

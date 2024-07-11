@@ -36,28 +36,23 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchCompanies = useCallback(async () => {
-      if (session?.token) {
-        const companyId = parseInt(params.companyId);
-        const response = await getCompany(session.token, companyId);
-        const newsResponse = await getCompanyNews(session.token, companyId);
-        const financialResponse = await getCompanyFinancials(
-          session.token,
-          companyId,
-        );
-        if (
-          response.status === 200 &&
-          newsResponse.status === 200 &&
-          financialResponse.status === 200
-        ) {
-          setCompanyData(response.data);
-          setNewsData(newsResponse.data);
-          setFinancialData(financialResponse.data);
-          setIsLoading(false);
-        } else {
-          console.error('Failed to fetch company', response);
-        }
+      const companyId = parseInt(params.companyId);
+      const response = await getCompany(companyId);
+      const newsResponse = await getCompanyNews(companyId);
+      const financialResponse = await getCompanyFinancials(companyId);
+      if (
+        response.status === 200 &&
+        newsResponse.status === 200 &&
+        financialResponse.status === 200
+      ) {
+        setCompanyData(response.data);
+        setNewsData(newsResponse.data);
+        setFinancialData(financialResponse.data);
+        setIsLoading(false);
+      } else {
+        console.error('Failed to fetch company', response);
       }
-    }, [session, params.companyId]);
+    }, [params.companyId]);
 
     useEffect(() => {
       fetchCompanies();

@@ -29,9 +29,8 @@ interface Company {
 
 const Dashboard = () => {
   const router = useRouter();
-  const { data: session, status } = useSession() as {
+  const { data: session } = useSession() as {
     data: CustomSession;
-    status: 'loading' | 'authenticated' | 'unauthenticated';
   };
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [showEdit, setShowEdit] = useState(false);
@@ -41,19 +40,17 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      if (session?.token) {
-        const response = await getCompanies(session.token);
-        if (response.status === 200) {
-          setCompanies(response.data);
-          setIsLoading(false);
-        } else {
-          console.error('Failed to fetch companies', response);
-        }
+      const response = await getCompanies();
+      if (response.status === 200) {
+        setCompanies(response.data);
+        setIsLoading(false);
+      } else {
+        console.error('Failed to fetch companies', response);
       }
     };
 
     fetchCompanies();
-  }, [session]);
+  }, []);
 
   const companyCountries = companies.map((item: Company) => ({
     country: item?.company_country,
