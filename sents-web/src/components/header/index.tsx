@@ -137,24 +137,22 @@ const Header = () => {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      if (session?.token) {
-        const response = await getCompanies(session.token);
-        if (response.status === 200) {
-          // Flatten the data into a single array of companies
-          const flattenedData = response.data.flatMap(
-            (data: any) => data.list_of_companies,
-          );
-          setSearchData(flattenedData);
-          // Update the fuse instance with the new data
-          setFuse(new Fuse(flattenedData, options));
-        } else {
-          console.error('Failed to fetch companies', response);
-        }
+      const response = await getCompanies();
+      if (response.status === 200) {
+        // Flatten the data into a single array of companies
+        const flattenedData = response.data.flatMap(
+          (data: any) => data.list_of_companies,
+        );
+        setSearchData(flattenedData);
+        // Update the fuse instance with the new data
+        setFuse(new Fuse(flattenedData, options));
+      } else {
+        console.error('Failed to fetch companies', response);
       }
     };
 
     fetchCompanies();
-  }, [session]);
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
