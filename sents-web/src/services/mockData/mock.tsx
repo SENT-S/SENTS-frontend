@@ -51,6 +51,14 @@ export const companyList = [
   { label: 'Company 3', value: 'Company 3' },
 ];
 
+export const newsCategoryList = [
+  { label: 'Top News', value: 'Top News' },
+  { label: 'News', value: 'News' },
+  { label: 'Events', value: 'Events' },
+  { label: 'Resources', value: 'Resources' },
+  { label: 'Teams', value: 'Teams' },
+];
+
 export const sectorList = [
   { label: 'Financial Services', value: 'Financial Services' },
   { label: 'Insurance', value: 'Insurance' },
