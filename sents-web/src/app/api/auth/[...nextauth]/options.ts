@@ -54,6 +54,7 @@ export const providers = [
 
 export const pages = {
   signIn: '/login_register',
+  signOut: '/login_register',
   error: '/error',
 };
 

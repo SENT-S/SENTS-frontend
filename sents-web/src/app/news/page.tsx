@@ -215,12 +215,20 @@ const NewsPage = () => {
           {/* Admin features */}
           {isAdmin && (
             <div className="flex gap-6 items-center">
+              {/* button for all this clears the selected company */}
+              <Button
+                type="button"
+                className="bg-[#39463E] text-white px-4 py-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
+                onClick={() => setSelectedCompany('')}
+              >
+                All
+              </Button>
               <Select
                 onValueChange={handleSelectCountry}
                 value={selectedCountry}
                 defaultValue={selectedCountry}
               >
-                <SelectTrigger className="md:w-[280px] rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
+                <SelectTrigger className="md:w-[280px] rounded-2xl p-2 md:p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
                   <SelectValue
                     placeholder="Select Country"
                     className="text-center w-full"
@@ -241,7 +249,7 @@ const NewsPage = () => {
                 value={selectedCompany}
                 defaultValue={selectedCompany}
               >
-                <SelectTrigger className="md:w-[280px] rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
+                <SelectTrigger className="md:w-[280px] rounded-2xl p-2 md:p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
                   <SelectValue
                     placeholder="Select Company"
                     className="text-center w-full"
