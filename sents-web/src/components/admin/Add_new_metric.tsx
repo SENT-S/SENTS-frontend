@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import FormModal from './modal';
 import { Textarea } from '@/components/ui/textarea';
 import { addFinancialMetric } from '@/services/apis/companies';
+import { toast } from 'sonner';
 
 const Add_new_metric = () => {
   const [loading, setLoading] = useState(false);
@@ -17,13 +18,40 @@ const Add_new_metric = () => {
     try {
       // Attempt to add the financial metric
       const res = await addFinancialMetric(data);
-      console.log(res);
 
-      // If successful, clear the form
-      e.target.reset();
-    } catch (error) {
+      if (res.status === 201) {
+        // If successful, clear the form
+        e.target.reset();
+        // Display a success message
+        toast.success('Financial data category added successfully', {
+          style: {
+            background: 'green',
+            color: 'white',
+            border: 'none',
+          },
+          position: 'top-center',
+          duration: 5000,
+        });
+      } else {
+        if (res.error) {
+          let errorMessage = '';
+
+          if (res.error.category_name) {
+            errorMessage = `${Object.keys(res.error)}: ${Object.values(res.error.category_name)}`;
+          } else {
+            errorMessage = res.error;
+          }
+
+          throw new Error(errorMessage);
+        }
+      }
+    } catch (error: any) {
       // Log any errors that occur
-      console.error('Failed to add financial metric:', error);
+      toast.error(error, {
+        style: { background: 'red', color: 'white', border: 'none' },
+        position: 'top-center',
+        duration: 5000,
+      });
     } finally {
       // Set loading to false after the async operation finishes
       setLoading(false);
@@ -47,7 +75,7 @@ const Add_new_metric = () => {
         <Textarea
           name="metric_description"
           placeholder="Enter Metric Description"
-          className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] max-h-[150px] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
+          className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] max-h-[150px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
         />
       </div>
     </FormModal>
