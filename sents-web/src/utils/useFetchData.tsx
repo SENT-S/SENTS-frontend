@@ -4,17 +4,15 @@ import { getSession } from 'next-auth/react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const useAxiosInstance = (token: string) => {
-  return axios.create({
-    baseURL: BASE_URL,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
+// Create an Axios instance outside the function to reuse it across different function calls
+const axiosInstance = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-// Generic function to get data
+// Generic function to fetch data
 const useFetchData = async (
   endpoint: string,
   method: 'get' | 'post',
@@ -25,7 +23,10 @@ const useFetchData = async (
     if (!token) {
       throw new Error('Session token not found');
     }
-    const axiosInstance = useAxiosInstance(token as string);
+
+    // Set the Authorization header for this request
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
     const res =
       method === 'get'
         ? await axiosInstance.get(endpoint)
