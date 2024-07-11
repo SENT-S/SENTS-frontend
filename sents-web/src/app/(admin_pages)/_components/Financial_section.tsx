@@ -77,7 +77,6 @@ const Financial_section = ({
   FinancialData: any;
   companyID: any;
 }) => {
-  console.info('financialStatements', financialStatements);
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
   const [showEdit, setShowEdit] = useState(false);
   const yearRanges = getYearRanges();
