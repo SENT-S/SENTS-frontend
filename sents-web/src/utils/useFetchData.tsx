@@ -13,13 +13,14 @@ const axiosInstance = axios.create({
 });
 
 // Generic function to fetch data
-const useFetchData = async (
-  endpoint: string,
-  method: 'get' | 'post',
-  body?: any,
-) => {
+const useFetchData = async (endpoint: string, method: string, body?: any) => {
   try {
-    const { token } = (await getSession()) as CustomSession;
+    const session = await getSession();
+    if (!session) {
+      throw new Error('Session not found');
+    }
+
+    const { token } = session as CustomSession;
     if (!token) {
       throw new Error('Session token not found');
     }

@@ -29,27 +29,22 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const [newsData, setNewsData] = useState<any>([]);
   const [financialData, setFinancialData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const companyId = parseInt(params.companyId);
 
   const fetchCompanies = useCallback(async () => {
-    if (session?.token) {
-      const companyId = parseInt(params.companyId);
-      const response = await getCompany(companyId);
-      const newsResponse = await getCompanyNews(companyId);
-      const financialResponse = await getCompanyFinancials(companyId);
-      if (
-        response.status === 200 &&
-        newsResponse.status === 200 &&
-        financialResponse.status === 200
-      ) {
-        setCompanyData(response.data);
-        setNewsData(newsResponse.data);
-        setFinancialData(financialResponse.data);
-        setIsLoading(false);
-      } else {
-        console.error('Failed to fetch company', response);
-      }
+    try {
+      const companyData = await getCompany(companyId);
+      const newsData = await getCompanyNews(companyId);
+      const financialData = await getCompanyFinancials(companyId);
+
+      setCompanyData(companyData);
+      setNewsData(newsData);
+      setFinancialData(financialData);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Failed to fetch company', error);
     }
-  }, [session, params.companyId]);
+  }, [companyId]); // Assuming companyId is available in the scope
 
   useEffect(() => {
     fetchCompanies();

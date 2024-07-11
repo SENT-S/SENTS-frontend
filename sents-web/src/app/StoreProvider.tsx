@@ -40,6 +40,7 @@ const StoreProvider = ({ children }: ProviderProps) => {
   // Handle sign out if token has expired
   if (isTokenExpired()) {
     signOut();
+    localStorage.clear();
   }
 
   return <Provider store={store}>{children}</Provider>;
