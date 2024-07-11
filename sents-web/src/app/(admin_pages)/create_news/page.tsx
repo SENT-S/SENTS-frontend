@@ -191,7 +191,9 @@ const page = () => {
               </SelectContent>
             </Select>
             <Select
-              onValueChange={value => setSelectedCompany(value)}
+              onValueChange={item => {
+                setSelectedCompany(item);
+              }}
               name="company"
             >
               <SelectTrigger className="rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
