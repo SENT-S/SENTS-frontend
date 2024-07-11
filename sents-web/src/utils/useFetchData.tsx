@@ -13,7 +13,11 @@ const axiosInstance = axios.create({
 });
 
 // Generic function to fetch data
-const useFetchData = async (endpoint: string, method: string, body?: any) => {
+const useFetchData = async (
+  endpoint: string,
+  method: string = 'get',
+  body?: any,
+) => {
   try {
     const session = await getSession();
     if (!session) {

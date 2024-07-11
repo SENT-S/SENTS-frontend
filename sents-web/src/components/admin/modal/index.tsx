@@ -3,12 +3,12 @@ import React, { useRef } from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import useOutsideClick from '@/utils/useOutsideClick';
+import { ScaleLoader } from 'react-spinners';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   ButtonText?: string;
@@ -53,21 +53,26 @@ const Index = (props: Props) => {
           <form onSubmit={props.onSubmit}>
             {props.children}
             <footer className="w-full mt-4 space-y-3">
-              <button
+              <Button
                 typeof="submit"
-                className={`${props.SubmitButtonStyle ? props.SubmitButtonStyle : 'bg-[#148C59]'} text-white w-full p-3 rounded-2xl flex justify-center items-center`}
+                className={`${props.SubmitButtonStyle ? props.SubmitButtonStyle : 'bg-[#148C59] hover:bg-[#148c5ad7]'} text-white w-full p-3 rounded-2xl flex justify-center items-center`}
                 type="submit"
+                disabled={props.loading}
               >
-                {props.loading ? 'Loading...' : props.SubmitText || 'Submit'}
-              </button>
+                {props.loading ? (
+                  <ScaleLoader height={20} color="#fff" />
+                ) : (
+                  props.SubmitText || 'Submit'
+                )}
+              </Button>
               {props.CancelText && (
-                <button
+                <Button
                   className={`${props.CancelButtonStyle ? props.CancelButtonStyle : 'bg-[#F5ECEC] text-[#EA0000]'} w-full p-3 rounded-2xl flex justify-center items-center`}
                   type="button"
                   onClick={props.onCancel}
                 >
                   {props.CancelText || 'Cancel'}
-                </button>
+                </Button>
               )}
             </footer>
           </form>

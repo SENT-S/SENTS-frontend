@@ -3,6 +3,8 @@ import { RxPlus } from 'react-icons/rx';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { Button } from '@/components/ui/button';
 import CompanyCard from '../../../_components/companyCard';
+import { useSelector, useDispatch } from '@/lib/utils';
+import { resetCompanyFields } from '@/lib/ReduxSlices/create_company';
 
 const Preview = ({
   innerStep,
@@ -15,14 +17,21 @@ const Preview = ({
   innerStep: number;
   setInnerStep: any;
 }) => {
+  const dispatch = useDispatch();
+  const companyFields = useSelector(state => state.company);
   return (
     <div className="space-y-8">
-      <CompanyCard />
+      <CompanyCard
+        title={companyFields.company_name}
+        symbol={companyFields.stock_symbol}
+        description={companyFields.about_company}
+      />
       <div className="flex justify-between flex-wrap">
         <Button
           className="bg-[#39463E] flex items-center text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
           onClick={() => {
             setInnerStep(innerStep - 2);
+            dispatch(resetCompanyFields());
           }}
         >
           Add New Company <RxPlus className="ml-3" size={18} />

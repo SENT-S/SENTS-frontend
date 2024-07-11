@@ -51,6 +51,15 @@ export const companyList = [
   { label: 'Company 3', value: 'Company 3' },
 ];
 
+export const sectorList = [
+  { label: 'Financial Services', value: 'Financial Services' },
+  { label: 'Insurance', value: 'Insurance' },
+  { label: 'Utilities', value: 'Utilities' },
+  { label: 'Technology', value: 'Technology' },
+  { label: 'Healthcare', value: 'Healthcare' },
+  { label: 'Telecommunication', value: 'Telecommunication' },
+];
+
 export const financialStatements = [
   { name: 'Annual Report 2023', file: 'annual_report_2023.pdf' },
   { name: 'Q1 Financials 2023', file: 'Q1_financials_2023.pdf' },

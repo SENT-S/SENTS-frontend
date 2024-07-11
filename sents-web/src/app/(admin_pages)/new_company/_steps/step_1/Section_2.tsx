@@ -29,8 +29,8 @@ const Section_2 = () => {
             <Label className="text-2xl font-medium">About</Label>
           </div>
           <Textarea
-            value={companyFields.about}
-            onChange={e => handleInputChange('about', e.target.value)}
+            value={companyFields.about_company}
+            onChange={e => handleInputChange('about_company', e.target.value)}
             placeholder="About"
             className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
           />
@@ -70,8 +70,8 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">CEO</Label>
             </div>
             <Input
-              value={companyFields.CEO}
-              onChange={e => handleInputChange('CEO', e.target.value)}
+              value={companyFields.ceo}
+              onChange={e => handleInputChange('ceo', e.target.value)}
               placeholder="Enter CEO Name"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -83,8 +83,10 @@ const Section_2 = () => {
             </div>
             <Input
               type="number"
-              value={companyFields.employees}
-              onChange={e => handleInputChange('employees', e.target.value)}
+              value={companyFields.number_of_employees}
+              onChange={e =>
+                handleInputChange('number_of_employees', e.target.value)
+              }
               placeholder="Enter Number of Employees"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -97,9 +99,9 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">Founded</Label>
             </div>
             <Input
-              type="text"
-              value={companyFields.founded}
-              onChange={e => handleInputChange('founded', e.target.value)}
+              type="number"
+              value={companyFields.year_founded}
+              onChange={e => handleInputChange('year_founded', e.target.value)}
               placeholder="Enter Founded Year"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -110,9 +112,9 @@ const Section_2 = () => {
               <Label className="text-2xl font-medium">Website</Label>
             </div>
             <Input
-              type="text"
-              value={companyFields.website}
-              onChange={e => handleInputChange('website', e.target.value)}
+              type="url"
+              value={companyFields.website_url}
+              onChange={e => handleInputChange('website_url', e.target.value)}
               placeholder="Enter Website"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />

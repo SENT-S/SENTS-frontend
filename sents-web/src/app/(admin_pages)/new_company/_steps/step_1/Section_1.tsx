@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { countryList } from '@/services/mockData/mock';
+import { countryList, sectorList } from '@/services/mockData/mock';
 import { updateCompanyField } from '@/lib/ReduxSlices/create_company';
 import { useDispatch, useSelector } from '@/lib/utils';
 
@@ -39,15 +39,15 @@ const Section_1 = () => {
         className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
       />
       <Select
-        onValueChange={value => handleInputChange('country', value)}
-        value={companyFields.country}
+        onValueChange={value => handleInputChange('company_country', value)}
+        value={companyFields.company_country}
       >
         <SelectTrigger className="rounded-2xl p-7 flex justify-between border border-[#8D9D93] dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
           <SelectValue
             placeholder="Select Country"
             className="text-center w-full"
           >
-            {companyFields.country}
+            {companyFields.company_country}
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
@@ -59,19 +59,19 @@ const Section_1 = () => {
         </SelectContent>
       </Select>
       <Select
-        onValueChange={value => handleInputChange('sector', value)}
-        value={companyFields.sector}
+        onValueChange={value => handleInputChange('sector_or_industry', value)}
+        value={companyFields.sector_or_industry}
       >
         <SelectTrigger className="rounded-2xl p-7 flex justify-between border border-[#8D9D93] dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
           <SelectValue
             placeholder="Select Sector"
             className="text-center w-full"
           >
-            {companyFields.sector}
+            {companyFields.sector_or_industry}
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-          {countryList.map((item, index) => (
+          {sectorList.map((item, index) => (
             <SelectItem key={index} value={item.value}>
               {item.label}
             </SelectItem>
