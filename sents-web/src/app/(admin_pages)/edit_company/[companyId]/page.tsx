@@ -1,7 +1,5 @@
 'use client';
 import React, { useState, useCallback, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/utils/types';
 import {
   getCompany,
   getCompanyNews,
@@ -12,6 +10,10 @@ import Overview_section from '../../_components/Overview_section';
 import Financial_section from '../../_components/Financial_section';
 import News_section from '../../_components/News_section';
 import MainLayout from '@/layouts';
+import { Button } from '@/components/ui/button';
+import { IoArrowBack } from 'react-icons/io5';
+import { useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface CompanyDetailsProps {
   params: { companyId: string };
@@ -20,15 +22,14 @@ interface CompanyDetailsProps {
 const links = ['Overview', 'Financials', 'News'];
 
 const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
-  const { data: session } = useSession() as {
-    data: CustomSession;
-    status: 'loading' | 'authenticated' | 'unauthenticated';
-  };
+  const router = useRouter();
+
   const [selectedLink, setSelectedLink] = useState(links[0]);
   const [companyData, setCompanyData] = useState<any>({});
   const [newsData, setNewsData] = useState<any>([]);
   const [financialData, setFinancialData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [financialStatements, setFinancialStatements] = useState<any>([]);
   const companyId = parseInt(params.companyId);
 
   const fetchCompanies = useCallback(async () => {
@@ -47,6 +48,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
         throw new Error('Failed to fetch data');
       }
 
+      setFinancialStatements(companyData.data.company_documents);
       setCompanyData(companyData.data.company_details);
       setNewsData(newsData);
       setFinancialData(financialData);
@@ -76,6 +78,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
           <Financial_section
             companyID={params.companyId}
             FinancialData={financialData}
+            financialStatements={financialStatements}
           />
         );
       case 'News':
@@ -88,13 +91,32 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   return (
     <MainLayout>
       <div className="mt-4">
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            size="icon"
+            className="ml-3 mb-4"
+            onClick={() => router.back()}
+          >
+            <IoArrowBack />
+          </Button>
+        </div>
         <div className="space-y-8">
           <SubNav
             links={links}
             selectedLink={selectedLink}
             setSelectedLink={setSelectedLink}
           />
-          <div className="overflow-hidden">{renderSection()}</div>
+          <div className="overflow-hidden">
+            {isLoading
+              ? Array.from({ length: 5 }).map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    className="h-20 mb-4 rounded-xl bg-slate-200 dark:bg-slate-800"
+                  />
+                ))
+              : renderSection()}
+          </div>
         </div>
       </div>
     </MainLayout>

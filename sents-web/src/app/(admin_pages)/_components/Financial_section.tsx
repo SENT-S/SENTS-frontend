@@ -27,8 +27,6 @@ import ModalForms from '@/components/admin/modal';
 import AddNewStatementContent from '@/components/admin/Add_new_statement';
 import { formatData } from '@/utils/tableFunctions';
 import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
-import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/utils/types';
 import { MdDone } from 'react-icons/md';
 import { GoPlusCircle } from 'react-icons/go';
 import Add_new_metric from '@/components/admin/Add_new_metric';
@@ -71,16 +69,15 @@ const metrics = [
 ];
 
 const Financial_section = ({
+  financialStatements,
   FinancialData,
   companyID,
 }: {
+  financialStatements: any[];
   FinancialData: any;
   companyID: any;
 }) => {
-  const { data: session } = useSession() as {
-    data: CustomSession;
-    status: 'loading' | 'authenticated' | 'unauthenticated';
-  };
+  console.info('financialStatements', financialStatements);
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
   const [showEdit, setShowEdit] = useState(false);
   const yearRanges = getYearRanges();
@@ -263,6 +260,16 @@ const Financial_section = ({
     }
   };
 
+  const getFileNameFromUrl = (url: string) => {
+    if (!url) {
+      return '';
+    }
+    const urlObject = new URL(url);
+    const pathname = urlObject.pathname;
+    const parts = pathname.split('/');
+    return parts[parts.length - 1];
+  };
+
   return (
     <div className="space-y-8">
       <SubNav
@@ -387,7 +394,7 @@ const Financial_section = ({
                 key={index}
                 className={`flex items-center justify-between p-2 ${index !== financialStatements.length - 1 ? 'border-b border-[#E6EEEA] dark:border-[#39463E]' : ''}`}
               >
-                <span>{statement.name}</span>
+                <span>{getFileNameFromUrl(statement)}</span>
                 <ModalForms
                   FormTitle="Are you sure you want to delete document"
                   ButtonStyle="p-0 m-0"
