@@ -21,6 +21,14 @@ export default function TopNews({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full w-full px-8 py-4">
+        <p>No data available.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full p-4">
       {data?.map(newsItem => (

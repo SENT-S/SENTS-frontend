@@ -8,7 +8,7 @@ import Events from './_sections/Events';
 import Resources from './_sections/Resources';
 import { Button } from '@/components/ui/button';
 import Teams from './_sections/Teams';
-import { getAllCompanyNews } from '@/services/apis/companies';
+import { getAllCompanyNews, getCompanies } from '@/services/apis/companies';
 import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CustomSession } from '@/utils/types';
@@ -23,45 +23,113 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import ModalForms from '@/components/admin/modal';
-import { countryList, companyList } from '@/services/mockData/mock';
+import { CompanyType } from '@/utils/types';
 import Pagination from '@/components/pagination';
 
 const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
 const NewsPage = () => {
   const router = useRouter();
-  const { data: session, status } = useSession() as {
+  const { data: session } = useSession() as {
     data: CustomSession;
-    status: 'loading' | 'authenticated' | 'unauthenticated';
   };
   const [newsData, setNewsData] = useState<any[]>([]);
   const [selectedLink, setSelectedLink] = useState<any>(Categories[0]);
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'ADMIN';
-  const [selectedCountry, setSelectedCountry] = useState('Uganda');
-  const [selectedCompany, setSelectedCompany] = useState('Company');
+  const [companies, setCompanies] = useState<CompanyType[]>([]);
+  const [countryList, setCountryList] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [companyList, setCompanyList] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState('');
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectedIds, setSelectedIds] = useState([] as string[]);
 
   useEffect(() => {
-    const fetchNews = async () => {
-      const response = await getAllCompanyNews();
-      if (response.status === 200) {
-        setNewsData(response.data);
-        setIsLoading(false);
-      } else {
-        console.error('Failed to fetch news', response);
+    const fetchData = async () => {
+      setIsLoading(true);
+
+      try {
+        const [newsResponse, companiesResponse] = await Promise.all([
+          getAllCompanyNews(),
+          getCompanies(),
+        ]);
+
+        if (newsResponse.status === 200) {
+          setNewsData(newsResponse.data);
+        } else {
+          console.error('Failed to fetch news', newsResponse);
+        }
+
+        if (companiesResponse.status === 200) {
+          setCompanies(companiesResponse.data);
+        } else {
+          console.error('Failed to fetch companies', companiesResponse);
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching data:', error);
       }
+
+      setIsLoading(false);
     };
 
-    fetchNews();
+    fetchData();
   }, []);
 
+  useEffect(() => {
+    // Generate country list from companies
+    const countries = companies.map((company: any) => ({
+      label: company.company_country,
+      value: company.company_country,
+    }));
+    setCountryList(countries);
+
+    // Set selected country to the first country in the list
+    if (countries.length > 0) {
+      setSelectedCountry(prevCountry => prevCountry || countries[0].label);
+    }
+  }, [companies]);
+
+  useEffect(() => {
+    // Filter companies by selected country
+    const filteredCompanies = companies.filter(
+      company => company.company_country === selectedCountry,
+    )[0];
+    if (filteredCompanies) {
+      const companiesList = filteredCompanies.list_of_companies.map(
+        (company: any) => ({
+          label: company.company_name,
+          value: company.id,
+        }),
+      );
+      setCompanyList(companiesList);
+    }
+  }, [selectedCountry]);
+
   // Get the news data for the selected link
-  const selectedNewsData = useMemo(
-    () => newsData[selectedLink],
-    [newsData, selectedLink],
-  );
+  const selectedNewsData = useMemo(() => {
+    // Get news data by selected link
+    const newsByLink = newsData[selectedLink];
+
+    // Check if newsByLink is defined
+    if (!newsByLink) {
+      console.error('Invalid selected link:', selectedLink);
+      return [];
+    }
+
+    // Filter news data by selected company
+    if (selectedCompany) {
+      return newsByLink.filter(
+        (news: any) => news.company_name === selectedCompany,
+      );
+    } else {
+      return newsByLink;
+    }
+  }, [newsData, selectedLink, selectedCompany]);
 
   const handleSelectCountry = (value: string) => {
     setSelectedCountry(value);
@@ -147,7 +215,11 @@ const NewsPage = () => {
           {/* Admin features */}
           {isAdmin && (
             <div className="flex gap-6 items-center">
-              <Select onValueChange={handleSelectCountry}>
+              <Select
+                onValueChange={handleSelectCountry}
+                value={selectedCountry}
+                defaultValue={selectedCountry}
+              >
                 <SelectTrigger className="md:w-[280px] rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
                   <SelectValue
                     placeholder="Select Country"
@@ -164,10 +236,14 @@ const NewsPage = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Select onValueChange={handleSelectCompany}>
+              <Select
+                onValueChange={handleSelectCompany}
+                value={selectedCompany}
+                defaultValue={selectedCompany}
+              >
                 <SelectTrigger className="md:w-[280px] rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
                   <SelectValue
-                    placeholder="Select Country"
+                    placeholder="Select Company"
                     className="text-center w-full"
                   >
                     {selectedCompany}
@@ -175,7 +251,7 @@ const NewsPage = () => {
                 </SelectTrigger>
                 <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
                   {companyList.map((item, index) => (
-                    <SelectItem key={index} value={item.value}>
+                    <SelectItem key={index} value={item.label}>
                       {item.label}
                     </SelectItem>
                   ))}

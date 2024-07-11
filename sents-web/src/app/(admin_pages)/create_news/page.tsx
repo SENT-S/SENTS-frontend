@@ -207,17 +207,15 @@ const page = () => {
                 setSelectedCompany(item);
               }}
               name="company"
+              value={selectedCompany}
+              defaultValue={selectedCompany}
             >
               <SelectTrigger className="rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
                 <SelectValue
                   placeholder="Select Company"
                   className="text-center w-full"
                 >
-                  {
-                    companyList.filter(
-                      company => company.value === selectedCompany,
-                    )[0]?.label
-                  }
+                  {selectedCompany}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
