@@ -21,3 +21,6 @@ export const addFinancialMetric = (data: any) =>
 
 export const addFinancialDataCategory = (data: any) =>
   useFetchData('/create/financialdatacategory/', 'post', data);
+
+export const addFinancialNews = (data: any) =>
+  useFetchData('/create/financialnews/', 'post', data);
