@@ -75,18 +75,6 @@ const AdminLinks = [
     activePaths: ['/dashboard', '/company'],
   },
   {
-    name: 'Overview',
-    icon: FiPieChart,
-    path: '/overview',
-    activePaths: ['/overview'],
-  },
-  {
-    name: 'Financials',
-    icon: PiChartLineUpLight,
-    path: '/financials',
-    activePaths: ['/financials'],
-  },
-  {
     name: 'News',
     icon: HiOutlineNewspaper,
     path: '/news',

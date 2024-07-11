@@ -20,10 +20,12 @@ import { addFinancialNews, getCompanies } from '@/services/apis/companies';
 import { CompanyType } from '@/utils/types';
 import { newsCategoryList } from '@/services/mockData/mock';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ScaleLoader } from 'react-spinners';
 
 const page = () => {
   const router = useRouter();
   const [companies, setCompanies] = useState<CompanyType[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [news_image, setNewsImage] = useState<File | null>(null);
   const [countryList, setCountryList] = useState<
@@ -93,6 +95,14 @@ const page = () => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
+    const selectedCompanyID = companyList.find(
+      company => company.label === selectedCompany,
+    )?.value;
+
+    data.company = selectedCompanyID || '';
+
+    setLoading(true);
+
     try {
       // Attempt to add the financial news
       const response = await addFinancialNews(data);
@@ -128,6 +138,8 @@ const page = () => {
         duration: 5000,
         position: 'top-center',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -201,12 +213,16 @@ const page = () => {
                   placeholder="Select Company"
                   className="text-center w-full"
                 >
-                  {selectedCompany}
+                  {
+                    companyList.filter(
+                      company => company.value === selectedCompany,
+                    )[0]?.label
+                  }
                 </SelectValue>
               </SelectTrigger>
               <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                {companyList.map((item, index) => (
-                  <SelectItem key={index} value={item.value}>
+                {companyList.map((item: any) => (
+                  <SelectItem key={item.value} value={item.label}>
                     {item.label}
                   </SelectItem>
                 ))}
@@ -276,8 +292,9 @@ const page = () => {
           <Button
             type="submit"
             className="bg-[#148C59] text-white w-full px-3 py-7 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
+            disabled={loading}
           >
-            Submit
+            {loading ? <ScaleLoader height={20} color="#fff" /> : 'Submit'}
           </Button>
         </form>
       )}
