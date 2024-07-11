@@ -27,7 +27,11 @@ function index({ setStep, step }: { setStep: any; step: number }) {
 
       if (innerStep === 2) {
         if (!allFieldsFilled) {
-          console.error('All fields must be filled to create a company');
+          toast.error('All fields must be filled to create a company', {
+            style: { background: 'red', color: 'white', border: 'none' },
+            duration: 5000,
+            position: 'top-center',
+          });
           return;
         }
         return await dispatch(createCompany(companyFields));
@@ -95,7 +99,10 @@ function index({ setStep, step }: { setStep: any; step: number }) {
 
       {innerStep !== 3 && (
         <Button
-          onClick={handleFormSubmit}
+          onClick={() => {
+            // handleFormSubmit
+            setInnerStep(prevStep => prevStep + 1);
+          }}
           className="bg-[#148C59] text-white w-full px-3 py-7 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
           disabled={companyFields?.isLoading}
         >
