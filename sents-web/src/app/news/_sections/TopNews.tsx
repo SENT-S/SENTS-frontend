@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { defaultImageUrl } from '@/services/mockData/mock';
 
 const NewsItem = ({
   newsItem,
@@ -22,7 +23,7 @@ const NewsItem = ({
     >
       <div className="w-64 h-40 relative">
         <Image
-          src="https://worldbank.scene7.com/is/image/worldbankprod/Wazzkii-shutterstock-1527809087-780?wid=780&hei=439&qlt=85,0&resMode=sharp"
+          src={defaultImageUrl}
           alt={newsItem.headline}
           className="w-full h-full object-cover rounded-bl-2xl rounded-tl-2xl"
           fill={true}
