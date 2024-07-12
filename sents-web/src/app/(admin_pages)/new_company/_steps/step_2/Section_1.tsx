@@ -338,6 +338,7 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
           </div>
         )}
       />
+
       {/* statements */}
       <FStatements financialStatements={[]} />
 
