@@ -23,7 +23,7 @@ const Add_new_metric = () => {
         // If successful, clear the form
         e.target.reset();
         // Display a success message
-        toast.success('Financial data category added successfully', {
+        toast.success('Financial data metric added successfully', {
           style: {
             background: 'green',
             color: 'white',
