@@ -37,6 +37,36 @@ export const tableData = [
   },
 ];
 
+export const countryList = [
+  { label: 'Uganda', value: 'Uganda' },
+  { label: 'Kenya', value: 'Kenya' },
+  { label: 'Tanzania', value: 'Tanzania' },
+  { label: 'Rwanda', value: 'Rwanda' },
+];
+
+export const companyList = [
+  { label: 'Company', value: 'Company' },
+  { label: 'Company 1', value: 'Company 1' },
+  { label: 'Company 2', value: 'Company 2' },
+  { label: 'Company 3', value: 'Company 3' },
+];
+
+export const newsCategoryList = [
+  { label: 'Top News', value: 'Top News' },
+  { label: 'News', value: 'News' },
+  { label: 'Events', value: 'Events' },
+  { label: 'Resources', value: 'Resources' },
+  { label: 'Teams', value: 'Teams' },
+];
+
+export const sectorList = [
+  { label: 'Financial Services', value: 'Financial Services' },
+  { label: 'Insurance', value: 'Insurance' },
+  { label: 'Utilities', value: 'Utilities' },
+  { label: 'Technology', value: 'Technology' },
+  { label: 'Healthcare', value: 'Healthcare' },
+  { label: 'Telecommunication', value: 'Telecommunication' },
+];
 export const defaultImageUrl =
   'https://worldbank.scene7.com/is/image/worldbankprod/Wazzkii-shutterstock-1527809087-780?wid=780&hei=439&qlt=85,0&resMode=sharp';
 
