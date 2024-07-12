@@ -316,7 +316,10 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
                     </TableCell>
                     {rows.length > 1 && (
                       <TableCell className="text-center">
-                        <Button onClick={() => clearRow(rowIndex)}>
+                        <Button
+                          type="button"
+                          onClick={() => clearRow(rowIndex)}
+                        >
                           <GrSubtractCircle
                             className="text-[#EA0000]"
                             size={20}
