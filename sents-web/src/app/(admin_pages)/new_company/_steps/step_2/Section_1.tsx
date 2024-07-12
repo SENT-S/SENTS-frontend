@@ -210,7 +210,11 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
         <Add_new_category ButtonText="Add Category" />
         <Add_new_metric />
         <div>
-          <Select onValueChange={value => setYearRange(value)}>
+          <Select
+            onValueChange={value => setYearRange(value)}
+            value={yearRange}
+            defaultValue={yearRange}
+          >
             <SelectTrigger className="rounded-2xl p-2 md:p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
               <SelectValue placeholder="Range" className="text-center w-full">
                 {yearRange}

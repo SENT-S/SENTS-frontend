@@ -54,9 +54,8 @@ const Index = (props: Props) => {
             {props.children}
             <footer className="w-full mt-4 space-y-3">
               <Button
-                typeof="submit"
-                className={`${props.SubmitButtonStyle ? props.SubmitButtonStyle : 'bg-[#148C59] hover:bg-[#148c5ad7]'} text-white w-full p-3 rounded-2xl flex justify-center items-center`}
                 type="submit"
+                className={`${props.SubmitButtonStyle ? props.SubmitButtonStyle : 'bg-[#148C59] hover:bg-[#148c5ad7]'} text-white w-full p-3 rounded-2xl flex justify-center items-center`}
                 disabled={props.loading}
               >
                 {props.loading ? (
@@ -67,7 +66,7 @@ const Index = (props: Props) => {
               </Button>
               {props.CancelText && (
                 <Button
-                  className={`${props.CancelButtonStyle ? props.CancelButtonStyle : 'bg-[#F5ECEC] text-[#EA0000]'} w-full p-3 rounded-2xl flex justify-center items-center`}
+                  className={`${props.CancelButtonStyle ? props.CancelButtonStyle : 'bg-[#F5ECEC] hover:bg-[#f5ececd8] text-[#EA0000]'} w-full p-3 rounded-2xl flex justify-center items-center`}
                   type="button"
                   onClick={props.onCancel}
                 >
