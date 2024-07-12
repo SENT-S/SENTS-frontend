@@ -37,6 +37,9 @@ export const tableData = [
   },
 ];
 
+export const defaultImageUrl =
+  'https://worldbank.scene7.com/is/image/worldbankprod/Wazzkii-shutterstock-1527809087-780?wid=780&hei=439&qlt=85,0&resMode=sharp';
+
 export const financialStatements = [
   { name: 'Annual Report 2023', file: 'annual_report_2023.pdf' },
   { name: 'Q1 Financials 2023', file: 'Q1_financials_2023.pdf' },
