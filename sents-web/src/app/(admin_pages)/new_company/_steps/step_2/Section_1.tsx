@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { Button } from '@/components/ui/button';
-import ModalForms from '@/components/admin/modal';
-import AddNewStatementContent from '@/components/admin/Add_new_statement';
-import { RiDeleteBin6Line } from 'react-icons/ri';
-import { financialStatements } from '@/services/mockData/mock';
 import {
   Table,
   TableBody,
@@ -15,8 +11,8 @@ import {
 } from '@/components/ui/table';
 import Pagination from '@/components/pagination';
 import { GrSubtractCircle } from 'react-icons/gr';
-import Add_new_category from '@/components/admin/Add_new_category';
-import Add_new_metric from '@/components/admin/Add_new_metric';
+import Add_new_category from '@/components/admin/forms/Add_new_category';
+import Add_new_metric from '@/components/admin/forms/Add_new_metric';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -26,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
+import FStatements from '@/components/admin/FStatements';
 
 type Row = {
   metrics: string;
@@ -263,49 +260,7 @@ const Section_1 = () => {
         )}
       />
       {/* statements */}
-      <div>
-        <h2 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
-          Financial Statements
-        </h2>
-        {/* List statements */}
-        <ul className="list-none items-center">
-          {financialStatements.length > 0 ? (
-            financialStatements.map((statement, index) => (
-              <li
-                key={index}
-                className={`flex items-center justify-between p-2  ${index !== financialStatements.length - 1 ? 'border-b border-[#E6EEEA] dark:border-[#39463E]' : ''}`}
-              >
-                <span>{statement.name}</span>
-                <ModalForms
-                  FormTitle="Are you sure you want to delete document"
-                  ButtonStyle="p-0 m-0"
-                  Icon={
-                    <div className="rounded-full flex items-center p-2 bg-[#F5ECEC]">
-                      <RiDeleteBin6Line
-                        className="text-[#EA0000] cursor-pointer"
-                        size={20}
-                      />
-                    </div>
-                  }
-                  onSubmit={() => null}
-                  onCancel={() => null}
-                  SubmitText="Yes"
-                  CancelText="No"
-                  SubmitButtonStyle="bg-[#EA0000]"
-                />
-              </li>
-            ))
-          ) : (
-            <div className="flex items-center justify-center h-full w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
-              <p>No data available.</p>
-            </div>
-          )}
-        </ul>
-
-        <div className="flex justify-center items-center">
-          <AddNewStatementContent />
-        </div>
-      </div>
+      <FStatements financialStatements={[]} />
     </div>
   );
 };

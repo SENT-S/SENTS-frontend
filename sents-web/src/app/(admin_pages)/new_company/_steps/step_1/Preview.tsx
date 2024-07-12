@@ -2,7 +2,7 @@ import React from 'react';
 import { RxPlus } from 'react-icons/rx';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { Button } from '@/components/ui/button';
-import CompanyCard from '../../../_components/companyCard';
+import CompanyCard from '@/components/admin/companyCard';
 import { useSelector, useDispatch } from '@/lib/utils';
 import { resetCompanyFields } from '@/lib/ReduxSlices/create_company';
 

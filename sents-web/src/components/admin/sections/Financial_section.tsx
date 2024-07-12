@@ -21,16 +21,13 @@ import Pagination from '@/components/pagination';
 import SubNav from '@/components/admin/Navs/SubNav';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
-import { financialStatements } from '@/services/mockData/mock';
-import { RiDeleteBin6Line } from 'react-icons/ri';
-import ModalForms from '@/components/admin/modal';
-import AddNewStatementContent from '@/components/admin/Add_new_statement';
 import { formatData } from '@/utils/tableFunctions';
 import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
 import { MdDone } from 'react-icons/md';
 import { GoPlusCircle } from 'react-icons/go';
-import Add_new_metric from '@/components/admin/Add_new_metric';
+import Add_new_metric from '@/components/admin/forms/Add_new_metric';
 import { GrSubtractCircle } from 'react-icons/gr';
+import FStatements from '@/components/admin/FStatements';
 
 type FormattedMetric = {
   metrics: string;
@@ -382,48 +379,7 @@ const Financial_section = ({
       />
 
       {/* Statements */}
-      <div>
-        <h2 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
-          Financial Statements
-        </h2>
-        <ul className="list-none items-center">
-          {financialStatements.length > 0 ? (
-            financialStatements.map((statement, index) => (
-              <li
-                key={index}
-                className={`flex items-center justify-between p-2 ${index !== financialStatements.length - 1 ? 'border-b border-[#E6EEEA] dark:border-[#39463E]' : ''}`}
-              >
-                <span>{getFileNameFromUrl(statement)}</span>
-                <ModalForms
-                  FormTitle="Are you sure you want to delete document"
-                  ButtonStyle="p-0 m-0"
-                  Icon={
-                    <div className="rounded-full flex items-center p-2 bg-[#F5ECEC]">
-                      <RiDeleteBin6Line
-                        className="text-[#EA0000] cursor-pointer"
-                        size={20}
-                      />
-                    </div>
-                  }
-                  onSubmit={() => null}
-                  onCancel={() => null}
-                  SubmitText="Yes"
-                  CancelText="No"
-                  SubmitButtonStyle="bg-[#EA0000]"
-                />
-              </li>
-            ))
-          ) : (
-            <div className="flex items-center justify-center h-full w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
-              <p>No data available.</p>
-            </div>
-          )}
-        </ul>
-
-        <div className="flex justify-center items-center">
-          <AddNewStatementContent />
-        </div>
-      </div>
+      <FStatements financialStatements={financialStatements} />
     </div>
   );
 };

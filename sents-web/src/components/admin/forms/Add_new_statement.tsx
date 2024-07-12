@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MdOutlineCloudUpload } from 'react-icons/md';
-import FormModal from './modal';
+import FormModal from '../modal';
 
 const AddNewStatement = () => {
   const [document, setDocument] = useState<File | null>(null);

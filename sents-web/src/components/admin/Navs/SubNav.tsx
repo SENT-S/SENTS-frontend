@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { GoPlusCircle } from 'react-icons/go';
-import Add_new_category from '@/components/admin/Add_new_category';
+import Add_new_category from '@/components/admin/forms/Add_new_category';
 
 interface SubNavProps {
   links: string[];

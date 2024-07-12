@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import FormModal from './modal';
+import FormModal from '../modal';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { addFinancialDataCategory } from '@/services/apis/companies';

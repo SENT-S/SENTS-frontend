@@ -6,9 +6,9 @@ import {
   getCompanyFinancials,
 } from '@/services/apis/companies';
 import SubNav from '@/components/navigation/SubNav';
-import Overview_section from '../../_components/Overview_section';
-import Financial_section from '../../_components/Financial_section';
-import News_section from '../../_components/News_section';
+import Overview_section from '@/components/admin/sections/Overview_section';
+import Financial_section from '@/components/admin/sections/Financial_section';
+import News_section from '@/components/admin/sections/News_section';
 import MainLayout from '@/layouts';
 import { Button } from '@/components/ui/button';
 import { IoArrowBack } from 'react-icons/io5';
