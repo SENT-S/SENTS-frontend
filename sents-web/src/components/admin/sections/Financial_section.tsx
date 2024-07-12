@@ -103,28 +103,8 @@ const Financial_section = ({
     setRows(prevRows => [...prevRows, getEmptyRow(newYears)]);
   };
 
-  // Function to handle input change in the table
-  const handleInputChange = (e: any, rowIndex: number, column: any) => {
-    const value = e.target.value;
-    setRows(prevRows => {
-      return prevRows.map((row, index) => {
-        if (index === rowIndex) {
-          // If the column is a fiscal year, save the actual year instead
-          if (column.startsWith('FY’')) {
-            const actualYear = '20' + column.slice(3);
-            return { ...row, [actualYear]: value };
-          } else {
-            return { ...row, [column]: value };
-          }
-        } else {
-          return row;
-        }
-      });
-    });
-  };
-
-  // Function to handle select change in the table
-  const handleSelectChange = (value: any, rowIndex: number, column: any) => {
+  // Function to handle input or select change in the table
+  const handleChange = (value: any, rowIndex: number, column: any) => {
     setRows(prevRows => {
       return prevRows.map((row, index) => {
         if (index === rowIndex) {
@@ -172,9 +152,7 @@ const Financial_section = ({
         <TableRow key={rowIndex}>
           <TableCell className="text-center">
             <Select
-              onValueChange={value =>
-                handleSelectChange(value, rowIndex, 'metrics')
-              }
+              onValueChange={value => handleChange(value, rowIndex, 'metrics')}
               defaultValue={row.metrics}
             >
               <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl">
@@ -200,17 +178,13 @@ const Financial_section = ({
                 type="text"
                 value={row[year]}
                 className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl"
-                onChange={e =>
-                  handleInputChange(e, rowIndex, '20' + year.slice(3))
-                }
+                onChange={e => handleChange(e, rowIndex, '20' + year.slice(3))}
               />
             </TableCell>
           ))}
           <TableCell className="text-center">
             <Select
-              onValueChange={value =>
-                handleSelectChange(value, rowIndex, 'category')
-              }
+              onValueChange={value => handleChange(value, rowIndex, 'category')}
               value={row.category}
             >
               <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl">
@@ -254,16 +228,6 @@ const Financial_section = ({
         </TableRow>
       );
     }
-  };
-
-  const getFileNameFromUrl = (url: string) => {
-    if (!url) {
-      return '';
-    }
-    const urlObject = new URL(url);
-    const pathname = urlObject.pathname;
-    const parts = pathname.split('/');
-    return parts[parts.length - 1];
   };
 
   return (
