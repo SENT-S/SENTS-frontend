@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NewsItem from '@/components/NewsItem/NewsItem';
+import { defaultImageUrl } from '@/services/mockData/mock';
 
 export default function News({
   data,
@@ -36,7 +37,7 @@ export default function News({
           key={newsItem.id}
           newsItem={newsItem}
           label="News"
-          imgURL={'https://source.unsplash.com/random/finance'}
+          imgURL={defaultImageUrl}
           windowWidth={windowWidth}
           showCheckbox={showCheckbox}
           selectedIds={selectedIDs}

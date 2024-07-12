@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NewsItem from '@/components/NewsItem/NewsItem';
+import { defaultImageUrl } from '@/services/mockData/mock';
 
 export default function Teams({
   data,
@@ -35,7 +36,7 @@ export default function Teams({
         <NewsItem
           key={newsItem.id}
           label="Teams"
-          imgURL={'https://source.unsplash.com/random/finance'}
+          imgURL={defaultImageUrl}
           newsItem={newsItem}
           windowWidth={windowWidth}
           showCheckbox={showCheckbox}
