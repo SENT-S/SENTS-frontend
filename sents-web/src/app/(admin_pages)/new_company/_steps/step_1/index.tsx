@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { IoArrowBack } from 'react-icons/io5';
 import Section_1 from './Section_1';
 import Section_2 from './Section_2';
 import Preview from './Preview';
 import { useDispatch, useSelector } from '@/lib/utils';
-import { IoArrowBack } from 'react-icons/io5';
 import { createCompany } from '@/lib/ReduxSlices/create_company';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
@@ -99,10 +99,7 @@ function index({ setStep, step }: { setStep: any; step: number }) {
 
       {innerStep !== 3 && (
         <Button
-          onClick={() => {
-            // handleFormSubmit
-            setInnerStep(prevStep => prevStep + 1);
-          }}
+          onClick={handleFormSubmit}
           className="bg-[#148C59] text-white w-full px-3 py-7 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
           disabled={companyFields?.isLoading}
         >
