@@ -22,7 +22,7 @@ const NewsItem = ({
     >
       <div className="w-64 h-40 relative">
         <Image
-          src="https://source.unsplash.com/random/finance"
+          src="https://worldbank.scene7.com/is/image/worldbankprod/Wazzkii-shutterstock-1527809087-780?wid=780&hei=439&qlt=85,0&resMode=sharp"
           alt={newsItem.headline}
           className="w-full h-full object-cover rounded-bl-2xl rounded-tl-2xl"
           fill={true}
