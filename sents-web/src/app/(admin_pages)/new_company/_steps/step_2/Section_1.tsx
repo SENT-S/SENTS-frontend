@@ -163,12 +163,12 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
       const response = await createUpdateFinancialData(formData);
 
       // Check if the request was successful
-      // if (!response.ok) {
-      //   throw new Error(`API request failed with status ${response}`);
-      // }
+      if (response.status !== 201 && response.status !== 200) {
+        throw new Error(response.detail || 'Failed to add financial data');
+      }
 
       // Show success message
-      toast.success('Financial data added successfully', {
+      toast.success(response.message, {
         style: {
           background: 'green',
           color: 'white',
@@ -183,8 +183,7 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
       // reload the page
       window.location.reload();
     } catch (error: any) {
-      console.error(error);
-      toast.error(`Failed to add financial data: ${error.message}`, {
+      toast.error(error, {
         style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
         position: 'top-center',
@@ -270,7 +269,7 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
                         }
                         value={row.metrics}
                       >
-                        <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl">
+                        <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl">
                           <SelectValue
                             placeholder="Metrics"
                             className="text-center w-full"
@@ -292,7 +291,7 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
                         <Input
                           type="text"
                           value={row['20' + year.slice(3)] || ''}
-                          className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl"
+                          className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
                           onChange={e =>
                             handleInputChange(e, rowIndex, '20' + year.slice(3))
                           }
@@ -305,7 +304,7 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
                           handleSelectChange(value, rowIndex, 'category')
                         }
                       >
-                        <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl">
+                        <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl">
                           <SelectValue
                             placeholder="Category"
                             className="text-center w-full"

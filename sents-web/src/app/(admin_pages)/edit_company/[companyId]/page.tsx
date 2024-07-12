@@ -90,35 +90,35 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
 
   return (
     <MainLayout>
-      <div className="mt-4">
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            size="icon"
-            className="ml-3 mb-4"
-            onClick={() => router.back()}
-          >
-            <IoArrowBack />
-          </Button>
-        </div>
-        <div className="space-y-8">
-          <SubNav
-            links={links}
-            selectedLink={selectedLink}
-            setSelectedLink={setSelectedLink}
+      {isLoading ? (
+        Array.from({ length: 5 }).map((_, index) => (
+          <Skeleton
+            key={index}
+            className="h-20 mt-4 mb-4 rounded-xl bg-slate-200 dark:bg-slate-800"
           />
-          <div className="overflow-hidden">
-            {isLoading
-              ? Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton
-                    key={index}
-                    className="h-20 mb-4 rounded-xl bg-slate-200 dark:bg-slate-800"
-                  />
-                ))
-              : renderSection()}
+        ))
+      ) : (
+        <div className="mt-4">
+          <div className="flex items-center justify-between">
+            <Button
+              variant="outline"
+              size="icon"
+              className="ml-3 mb-4"
+              onClick={() => router.back()}
+            >
+              <IoArrowBack />
+            </Button>
+          </div>
+          <div className="space-y-8">
+            <SubNav
+              links={links}
+              selectedLink={selectedLink}
+              setSelectedLink={setSelectedLink}
+            />
+            <div className="overflow-hidden">{renderSection()}</div>
           </div>
         </div>
-      </div>
+      )}
     </MainLayout>
   );
 });

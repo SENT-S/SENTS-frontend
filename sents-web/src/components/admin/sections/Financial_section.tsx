@@ -364,7 +364,7 @@ const Financial_section = ({
                             value={row.metrics}
                             defaultValue={row.metrics}
                           >
-                            <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl">
+                            <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl">
                               <SelectValue
                                 placeholder="Metrics"
                                 className="text-center w-full"
@@ -390,7 +390,7 @@ const Financial_section = ({
                             <Input
                               type="text"
                               value={row[year]}
-                              className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl"
+                              className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
                               onChange={e =>
                                 handleInputChange(e, rowIndex, year)
                               }
@@ -412,7 +412,7 @@ const Financial_section = ({
                               handleSelectChange(value, rowIndex, 'category')
                             }
                           >
-                            <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#39463E] rounded-xl">
+                            <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl">
                               <SelectValue
                                 placeholder="Category"
                                 className="text-center w-full"
