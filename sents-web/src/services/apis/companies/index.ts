@@ -11,7 +11,7 @@ export const getCompanyNews = (id: number) =>
 export const getAllCompanyNews = () => useFetchData('/allnews/', 'get');
 
 export const getCompanyFinancials = (id: number) =>
-  useFetchData(`/company_financial_data/${id}/`, 'get');
+  useFetchData(`/companyfinancialdata/${id}/`, 'get');
 
 export const createCompany = (data: any) =>
   useFetchData('/create/company/', 'post', data);
