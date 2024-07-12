@@ -15,8 +15,8 @@ const page = () => {
         <Stepper currentStep={step} steps={steps} />
 
         {/* Display steps */}
-        {step === 2 && <Step_1 setStep={setStep} step={step} />}
-        {step === 1 && <Step_2 setStep={setStep} step={step} />}
+        {step === 1 && <Step_1 setStep={setStep} step={step} />}
+        {step === 2 && <Step_2 setStep={setStep} step={step} />}
       </div>
     </MainLayout>
   );

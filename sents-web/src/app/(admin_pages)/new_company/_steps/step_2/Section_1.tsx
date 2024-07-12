@@ -28,6 +28,7 @@ import FStatements from '@/components/admin/FStatements';
 import { createUpdateFinancialData } from '@/services/apis/companies';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
+import { useSelector } from '@/lib/utils';
 
 type Row = {
   metrics: string;
@@ -56,6 +57,8 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
+  const createdCompanyData = useSelector(state => state.company.response);
+  const companyID = Number(createdCompanyData?.data?.id);
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);
@@ -146,7 +149,7 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
 
         // Map over the years in the row to create an object for each year
         return Object.entries(years).map(([year, value]) => ({
-          company: 3, // Replace with the actual company ID
+          company: companyID,
           category: categoryIds,
           metric: metricId,
           year: Number(year),
@@ -160,9 +163,9 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
       const response = await createUpdateFinancialData(formData);
 
       // Check if the request was successful
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
+      // if (!response.ok) {
+      //   throw new Error(`API request failed with status ${response}`);
+      // }
 
       // Show success message
       toast.success('Financial data added successfully', {
@@ -177,7 +180,8 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
 
       // Reset rows state to initial state after form submission
       setRows([getEmptyRow(newYears)]);
-      // setStep(1);
+      // reload the page
+      window.location.reload();
     } catch (error: any) {
       console.error(error);
       toast.error(`Failed to add financial data: ${error.message}`, {
