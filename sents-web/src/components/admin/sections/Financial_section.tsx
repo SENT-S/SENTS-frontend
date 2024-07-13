@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-
+import ReactSelect from 'react-select';
 import {
   Table,
   TableBody,
@@ -24,7 +24,11 @@ import SubNav from '@/components/admin/Navs/SubNav';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { formatData } from '@/utils/tableFunctions';
-import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
+import {
+  getYearRanges,
+  getRangeYears,
+  convertFinancialYear,
+} from '@/utils/tableFunctions';
 import { MdDone } from 'react-icons/md';
 import { GoPlusCircle } from 'react-icons/go';
 import Add_new_metric from '@/components/admin/forms/Add_new_metric';
@@ -41,30 +45,18 @@ type Row = {
   [key: string]: string | number | string[];
 };
 
-const category = [
-  { id: 1, name: 'Sales Revenue' },
-  { id: 2, name: 'Cost of Goods Sold' },
-  { id: 3, name: 'Gross Profit' },
-  { id: 4, name: 'Operating Expenses' },
-  { id: 5, name: 'Net Income' },
-  { id: 6, name: 'Gross Margin' },
-];
-
-const metrics = [
-  { id: 1, name: 'Revenue' },
-  { id: 2, name: 'Gross Profit' },
-  { id: 3, name: 'Operating Expenses' },
-  { id: 4, name: 'Net Income' },
-];
-
 const Financial_section = ({
   financialStatements,
   FinancialData,
   companyID,
+  metrics,
+  category,
 }: {
   financialStatements: any[];
   FinancialData: any;
   companyID: any;
+  metrics: any;
+  category: any;
 }) => {
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
   const [showEdit, setShowEdit] = useState(false);
@@ -73,6 +65,17 @@ const Financial_section = ({
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // change the format of the data from categories and metric to react-select format
+  const categoryList = category.map((item: any) => ({
+    value: item.id,
+    label: item.category_name,
+  }));
+
+  const metricsList = metrics.map((item: any) => ({
+    value: item.id,
+    label: item.metric_name,
+  }));
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);
@@ -185,17 +188,24 @@ const Financial_section = ({
         const { metrics, category, ...years } = row;
 
         // Convert metrics and category to numbers
-        const metricId = Number(metrics);
-        const categoryIds = category.map(Number);
+        const metricId = Number(metrics) || '';
+        const categoryIds = category.map(Number) || '';
 
         // Map over the years in the row to create an object for each year
-        return Object.entries(years).map(([year, value]) => ({
-          company: companyID,
-          category: categoryIds || [],
-          metric: metricId,
-          year: year,
-          value: String(value),
-        }));
+        return Object.entries(years).map(([year, value]) => {
+          // Create an object for each year
+          let data: any = {
+            company: Number(companyID),
+            year: Number('20' + year.slice(-2)),
+          };
+
+          // Only include metrics, category, and value if they have a value
+          if (metricId) data.metric = metricId;
+          if (categoryIds.length > 0) data.category = categoryIds;
+          if (value) data.value = String(value);
+
+          return data;
+        });
       });
 
       setIsLoading(true);
@@ -240,13 +250,7 @@ const Financial_section = ({
     <form className="space-y-8" onSubmit={handleFormSubmit}>
       {/* subNav */}
       <SubNav
-        links={[
-          'Financial Summary',
-          'Profit & Loss',
-          'Balance Sheet',
-          'Cashflow Statement',
-          'Financial Analysis',
-        ]}
+        links={categoryList.map((item: any) => item.label)}
         selectedLink={selectedLink}
         setSelectedLink={setSelectedLink}
         bgColor={false}
@@ -341,6 +345,7 @@ const Financial_section = ({
                   )}
                 </TableRow>
               </TableHeader>
+
               {/* table body */}
               <TableBody className="bg-white dark:bg-[#39463E]">
                 {currentItems.length === 0 && !showEdit ? (
@@ -349,7 +354,7 @@ const Financial_section = ({
                       className="text-center"
                       colSpan={newYears.length + 3}
                     >
-                      No data available
+                      No Financial Data Available
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -357,29 +362,27 @@ const Financial_section = ({
                     <TableRow key={rowIndex}>
                       <TableCell className="text-left">
                         {showEdit ? (
-                          <Select
-                            onValueChange={(value: any) =>
-                              handleSelectChange(value, rowIndex, 'metrics')
-                            }
-                            value={row.metrics}
-                            defaultValue={row.metrics}
-                          >
-                            <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl">
-                              <SelectValue
-                                placeholder="Metrics"
-                                className="text-center w-full"
-                              >
-                                {row.metrics}
-                              </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                              {metrics.map((item: any) => (
-                                <SelectItem key={item.id} value={item.id}>
-                                  {item.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="relative">
+                            <ReactSelect
+                              isMulti={false}
+                              name="metrics"
+                              options={metricsList}
+                              isClearable={false}
+                              value={metricsList.find(
+                                (item: any) => item.value === row.metrics,
+                              )}
+                              className="react-select-container"
+                              classNamePrefix="react-select"
+                              placeholder="Metrics"
+                              onChange={(item: any) => {
+                                handleSelectChange(
+                                  item.value,
+                                  rowIndex,
+                                  'metrics',
+                                );
+                              }}
+                            />
+                          </div>
                         ) : (
                           row.metrics
                         )}
@@ -407,27 +410,29 @@ const Financial_section = ({
                       ))}
                       {showEdit && (
                         <TableCell className="text-center">
-                          <MultiSelect
-                            onValueChange={(value: any) =>
-                              handleSelectChange(value, rowIndex, 'category')
-                            }
-                          >
-                            <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl">
-                              <SelectValue
-                                placeholder="Category"
-                                className="text-center w-full"
-                              >
-                                {row.category && row.category.join(', ')}
-                              </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                              {category.map((item: any) => (
-                                <MultiSelectItem key={item.id} value={item.id}>
-                                  {item.name}
-                                </MultiSelectItem>
-                              ))}
-                            </SelectContent>
-                          </MultiSelect>
+                          <div className="relative">
+                            <ReactSelect
+                              isMulti={true}
+                              name="category"
+                              options={categoryList}
+                              isClearable={false}
+                              value={categoryList.filter((item: any) =>
+                                row.category.includes(item.value),
+                              )}
+                              className="react-select-container"
+                              classNamePrefix="react-select"
+                              placeholder="Category"
+                              onChange={(items: any) => {
+                                items.map((item: any) => {
+                                  handleSelectChange(
+                                    item.value,
+                                    rowIndex,
+                                    'category',
+                                  );
+                                });
+                              }}
+                            />
+                          </div>
                         </TableCell>
                       )}
                       {showEdit && (

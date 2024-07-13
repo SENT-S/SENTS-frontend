@@ -83,3 +83,62 @@ h6 {
   margin: 0;
   padding: 0;
 }
+
+/**
+  * React Select
+  */
+
+.react-select__control.css-13cymwt-control {
+  background: none;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 0;
+  cursor: pointer;
+  border: 1px solid #8d9d93;
+  border-radius: 12px;
+}
+
+.react-select__control {
+  overflow-y: auto;
+  position: relative;
+  max-height: 38px;
+  // focus within
+  &:focus-within {
+    border: 1px solid #8d9d93;
+    box-shadow: none;
+    border-radius: 12px;
+  }
+}
+
+.react-select__indicators {
+  padding: 0 10px;
+}
+
+.react-select__indicator-separator {
+  display: none;
+}
+
+.react-select__dropdown-indicator {
+  svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+.react-select__menu.css-1nmdiq5-menu {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.react-select__menu-list.css-1n6sfyn-MenuList {
+  position: fixed;
+  max-height: 200px;
+  width: max-content;
+  background-color: #e6eeea;
+  border: none;
+  border-radius: 12px;
+  margin-top: -45px;
+  text-align: left;
+}

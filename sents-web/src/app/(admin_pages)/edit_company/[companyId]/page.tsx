@@ -4,6 +4,8 @@ import {
   getCompany,
   getCompanyNews,
   getCompanyFinancials,
+  getAllFinancialDataCategories,
+  getAllFinancialMetrics,
 } from '@/services/apis/companies';
 import SubNav from '@/components/navigation/SubNav';
 import Overview_section from '@/components/admin/sections/Overview_section';
@@ -23,6 +25,7 @@ const links = ['Overview', 'Financials', 'News'];
 
 const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const router = useRouter();
+  const companyId = parseInt(params.companyId);
 
   const [selectedLink, setSelectedLink] = useState(links[0]);
   const [companyData, setCompanyData] = useState<any>({});
@@ -30,7 +33,10 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const [financialData, setFinancialData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [financialStatements, setFinancialStatements] = useState<any>([]);
-  const companyId = parseInt(params.companyId);
+  const [financialMetrics, setFinancialMetrics] = useState<any>([]);
+  const [financialDataCategories, setFinancialDataCategories] = useState<any>(
+    [],
+  );
 
   const fetchCompanies = useCallback(async () => {
     setIsLoading(true);
@@ -39,15 +45,22 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       const companyData = await getCompany(companyId);
       const newsData = await getCompanyNews(companyId);
       const financialData = await getCompanyFinancials(companyId);
+      const financialMetrics = await getAllFinancialMetrics();
+      const financialDataCategories = await getAllFinancialDataCategories();
 
       if (
         companyData.status !== 200 ||
         newsData.status !== 200 ||
-        financialData.status !== 200
+        financialData.status !== 200 ||
+        financialMetrics.status !== 200
       ) {
         throw new Error('Failed to fetch data');
       }
 
+      setFinancialMetrics(financialMetrics.data);
+      setFinancialDataCategories(
+        financialDataCategories?.data || financialDataCategories,
+      );
       setFinancialStatements(companyData.data.company_documents);
       setCompanyData(companyData.data.company_details);
       setNewsData(newsData);
@@ -79,6 +92,8 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
             companyID={params.companyId}
             FinancialData={financialData}
             financialStatements={financialStatements}
+            metrics={financialMetrics}
+            category={financialDataCategories}
           />
         );
       case 'News':

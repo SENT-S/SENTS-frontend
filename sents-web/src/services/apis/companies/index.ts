@@ -27,3 +27,9 @@ export const addFinancialNews = (data: any) =>
 
 export const createUpdateFinancialData = (data: any) =>
   useFetchData('/createorupdate/financialdata/', 'post', data);
+
+export const getAllFinancialMetrics = () =>
+  useFetchData('/allfinancialmetrics/', 'get');
+
+export const getAllFinancialDataCategories = () =>
+  useFetchData('/allfinancialdatacategories/', 'get');

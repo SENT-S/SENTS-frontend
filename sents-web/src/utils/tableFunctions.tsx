@@ -61,3 +61,23 @@ export const getRangeYears = (yearRange: string): string[] => {
 
   return rangeYears;
 };
+
+export const convertFinancialYear = (financialYear: any, yearRange: any) => {
+  // Extract the last two digits from the financial year string
+  const lastTwoDigits = financialYear.slice(-2);
+
+  // Extract the start year from the year range
+  const startYear = yearRange.slice(3, 5);
+
+  // Calculate the prefix based on the start year
+  const prefix = '20';
+
+  // Combine the prefix, start year and the last two digits to get the full year
+  const fullYear =
+    prefix +
+    (parseInt(startYear, 10) + (parseInt(lastTwoDigits, 10) % 5))
+      .toString()
+      .padStart(2, '0');
+
+  return fullYear;
+};
