@@ -15,8 +15,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  MultiSelect,
-  MultiSelectItem,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import Pagination from '@/components/pagination';
@@ -24,11 +22,7 @@ import SubNav from '@/components/admin/Navs/SubNav';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { formatData } from '@/utils/tableFunctions';
-import {
-  getYearRanges,
-  getRangeYears,
-  convertFinancialYear,
-} from '@/utils/tableFunctions';
+import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
 import { MdDone } from 'react-icons/md';
 import { GoPlusCircle } from 'react-icons/go';
 import Add_new_metric from '@/components/admin/forms/Add_new_metric';
@@ -253,7 +247,8 @@ const Financial_section = ({
         links={categoryList.map((item: any) => item.label)}
         selectedLink={selectedLink}
         setSelectedLink={setSelectedLink}
-        bgColor={false}
+        bgColor={true}
+        addCat={true}
       />
 
       <div className="flex flex-wrap gap-4 justify-between items-center">

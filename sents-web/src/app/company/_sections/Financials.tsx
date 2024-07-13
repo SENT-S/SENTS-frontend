@@ -17,7 +17,6 @@ import {
   CartesianGrid,
   Curve,
 } from 'recharts';
-import { FinancialData } from '@/services/mockData/mock';
 import {
   Select,
   SelectContent,
@@ -27,7 +26,7 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
-import SubNav from '@/components/navigation/SubNav';
+import SubNav from '@/components/admin/Navs/SubNav';
 import { Button } from '@/components/ui/button';
 import { IoChevronBackOutline } from 'react-icons/io5';
 import html2canvas from 'html2canvas';
@@ -89,9 +88,11 @@ const CustomTooltip: React.FC<TooltipProps<any, any>> = ({
 const Financials = ({
   data,
   financialData,
+  category,
 }: {
   data: any;
   financialData: any[];
+  category: any[];
 }) => {
   const { theme } = useTheme();
   const chartRef = useRef(null);
@@ -111,6 +112,11 @@ const Financials = ({
 
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
+
+  const categoryList = category.map((item: any) => ({
+    value: item.id,
+    label: item.category_name,
+  }));
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);
@@ -242,18 +248,14 @@ const Financials = ({
 
       {!selectedMetric ? (
         <div className="space-y-5">
+          {/* subNav */}
           <SubNav
-            links={[
-              'Financial Summary',
-              'Profit & Loss',
-              'Balance Sheet',
-              'Cashflow Statement',
-              'Financial Analysis',
-            ]}
+            links={categoryList.map((item: any) => item.label)}
             selectedLink={selectedLink}
             setSelectedLink={setSelectedLink}
             bgColor={true}
           />
+
           {selectedData && selectedData.length > 0 && (
             <div className="flex justify-between gap-3 items-center">
               <div>
@@ -326,7 +328,12 @@ const Financials = ({
             hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
           `}
                           >
-                            <TableCell className="py-2">
+                            <TableCell
+                              className="py-2"
+                              style={{
+                                width: 'max-content',
+                              }}
+                            >
                               {item.metrics}
                             </TableCell>
                             {newYears.map(year => (

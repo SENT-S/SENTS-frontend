@@ -5,10 +5,11 @@ import {
   getCompany,
   getCompanyNews,
   getCompanyFinancials,
+  getAllFinancialDataCategories,
 } from '@/services/apis/companies';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/layouts';
-import SubNav from '@/components/navigation/SubNav';
+import SubNav from '@/components/admin/Navs/SubNav';
 import Overview from '../_sections/Overview';
 import Financial from '../_sections/Financials';
 import News from '../_sections/News';
@@ -34,12 +35,14 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
     const [newsData, setNewsData] = useState<any>([]);
     const [financialData, setFinancialData] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [category, setCategory] = useState<any[]>([]);
 
     const fetchCompanies = useCallback(async () => {
       const companyId = parseInt(params.companyId);
       const response = await getCompany(companyId);
       const newsResponse = await getCompanyNews(companyId);
       const financialResponse = await getCompanyFinancials(companyId);
+      const categoryResponse = await getAllFinancialDataCategories();
       if (
         response.status === 200 &&
         newsResponse.status === 200 &&
@@ -49,6 +52,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
         setNewsData(newsResponse.data);
         setFinancialData(financialResponse.data);
         setIsLoading(false);
+        setCategory(categoryResponse);
       } else {
         console.error('Failed to fetch company', response);
       }
@@ -66,7 +70,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
           return <Overview data />;
         case 'Financials':
           return (
-            <Financial data={companyDetails} financialData={financialData} />
+            <Financial
+              data={companyDetails}
+              financialData={financialData}
+              category={category}
+            />
           );
         case 'News':
           return <News data={newsData} />;

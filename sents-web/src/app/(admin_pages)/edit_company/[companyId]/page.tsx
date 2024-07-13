@@ -7,7 +7,7 @@ import {
   getAllFinancialDataCategories,
   getAllFinancialMetrics,
 } from '@/services/apis/companies';
-import SubNav from '@/components/navigation/SubNav';
+import SubNav from '@/components/admin/Navs/SubNav';
 import Overview_section from '@/components/admin/sections/Overview_section';
 import Financial_section from '@/components/admin/sections/Financial_section';
 import News_section from '@/components/admin/sections/News_section';
