@@ -16,6 +16,8 @@ import { Button } from '@/components/ui/button';
 import { IoArrowBack } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useSession } from 'next-auth/react';
+import { CustomSession } from '@/utils/types';
 
 interface CompanyDetailsProps {
   params: { companyId: string };
@@ -26,7 +28,10 @@ const links = ['Overview', 'Financials', 'News'];
 const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const router = useRouter();
   const companyId = parseInt(params.companyId);
-
+  const { status } = useSession() as {
+    data: CustomSession;
+    status: string;
+  };
   const [selectedLink, setSelectedLink] = useState(links[0]);
   const [companyData, setCompanyData] = useState<any>({});
   const [newsData, setNewsData] = useState<any>([]);
@@ -105,7 +110,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
 
   return (
     <MainLayout>
-      {isLoading ? (
+      {isLoading && status === 'authenticated' ? (
         Array.from({ length: 5 }).map((_, index) => (
           <Skeleton
             key={index}

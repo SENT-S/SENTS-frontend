@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { Button } from '@/components/ui/button';
+import ReactSelect from 'react-select';
 import {
   Table,
   TableBody,
@@ -36,29 +37,34 @@ type Row = {
   [key: string]: string | string[];
 };
 
-const category = [
-  { id: 1, name: 'Sales Revenue' },
-  { id: 2, name: 'Cost of Goods Sold' },
-  { id: 3, name: 'Gross Profit' },
-  { id: 4, name: 'Operating Expenses' },
-  { id: 5, name: 'Net Income' },
-  { id: 6, name: 'Gross Margin' },
-];
-
-const metrics = [
-  { id: 1, name: 'Revenue' },
-  { id: 2, name: 'Gross Profit' },
-  { id: 3, name: 'Operating Expenses' },
-  { id: 4, name: 'Net Income' },
-];
-
-const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
+const Section_1 = ({
+  setStep,
+  step,
+  metrics,
+  category,
+}: {
+  setStep: any;
+  step: number;
+  metrics: any;
+  category: any;
+}) => {
   const yearRanges = getYearRanges();
   const [isLoading, setIsLoading] = useState(false);
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
   const createdCompanyData = useSelector(state => state.company.response);
   const companyID = Number(createdCompanyData?.data?.id);
+
+  // change the format of the data from categories and metric to react-select format
+  const categoryList = category.map((item: any) => ({
+    value: item.id,
+    label: item.category_name,
+  }));
+
+  const metricsList = metrics.map((item: any) => ({
+    value: item.id,
+    label: item.metric_name,
+  }));
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);
@@ -103,25 +109,19 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
   };
 
   // Function to handle select change in the table
-  const handleSelectChange = (value: any, rowIndex: number, column: any) => {
+  const handleSelectChange = (value: any, rowIndex: number, column: string) => {
     setRows(prevRows => {
       return prevRows.map((row, index) => {
         if (index === rowIndex) {
           if (column === 'category') {
             // For multi-select dropdown
-            const existingValues = Array.isArray(row[column])
-              ? row[column]
-              : [];
             const newValues = Array.isArray(value)
-              ? value.map(String)
-              : [String(value)];
-            const mergedValues = Array.from(
-              new Set([...existingValues, ...newValues]),
-            );
-            return { ...row, [column]: mergedValues };
+              ? value.map((item: any) => item.value)
+              : [];
+            return { ...row, [column]: newValues };
           } else {
             // For single-select dropdown
-            return { ...row, [column]: String(value) };
+            return { ...row, [column]: value };
           }
         } else {
           return row;
@@ -263,28 +263,23 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
                 {currentItems.map((row, rowIndex) => (
                   <TableRow key={rowIndex}>
                     <TableCell className="text-center">
-                      <Select
-                        onValueChange={(value: any) =>
-                          handleSelectChange(value, rowIndex, 'metrics')
-                        }
-                        value={row.metrics}
-                      >
-                        <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl">
-                          <SelectValue
-                            placeholder="Metrics"
-                            className="text-center w-full"
-                          >
-                            {row.metrics}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                          {metrics.map((item: any) => (
-                            <SelectItem key={item.id} value={item.id}>
-                              {item.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="relative">
+                        <ReactSelect
+                          isMulti={false}
+                          name="metrics"
+                          options={metricsList}
+                          isClearable={false}
+                          value={metricsList.find(
+                            (item: any) => item.value === row.metrics,
+                          )}
+                          className="react-select-container"
+                          classNamePrefix="react-select"
+                          placeholder="Metrics"
+                          onChange={(item: any) =>
+                            handleSelectChange(item.value, rowIndex, 'metrics')
+                          }
+                        />
+                      </div>
                     </TableCell>
                     {newYears.map((year, yearIndex) => (
                       <TableCell key={year} className="text-center">
@@ -299,27 +294,25 @@ const Section_1 = ({ setStep, step }: { setStep: any; step: number }) => {
                       </TableCell>
                     ))}
                     <TableCell className="text-center">
-                      <MultiSelect
-                        onValueChange={(value: any) =>
-                          handleSelectChange(value, rowIndex, 'category')
-                        }
-                      >
-                        <SelectTrigger className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl">
-                          <SelectValue
-                            placeholder="Category"
-                            className="text-center w-full"
-                          >
-                            {row.category.join(', ')}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                          {category.map((item: any) => (
-                            <MultiSelectItem key={item.id} value={item.id}>
-                              {item.name}
-                            </MultiSelectItem>
-                          ))}
-                        </SelectContent>
-                      </MultiSelect>
+                      <div className="relative">
+                        <ReactSelect
+                          isMulti={true}
+                          name="category"
+                          options={categoryList}
+                          isClearable={false}
+                          value={row.category.map((cat: any) =>
+                            categoryList.find(
+                              (item: any) => item.value === cat,
+                            ),
+                          )}
+                          className="react-select-container"
+                          classNamePrefix="react-select"
+                          placeholder="Category"
+                          onChange={(item: any) =>
+                            handleSelectChange(item, rowIndex, 'category')
+                          }
+                        />
+                      </div>
                     </TableCell>
                     {rows.length > 1 && (
                       <TableCell className="text-center">

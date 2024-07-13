@@ -76,24 +76,23 @@ const Financial_section = ({
     setNewYears(rangeYears);
   }, [yearRange]);
 
-  const TableData: any = {
-    'Financial Summary': formatData(
-      FinancialData.data['Financial Summary' as any],
-    ),
-    'Profit & Loss': formatData(FinancialData.data['Profit & Loss' as any]),
-    'Balance Sheet': formatData(FinancialData.data['Balance Sheet' as any]),
-    'Cashflow Statement': formatData(
-      FinancialData.data['Cashflow Statement' as any],
-    ),
-    'Financial Analysis': formatData(
-      FinancialData.data['Financial Analysis' as any],
-    ),
-  };
+  // Create a mapping from label to data
+  const TableData: any = categoryList.reduce((acc: any, category: any) => {
+    acc[category.label] = formatData(FinancialData.data[category.label]);
+    return acc;
+  }, {});
 
-  const selectedData = TableData[selectedLink];
+  // Initialize rows state with data from the selected link
+  const [rows, setRows] = useState<Row[]>(() => {
+    const selectedData = TableData[selectedLink];
+    return [...selectedData];
+  });
 
-  // Initialize rows state with data from the database and one empty row
-  const [rows, setRows] = useState<Row[]>([...selectedData]);
+  // Update rows whenever selectedLink changes
+  useEffect(() => {
+    const selectedData = TableData[selectedLink];
+    setRows([...selectedData]);
+  }, [selectedLink]);
 
   useEffect(() => {
     // Update rows state when selectedLink changes
@@ -138,33 +137,28 @@ const Financial_section = ({
   };
 
   // Function to handle select change in the table
-  const handleSelectChange = (value: any, rowIndex: number, column: any) => {
-    setRows(prevRows => {
-      return prevRows.map((row, index) => {
+  const handleSelectChange = (value: any, rowIndex: number, column: string) => {
+    setRows(prevRows =>
+      prevRows.map((row, index) => {
         if (index === rowIndex) {
           if (column === 'category') {
-            // For multi-select dropdown
-            const existingValues = Array.isArray(row[column])
-              ? row[column]
-              : [];
             const newValues = Array.isArray(value)
               ? value.map(String)
               : [String(value)];
-            const mergedValues = Array.from(
-              new Set([...existingValues, ...newValues]),
-            );
-            return { ...row, [column]: mergedValues };
+            return {
+              ...row,
+              [column]: Array.from(
+                new Set([...(row[column] || []), ...newValues]),
+              ),
+            };
           } else {
-            // For single-select dropdown
             return { ...row, [column]: String(value) };
           }
-        } else {
-          return row;
         }
-      });
-    });
+        return row;
+      }),
+    );
   };
-
   const handleDelete = (rowIndex: number) => {
     clearRow(rowIndex);
   };
@@ -175,69 +169,95 @@ const Financial_section = ({
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      // Convert rows state to an array of objects where each object represents a row
-      const formData = rows.flatMap(row => {
-        // Extract metrics and category from the row
-        const { metrics, category, ...years } = row;
+    const formData = rows.flatMap(row => {
+      // Extract metrics and category from the row
+      const { metrics, category, ...years } = row;
 
-        // Convert metrics and category to numbers
-        const metricId = Number(metrics) || '';
-        const categoryIds = category.map(Number) || '';
+      // Convert metrics and category to numbers
+      const metricId = Number(metrics) || '';
+      const categoryIds = category ? category.map(Number) : [];
 
-        // Map over the years in the row to create an object for each year
-        return Object.entries(years).map(([year, value]) => {
-          // Create an object for each year
-          let data: any = {
-            company: Number(companyID),
-            year: Number('20' + year.slice(-2)),
-          };
+      // Map over the years in the row to create an object for each year
+      return Object.entries(years).map(([year, value]) => {
+        // Create an object for each year
+        let data: any = {
+          company: Number(companyID),
+          year: Number('20' + year.slice(-2)),
+        };
 
-          // Only include metrics, category, and value if they have a value
-          if (metricId) data.metric = metricId;
-          if (categoryIds.length > 0) data.category = categoryIds;
-          if (value) data.value = String(value);
+        // Only include metrics, category, and value if they have a value
+        if (metricId) data.metric = metricId;
+        if (categoryIds.length > 0) data.category = categoryIds;
+        if (value) data.value = String(value);
 
-          return data;
-        });
+        return data;
       });
+    });
 
-      setIsLoading(true);
-      console.info('Form data:', formData);
+    console.info('Form data:', formData);
+    // try {
+    //   // Convert rows state to an array of objects where each object represents a row
+    //   const formData = rows.flatMap(row => {
+    //     // Extract metrics and category from the row
+    //     const { metrics, category, ...years } = row;
 
-      // Call the API to create/update financial data
-      // const response = await createUpdateFinancialData(formData);
+    //     // Convert metrics and category to numbers
+    //     const metricId = Number(metrics) || '';
+    //     const categoryIds = category.map(Number) || '';
 
-      // Check if the request was successful
-      // if (!response.ok) {
-      //   throw new Error(`API request failed with status ${response}`);
-      // }
+    //     // Map over the years in the row to create an object for each year
+    //     return Object.entries(years).map(([year, value]) => {
+    //       // Create an object for each year
+    //       let data: any = {
+    //         company: Number(companyID),
+    //         year: Number('20' + year.slice(-2)),
+    //       };
 
-      // Show success message
-      toast.success('Financial data added successfully', {
-        style: {
-          background: 'green',
-          color: 'white',
-          border: 'none',
-        },
-        position: 'top-center',
-        duration: 5000,
-      });
+    //       // Only include metrics, category, and value if they have a value
+    //       if (metricId) data.metric = metricId;
+    //       if (categoryIds.length > 0) data.category = categoryIds;
+    //       if (value) data.value = String(value);
 
-      // Reset rows state to initial state after form submission
-      // setRows([getEmptyRow(newYears)]);
-      // reload the page
-      // window.location.reload();
-    } catch (error: any) {
-      console.error(error);
-      toast.error(`Failed to add financial data: ${error.message}`, {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
-        position: 'top-center',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    //       return data;
+    //     });
+    //   });
+
+    //   console.info('Form data:', formData);
+    //   setIsLoading(true);
+
+    //   // Call the API to create/update financial data
+    //   // const response = await createUpdateFinancialData(formData);
+
+    //   // Check if the request was successful
+    //   // if (!response.ok) {
+    //   //   throw new Error(`API request failed with status ${response}`);
+    //   // }
+
+    //   // Show success message
+    //   toast.success('Financial data added successfully', {
+    //     style: {
+    //       background: 'green',
+    //       color: 'white',
+    //       border: 'none',
+    //     },
+    //     position: 'top-center',
+    //     duration: 5000,
+    //   });
+
+    //   // Reset rows state to initial state after form submission
+    //   // setRows([getEmptyRow(newYears)]);
+    //   // reload the page
+    //   // window.location.reload();
+    // } catch (error: any) {
+    //   console.error(error);
+    //   toast.error(`Failed to add financial data: ${error.message}`, {
+    //     style: { background: 'red', color: 'white', border: 'none' },
+    //     duration: 5000,
+    //     position: 'top-center',
+    //   });
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   return (
@@ -316,9 +336,9 @@ const Financial_section = ({
         itemsPerPage={5}
         render={currentItems => (
           <div className="relative shadow-md rounded-2xl w-full h-auto">
-            <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
+            <Table className="min-w-full text-black dark:text-white">
               {/* table header */}
-              <TableHeader>
+              <TableHeader className="bg-[#1EF1A5]">
                 <TableRow className="text-black text-lg font-bold">
                   <TableHead className="w-1/6 py-2 text-center">
                     Metrics
@@ -359,29 +379,29 @@ const Financial_section = ({
                         {showEdit ? (
                           <div className="relative">
                             <ReactSelect
-                              isMulti={false}
                               name="metrics"
                               options={metricsList}
                               isClearable={false}
                               value={metricsList.find(
                                 (item: any) => item.value === row.metrics,
                               )}
-                              className="react-select-container"
+                              className="react-select-container relative"
                               classNamePrefix="react-select"
                               placeholder="Metrics"
-                              onChange={(item: any) => {
+                              onChange={item =>
                                 handleSelectChange(
                                   item.value,
                                   rowIndex,
                                   'metrics',
-                                );
-                              }}
+                                )
+                              }
                             />
                           </div>
                         ) : (
                           row.metrics
                         )}
                       </TableCell>
+
                       {newYears.map((year, yearIndex) => (
                         <TableCell key={year} className="text-center">
                           {showEdit ? (
@@ -403,29 +423,28 @@ const Financial_section = ({
                           )}
                         </TableCell>
                       ))}
+
                       {showEdit && (
                         <TableCell className="text-center">
                           <div className="relative">
                             <ReactSelect
-                              isMulti={true}
+                              isMulti
                               name="category"
                               options={categoryList}
                               isClearable={false}
                               value={categoryList.filter((item: any) =>
-                                row.category.includes(item.value),
+                                row.category?.includes(item.value),
                               )}
                               className="react-select-container"
                               classNamePrefix="react-select"
                               placeholder="Category"
-                              onChange={(items: any) => {
-                                items.map((item: any) => {
-                                  handleSelectChange(
-                                    item.value,
-                                    rowIndex,
-                                    'category',
-                                  );
-                                });
-                              }}
+                              onChange={items =>
+                                handleSelectChange(
+                                  items.map(item => item.value),
+                                  rowIndex,
+                                  'category',
+                                )
+                              }
                             />
                           </div>
                         </TableCell>
