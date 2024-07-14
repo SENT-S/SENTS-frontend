@@ -10,7 +10,10 @@ import { CustomSession } from '@/utils/types';
 import { useSession } from 'next-auth/react';
 import { FiPieChart } from 'react-icons/fi';
 import { TbChartHistogram } from 'react-icons/tb';
+import { FaUserShield } from 'react-icons/fa6';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '../ui/button';
+import { CiSettings } from 'react-icons/ci';
 
 const UserLinks = [
   {
@@ -18,12 +21,14 @@ const UserLinks = [
     icon: LuLayoutDashboard,
     path: '/dashboard',
     activePaths: ['/dashboard', '/company'],
+    disable: false,
   },
   {
     name: 'News',
     icon: HiOutlineNewspaper,
     path: '/news',
     activePaths: ['/news'],
+    disable: false,
   },
 ];
 
@@ -39,12 +44,28 @@ const AdminLinks = [
       'new_company',
       'edit_company',
     ],
+    disable: false,
   },
   {
     name: 'News',
     icon: HiOutlineNewspaper,
     path: '/news',
     activePaths: ['/news', 'create_news'],
+    disable: false,
+  },
+  {
+    name: 'Authorizations',
+    icon: FaUserShield,
+    path: '#',
+    activePaths: ['#'],
+    disable: true,
+  },
+  {
+    name: 'Settings',
+    icon: CiSettings,
+    path: '#',
+    activePaths: ['#'],
+    disable: true,
   },
 ];
 
@@ -77,17 +98,19 @@ const SideBar = () => {
       <div className="flex flex-col w-full h-full justify-between items-center">
         <div />
         <div className="relative">
-          <ul className="absolute left-[-114px] -bottom-16 bg-white dark:bg-[#39463E80] rounded-r-3xl py-4">
+          <div className="absolute left-[-114px] -bottom-16 bg-white dark:bg-[#39463E80] rounded-r-3xl py-4">
             {status !== 'loading'
               ? (isAdmin ? AdminLinks : UserLinks).map((link, index) => {
                   const Icon = link.icon;
                   const isActiveLink = link.activePaths.some(isActive);
                   return (
-                    <li
+                    <Button
                       key={index}
-                      className={`flex ${isAdmin ? 'justify-start' : 'justify-center'} items-center space-x-2 px-6 py-4 cursor-pointer relative ${
+                      type="button"
+                      className={`flex w-full ${isAdmin ? 'justify-between' : 'justify-center'} items-center space-x-2 px-6 py-4 relative ${
                         isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
-                      }`}
+                      } `}
+                      disabled={link.disable}
                     >
                       <Link
                         href={link.path}
@@ -108,7 +131,7 @@ const SideBar = () => {
                       {isActiveLink && (
                         <span className="absolute right-0 bg-[#148c59] rounded-l-md h-6 w-1"></span>
                       )}
-                    </li>
+                    </Button>
                   );
                 })
               : Array.from({ length: 4 }).map((_, index) => (
@@ -122,7 +145,7 @@ const SideBar = () => {
                     />
                   </li>
                 ))}
-          </ul>
+          </div>
         </div>
         <button
           onClick={handleLogout}

@@ -148,6 +148,7 @@ const Dashboard = () => {
                 <Button
                   className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
                   onClick={() => setShowEdit(!showEdit)}
+                  disabled={true}
                 >
                   Edit Company <FiEdit className="ml-3" size={18} />
                 </Button>
