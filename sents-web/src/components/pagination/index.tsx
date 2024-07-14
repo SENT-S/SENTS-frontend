@@ -16,13 +16,13 @@ interface PaginationProps {
   render: (items: any[]) => JSX.Element;
 }
 
-const Pagination = ({ items, itemsPerPage, render }: PaginationProps) => {
+const Pagination = ({ items = [], itemsPerPage, render }: PaginationProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem) || [];
 
   const handlePageClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -38,7 +38,7 @@ const Pagination = ({ items, itemsPerPage, render }: PaginationProps) => {
           isActive={currentPage !== 1}
         />
         {[...Array(totalPages)].map((_, i) => (
-          <PaginationItem key={i} className="list-none">
+          <PaginationItem key={i} className="list-none cursor-pointer">
             <PaginationLink
               onClick={() => handlePageClick(i + 1)}
               isActive={i + 1 === currentPage}

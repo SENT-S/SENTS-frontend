@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import Link from 'next/link';
 import { IoIosMenu } from 'react-icons/io';
@@ -20,16 +20,14 @@ import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { LuLayoutDashboard } from 'react-icons/lu';
-import { HiOutlineNewspaper } from 'react-icons/hi2';
 import { getCompanies } from '@/services/apis/companies';
-import { Session } from 'next-auth';
 import Fuse from 'fuse.js';
 import { useRouter } from 'next/navigation';
-
-interface CustomSession extends Session {
-  token?: string;
-}
+import { CustomSession } from '@/utils/types';
+import useOutsideClick from '@/utils/useOutsideClick';
+import { UserLinks, AdminLinks } from '@/services/Links';
+import { Button } from '@/components/ui/button';
+import { IoMdClose } from 'react-icons/io';
 
 // Define the type for a company
 type Company = {
@@ -54,6 +52,18 @@ const options = {
   includeScore: true,
 };
 
+const SkeletonComponent = ({
+  height,
+  width,
+}: {
+  height: string;
+  width: string;
+}) => (
+  <Skeleton
+    className={`h-${height} w-${width} rounded-full bg-gray-200 dark:bg-[#0e120f]`}
+  />
+);
+
 const Header = () => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
@@ -63,12 +73,19 @@ const Header = () => {
   };
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
+  const isAdmin = session?.user?.role === 'ADMIN';
+  const { image = '', name, email } = session?.user || {};
 
   // for search
   const [searchData, setSearchData] = useState(initialData);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Company[]>([]);
   const [fuse, setFuse] = useState(new Fuse(searchData, options));
+  const searchRef = useRef(null);
+
+  useOutsideClick(searchRef, () => {
+    setResults([]);
+  });
 
   const isActive = (path: string) => pathname.startsWith(path);
 
@@ -76,46 +93,30 @@ const Header = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setLoading(true);
-    signOut().then(() => setLoading(false));
+    localStorage.clear();
+    await signOut().then(() => setLoading(false));
   };
-
-  const Links = [
-    {
-      name: 'Dashboard',
-      icon: LuLayoutDashboard,
-      path: '/dashboard',
-      activePaths: ['/dashboard', '/company'],
-    },
-    {
-      name: 'News',
-      icon: HiOutlineNewspaper,
-      path: '/news',
-      activePaths: ['/news'],
-    },
-  ];
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      if (session?.token) {
-        const response = await getCompanies(session.token);
-        if (response.status === 200) {
-          // Flatten the data into a single array of companies
-          const flattenedData = response.data.flatMap(
-            (data: any) => data.list_of_companies,
-          );
-          setSearchData(flattenedData);
-          // Update the fuse instance with the new data
-          setFuse(new Fuse(flattenedData, options));
-        } else {
-          console.error('Failed to fetch companies', response);
-        }
+      const response = await getCompanies();
+      if (response.status === 200) {
+        // Flatten the data into a single array of companies
+        const flattenedData = response.data.flatMap(
+          (data: any) => data.list_of_companies,
+        );
+        setSearchData(flattenedData);
+        // Update the fuse instance with the new data
+        setFuse(new Fuse(flattenedData, options));
+      } else {
+        console.error('Failed to fetch companies', response);
       }
     };
 
     fetchCompanies();
-  }, [session]);
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -129,7 +130,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="bg-white shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463E80]">
+      <div className="bg-white z-50 shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463e] sticky top-0">
         <div className="px-4 flex justify-between items-center space-x-4 lg:space-x-0">
           <div className="lg:hidden">
             <Link href="/dashboard">
@@ -138,68 +139,82 @@ const Header = () => {
               </h1>
             </Link>
           </div>
-          {searchData && searchData.length > 0 ? (
-            <div className="relative w-full lg:w-1/3">
-              <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg overflow-hidden dark:bg-[#39463E80]">
-                <div className="ml-3">
-                  <CiSearch />
+          {/* Admin Feature added */}
+          {!isAdmin ? (
+            searchData && searchData.length > 0 ? (
+              <div className="relative w-full lg:w-1/3">
+                <div className="flex items-center  h-[40px] text-gray-400 bg-gray-100 max-lg:dark:bg-black rounded-lg overflow-hidden dark:bg-black">
+                  <div className="ml-3">
+                    <CiSearch />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search for stocks & more"
+                    className="flex-grow max-md:text-sm px-2 w-full bg-transparent focus:outline-none"
+                    value={query}
+                    onChange={handleSearch}
+                  />
+                  <Button
+                    type="button"
+                    className={`p-2 rounded-full ${query.length ? 'block' : 'hidden'} dark:text-white bg-none`}
+                    onClick={() => setQuery('')}
+                  >
+                    <IoMdClose size={20} />
+                  </Button>
                 </div>
-                <input
-                  type="text"
-                  placeholder="Search for stocks & more"
-                  className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
-                  value={query}
-                  onChange={handleSearch}
-                />
+                {results.length > 0 && (
+                  <div
+                    className="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 z-50 overflow-auto dark:bg-[#39463E] dark:text-white"
+                    ref={searchRef}
+                  >
+                    {results.map((item, index) => (
+                      <div
+                        onClick={() => {
+                          router.push(`/company/${item.id}`);
+                          setResults([]);
+                        }}
+                        key={index}
+                        className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-500"
+                      >
+                        {item.company_name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              {results.length > 0 && (
-                <div className="absolute mt-2 w-full bg-white rounded-md shadow-lg max-h-60 z-50 overflow-auto dark:bg-[#39463E] dark:text-white">
-                  {results.map((item, index) => (
-                    <div
-                      onClick={() => {
-                        router.push(`/company/${item.id}`);
-                        setResults([]);
-                      }}
-                      key={index}
-                      className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-500"
-                    >
-                      {item.company_name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            ) : (
+              <Skeleton className="w-full lg:w-1/3 rounded-md p-5 relative bg-gray-200 dark:bg-[#0e120f]" />
+            )
           ) : (
-            <Skeleton className="w-full lg:w-1/3 rounded-md p-5 relative bg-gray-200 dark:bg-[#0e120f]" />
+            <div />
           )}
 
           <div className="hidden lg:flex items-center lg:pr-14">
-            <button
+            <Button
+              type="button"
               className="p-2 bg-gray-100 rounded-full cursor-pointer text-black dark:text-white dark:bg-[#39463E80]"
               onClick={toggleTheme}
             >
               <MdOutlineLightMode size={20} className="hidden dark:block" />
               <BsFillMoonStarsFill size={20} className="dark:hidden" />
-            </button>
+            </Button>
             {status === 'loading' ? (
               <div className="flex items-center space-x-4 ml-2">
-                <Skeleton className="h-12 w-12 rounded-full bg-gray-200 dark:bg-[#0e120f]" />
+                <SkeletonComponent height="12" width="12" />
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-[100px] bg-gray-200 dark:bg-[#0e120f]" />
-                  <Skeleton className="h-4 w-[150px] bg-gray-200 dark:bg-[#0e120f]" />
+                  <SkeletonComponent height="4" width="[100px]" />
+                  <SkeletonComponent height="4" width="[150px]" />
                 </div>
               </div>
             ) : (
               <div className="flex items-center ml-4">
                 <Avatar style={{ boxShadow: '0 0 0 1px #148c59' }}>
-                  <AvatarImage src={session?.user?.image || ''} />
+                  <AvatarImage src={image} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <div className="ml-2 dark:text-white">
-                  <p className="font-bold">{session?.user?.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {session?.user?.email}
-                  </p>
+                  <p className="font-bold">{name}</p>
+                  <p className="text-sm text-gray-500">{email}</p>
                 </div>
               </div>
             )}
@@ -209,9 +224,9 @@ const Header = () => {
           <div className="lg:hidden">
             <Drawer direction="right">
               <DrawerTrigger asChild>
-                <button className="cursor-pointer">
+                <Button type="button">
                   <IoIosMenu className="bg-gray-100 py-1 px-2 dark:bg-[#39463E80] dark:text-white w-12 h-[30px] rounded-[40px]" />
-                </button>
+                </Button>
               </DrawerTrigger>
               <DrawerContent className="bg-[#E6EEEA] flex flex-col items-center rounded-none">
                 <DrawerHeader className="mx-auto w-full space-y-4 max-w-sm">
@@ -248,8 +263,9 @@ const Header = () => {
                     </div>
                   )}
                   <div className="w-full flex justify-start">
-                    <button
-                      className="p-2 bg-gray-100 rounded-full cursor-pointer text-black dark:text-white dark:bg-[#39463E80]"
+                    <Button
+                      type="button"
+                      className="p-2 bg-gray-100 rounded-full text-black dark:text-white dark:bg-[#39463E80]"
                       onClick={toggleTheme}
                     >
                       <MdOutlineLightMode
@@ -257,18 +273,22 @@ const Header = () => {
                         className="hidden dark:block"
                       />
                       <BsFillMoonStarsFill size={20} className="dark:hidden" />
-                    </button>
+                    </Button>
                   </div>
-                  <ul className="w-full space-y-3">
-                    {Links.map((link, index) => {
+                  <div className="w-full space-y-3">
+                    {(isAdmin ? AdminLinks : UserLinks).map((link, index) => {
                       const Icon = link.icon;
                       const isActiveLink = link.activePaths.some(isActive);
                       return (
-                        <li
+                        <Button
+                          type="button"
                           key={index}
-                          className={`flex justify-center items-center rounded-md space-x-2 px-4 py-2 cursor-pointer relative ${
-                            isActiveLink ? 'bg-[#39463E] text-white' : ''
+                          className={`flex w-full  justify-center items-center rounded-md space-x-2 px-4 py-2 relative ${
+                            isActiveLink
+                              ? 'bg-[#39463E] text-white hover:bg-[#39463edc]'
+                              : ''
                           }`}
+                          disabled={link.disable}
                         >
                           <Link
                             href={link.path}
@@ -277,14 +297,15 @@ const Header = () => {
                             <Icon size={24} className="text-[#148c59]" />
                             <span className="text-lg">{link.name}</span>
                           </Link>
-                        </li>
+                        </Button>
                       );
                     })}
-                  </ul>
+                  </div>
                 </DrawerHeader>
                 <div className="flex flex-col justify-between h-full pb-4">
                   <div />
-                  <button
+                  <Button
+                    type="button"
                     onClick={() => {
                       handleLogout();
                     }}
@@ -292,7 +313,7 @@ const Header = () => {
                   >
                     <IoIosLogOut size={24} />
                     <span>{loading ? 'Logging out...' : 'Logout'}</span>
-                  </button>
+                  </Button>
                 </div>
               </DrawerContent>
             </Drawer>

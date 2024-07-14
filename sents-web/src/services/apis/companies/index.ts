@@ -1,31 +1,35 @@
-import { createAxiosInstanceWithAuth } from '../axiosInstance';
+import useFetchData from '@/utils/useFetchData';
 
-export const getCompanies = async (token: string) => {
-  const axiosInstance = createAxiosInstanceWithAuth(token);
-  const res = await axiosInstance.get('/allcompanies/');
-  return res.data;
-};
+export const getCompanies = () => useFetchData('/allcompanies/', 'get');
 
-export const getCompany = async (token: string, id: number) => {
-  const axiosInstance = createAxiosInstanceWithAuth(token);
-  const res = await axiosInstance.get(`/acompany/${id}/`);
-  return res.data;
-};
+export const getCompany = (id: number) =>
+  useFetchData(`/acompany/${id}/`, 'get');
 
-export const getCompanyNews = async (token: string, id: number) => {
-  const axiosInstance = createAxiosInstanceWithAuth(token);
-  const res = await axiosInstance.get(`/newsbycompany/${id}/`);
-  return res.data;
-};
+export const getCompanyNews = (id: number) =>
+  useFetchData(`/newsbycompany/${id}/`, 'get');
 
-export const getAllCompanyNews = async (token: string) => {
-  const axiosInstance = createAxiosInstanceWithAuth(token);
-  const res = await axiosInstance.get('/allnews/');
-  return res.data;
-};
+export const getAllCompanyNews = () => useFetchData('/allnews/', 'get');
 
-export const getCompanyFinancials = async (token: string, id: number) => {
-  const axiosInstance = createAxiosInstanceWithAuth(token);
-  const res = await axiosInstance.get(`/company_financial_data/${id}/`);
-  return res.data;
-};
+export const getCompanyFinancials = (id: number) =>
+  useFetchData(`/companyfinancialdata/${id}/`, 'get');
+
+export const createCompany = (data: any) =>
+  useFetchData('/create/company/', 'post', data);
+
+export const addFinancialMetric = (data: any) =>
+  useFetchData('/create/financialmetric/', 'post', data);
+
+export const addFinancialDataCategory = (data: any) =>
+  useFetchData('/create/financialdatacategory/', 'post', data);
+
+export const addFinancialNews = (data: any) =>
+  useFetchData('/create/financialnews/', 'post', data);
+
+export const createUpdateFinancialData = (data: any) =>
+  useFetchData('/createorupdate/financialdata/', 'post', data);
+
+export const getAllFinancialMetrics = () =>
+  useFetchData('/allfinancialmetrics/', 'get');
+
+export const getAllFinancialDataCategories = () =>
+  useFetchData('/allfinancialdatacategories/', 'get');

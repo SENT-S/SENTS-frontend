@@ -2,7 +2,7 @@ import '@/styles/styles.scss';
 import StoreProvider from '@/app/StoreProvider';
 import ThemeProvider from '../components/themeProvider/ThemeProvider';
 import ThemeToggle from '@/components/themeProvider/ThemeToggle';
-import AuthProvider from '@/components/context/AuthProvider';
+import AuthProvider from '@/app/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
 
 export const metadata = {
@@ -18,19 +18,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <StoreProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ThemeToggle />
-            <AuthProvider>
+        <AuthProvider>
+          <StoreProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <ThemeToggle />
               <>{children}</>
-            </AuthProvider>
-          </ThemeProvider>
-        </StoreProvider>
+            </ThemeProvider>
+          </StoreProvider>
+        </AuthProvider>
         <Toaster />
       </body>
     </html>

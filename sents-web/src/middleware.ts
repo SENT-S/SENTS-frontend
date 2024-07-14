@@ -8,7 +8,14 @@ interface Token {
 }
 
 export const config = {
-  matcher: ['/dashboard', '/company', '/company/:path*', '/news'],
+  matcher: [
+    '/dashboard',
+    '/company/:path*',
+    '/edit_company/:path*',
+    '/new_company',
+    '/create_news',
+    '/news',
+  ],
 };
 
 export async function middleware(req: any) {
@@ -20,21 +27,15 @@ export async function middleware(req: any) {
 
   const { pathname } = req.nextUrl;
 
-  // Get the current time in seconds
-  const currentTime = Math.floor(Date.now() / 1000);
-
-  // Check if the token has expired
-  const isTokenExpired = token && token.exp < currentTime;
-
   // Allow the requests if the following is true:
   // 1. It's a request for next-auth session & provider fetching
   // 2. The token exists and has not expired
-  if (pathname.includes('/api/auth') || (token && !isTokenExpired)) {
+  if (pathname.includes('/api/auth') || token) {
     return NextResponse.next();
   }
 
   // Redirect them to login page if they are not authenticated or the token has expired
-  if ((!token || isTokenExpired) && pathname !== '/login_register') {
+  if (!token && pathname !== '/login_register') {
     return NextResponse.redirect(new URL('/login_register', req.url));
   }
 }

@@ -1,8 +1,8 @@
 import React from 'react';
-import LandingPage from './landing/page';
+import Landing from './landing/page';
 
 const Index = () => {
-  return <LandingPage />;
+  return <Landing />;
 };
 
 export default Index;

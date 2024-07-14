@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+import Pagination from '@/components/pagination';
+import NewsItem from '@/components/NewsItem/NewsItem';
+import { defaultImageUrl } from '@/services/mockData/mock';
 
 interface NewsProps {
   data: any;
@@ -22,45 +24,28 @@ const News = ({ data }: NewsProps) => {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      {data.map((newsItem: any) => {
-        const [hovered, setHovered] = useState(false);
-        return (
-          <div
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            key={newsItem.id}
-            className="flex items-center gap-4 bg-white dark:text-white dark:bg-[#39463E80] h-auto hover:bg-[#E6EEEA] cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out"
-            onClick={() => {
-              window.open(newsItem.link_to_news_page, '_blank');
-            }}
-          >
-            <div className="w-64 h-40 relative">
-              <Image
-                src="https://source.unsplash.com/random/finance"
-                alt={newsItem.headline}
-                className="w-full h-full object-cover rounded-bl-2xl rounded-tl-2xl"
-                fill={true}
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
-              />
+      <Pagination
+        items={data}
+        itemsPerPage={4}
+        render={(currentItems: any) => {
+          return (
+            <div className="grid grid-cols-1 gap-4">
+              {currentItems.map((newsItem: any) => (
+                <NewsItem
+                  key={newsItem.id}
+                  label={newsItem.news_category}
+                  imgURL={defaultImageUrl}
+                  newsItem={newsItem}
+                  windowWidth={windowWidth}
+                  showCheckbox={false}
+                  onCheckboxChange={() => {}}
+                  selectedIds={[]}
+                />
+              ))}
             </div>
-            <div>
-              <span
-                className={`${hovered ? 'bg-green-700 text-white' : 'bg-green-200'} px-2 py-1 text-green-600 p-[3px] transition-colors duration-200 ease-in-out capitalize`}
-              >
-                {newsItem.news_category}
-              </span>
-              <h3 className="text-sm md:text-lg font-semibold mt-3">
-                {windowWidth < 768
-                  ? `${newsItem.headline.slice(0, 50)}...`
-                  : newsItem.headline}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-white">
-                {`${newsItem.short_description.slice(0, 100)}...`}
-              </p>
-            </div>
-          </div>
-        );
-      })}
+          );
+        }}
+      />
     </div>
   );
 };

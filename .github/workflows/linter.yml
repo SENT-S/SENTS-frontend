@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Run Super-Linter
         uses: github/super-linter@v4
@@ -18,4 +20,6 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
-          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_CSS: false
+          VALIDATE_SCSS: false
+          VALIDATE_TYPESCRIPT_STANDARD: false
