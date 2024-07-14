@@ -155,6 +155,7 @@ const Financial_section = ({
       }),
     );
   };
+
   const handleDelete = (rowIndex: number) => {
     clearRow(rowIndex);
   };
