@@ -349,7 +349,13 @@ const Financial_section = ({
                 ) : (
                   currentItems.map((row, rowIndex) => (
                     <TableRow key={rowIndex}>
-                      <TableCell className="text-left">
+                      <TableCell
+                        className="text-left"
+                        style={{
+                          width: 'max-content',
+                          minWidth: '180px',
+                        }}
+                      >
                         {showEdit ? (
                           <div className="relative">
                             <ReactSelect
