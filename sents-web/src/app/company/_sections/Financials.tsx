@@ -37,6 +37,7 @@ import * as XLSX from 'xlsx';
 import Pagination from '@/components/pagination';
 import { formatData } from '@/utils/tableFunctions';
 import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
+import getCurrencySymbol from '@/utils/getCurrencySymbol';
 
 // Define types for better type checking
 type FormattedMetric = {
@@ -312,7 +313,7 @@ const Financials = ({
                     {currentItems.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={7} className="py-8 text-center">
-                          No data available
+                          No Financial Data Available
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -332,15 +333,22 @@ const Financials = ({
                               className="py-2"
                               style={{
                                 width: 'max-content',
+                                minWidth: '180px',
                               }}
                             >
                               {item.metrics}
                             </TableCell>
                             {newYears.map(year => (
                               <TableCell key={year} className="flex-grow py-2">
-                                {isNaN(Number(item[year]))
+                                {isNaN(Number(item[year])) ||
+                                Number(item[year]) === 0
                                   ? '__'
-                                  : Number(item[year]).toLocaleString()}
+                                  : Number(item[year]).toLocaleString('en-US', {
+                                      style: 'currency',
+                                      currency: getCurrencySymbol(
+                                        data?.company_country,
+                                      ),
+                                    })}
                               </TableCell>
                             ))}
                             <TableCell className="w-2/6 py-2">

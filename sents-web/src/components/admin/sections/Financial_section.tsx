@@ -32,6 +32,7 @@ import ModalForms from '@/components/admin/modal';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 import { createUpdateFinancialData } from '@/services/apis/companies';
+import getCurrencySymbol from '@/utils/getCurrencySymbol';
 
 type Row = {
   metrics: string;
@@ -45,12 +46,14 @@ const Financial_section = ({
   companyID,
   metrics,
   category,
+  countryName,
 }: {
   financialStatements: any[];
   FinancialData: any;
   companyID: any;
   metrics: any;
   category: any;
+  countryName: string;
 }) => {
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
   const [showEdit, setShowEdit] = useState(false);
@@ -59,6 +62,8 @@ const Financial_section = ({
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  console.info(countryName);
 
   // change the format of the data from categories and metric to react-select format
   const categoryList = category.map((item: any) => ({
@@ -379,12 +384,13 @@ const Financial_section = ({
                                 handleInputChange(e, rowIndex, year)
                               }
                             />
-                          ) : isNaN(Number(row[year])) ? (
+                          ) : isNaN(Number(row[year])) ||
+                            Number(row[year]) === 0 ? (
                             '__'
                           ) : (
                             Number(row[year]).toLocaleString('en-US', {
                               style: 'currency',
-                              currency: 'UGX',
+                              currency: getCurrencySymbol(countryName),
                             })
                           )}
                         </TableCell>

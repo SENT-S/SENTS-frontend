@@ -143,14 +143,14 @@ const Header = () => {
           {!isAdmin ? (
             searchData && searchData.length > 0 ? (
               <div className="relative w-full lg:w-1/3">
-                <div className="flex items-center text-gray-400 bg-gray-100 max-lg:dark:bg-black py-2 rounded-lg overflow-hidden dark:bg-black">
+                <div className="flex items-center  h-[40px] text-gray-400 bg-gray-100 max-lg:dark:bg-black rounded-lg overflow-hidden dark:bg-black">
                   <div className="ml-3">
                     <CiSearch />
                   </div>
                   <input
                     type="text"
                     placeholder="Search for stocks & more"
-                    className="flex-grow max-md:text-sm px-2 py-1 w-full bg-transparent focus:outline-none"
+                    className="flex-grow max-md:text-sm px-2 w-full bg-transparent focus:outline-none"
                     value={query}
                     onChange={handleSearch}
                   />
