@@ -260,6 +260,7 @@ const Financial_section = ({
               type="button"
               className="bg-[#39463E] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#46554c] hover:text-[39463E]"
               onClick={() => setShowEdit(!showEdit)}
+              disabled={true}
             >
               Edit Table <FiEdit className="ml-3" size={18} />
             </Button>

@@ -204,6 +204,7 @@ const NewsPage = () => {
                 <Button
                   className="bg-[#F5ECEC] text-[#EA0000] p-2 md:p-7 rounded-2xl hover:bg-[#f5e5e5] hover:text-[39463E]"
                   onClick={() => setShowCheckbox(true)}
+                  disabled={true}
                 >
                   Delete News
                   <RiDeleteBin6Line className="ml-3" size={18} />

@@ -63,7 +63,7 @@ export default function FormComponent({
             position: 'top-center',
           });
         } else {
-          toast.success('User authenticated successfully', {
+          toast.success('Logged in successfully', {
             style: {
               background: 'green',
               color: 'white',
