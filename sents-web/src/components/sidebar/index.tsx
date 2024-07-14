@@ -3,71 +3,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { IoIosLogOut } from 'react-icons/io';
 import { signOut } from 'next-auth/react';
-import { LuLayoutDashboard } from 'react-icons/lu';
-import { HiOutlineNewspaper } from 'react-icons/hi2';
 import { usePathname } from 'next/navigation';
 import { CustomSession } from '@/utils/types';
 import { useSession } from 'next-auth/react';
-import { FiPieChart } from 'react-icons/fi';
-import { TbChartHistogram } from 'react-icons/tb';
-import { FaUserShield } from 'react-icons/fa6';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '../ui/button';
-import { CiSettings } from 'react-icons/ci';
-
-const UserLinks = [
-  {
-    name: 'Dashboard',
-    icon: LuLayoutDashboard,
-    path: '/dashboard',
-    activePaths: ['/dashboard', '/company'],
-    disable: false,
-  },
-  {
-    name: 'News',
-    icon: HiOutlineNewspaper,
-    path: '/news',
-    activePaths: ['/news'],
-    disable: false,
-  },
-];
-
-const AdminLinks = [
-  {
-    name: 'Dashboard',
-    icon: LuLayoutDashboard,
-    path: '/dashboard',
-    activePaths: [
-      './',
-      '/dashboard',
-      '/company',
-      'new_company',
-      'edit_company',
-    ],
-    disable: false,
-  },
-  {
-    name: 'News',
-    icon: HiOutlineNewspaper,
-    path: '/news',
-    activePaths: ['/news', 'create_news'],
-    disable: false,
-  },
-  {
-    name: 'Authorizations',
-    icon: FaUserShield,
-    path: '#',
-    activePaths: ['#'],
-    disable: true,
-  },
-  {
-    name: 'Settings',
-    icon: CiSettings,
-    path: '#',
-    activePaths: ['#'],
-    disable: true,
-  },
-];
+import { Button } from '@/components/ui/button';
+import { UserLinks, AdminLinks } from '@/services/Links';
 
 const SideBar = () => {
   const { data: session, status } = useSession() as {
@@ -82,6 +23,7 @@ const SideBar = () => {
 
   const handleLogout = async () => {
     setLoading(true);
+    localStorage.clear();
     await signOut();
     setLoading(false);
   };
@@ -147,13 +89,14 @@ const SideBar = () => {
                 ))}
           </div>
         </div>
-        <button
+        <Button
+          type="button"
           onClick={handleLogout}
-          className="flex justify-center items-center space-x-2 p-4 cursor-pointer text-gray-400 hover:bg-gray-100 rounded-lg"
+          className="flex justify-center items-center space-x-2 p-4 text-gray-400 hover:bg-gray-100 rounded-lg"
         >
           <IoIosLogOut size={24} />
           <span>{loading ? 'Logging out...' : 'Logout'}</span>
-        </button>
+        </Button>
       </div>
     </div>
   );
