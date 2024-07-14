@@ -40,7 +40,7 @@ const StoreProvider = ({ children }: ProviderProps) => {
     };
 
     // Only sign out and redirect if the token is expired or session is undefined
-    if (isTokenExpiredOrSessionUndefined() && session) {
+    if (isTokenExpiredOrSessionUndefined() && !session) {
       signOut();
       localStorage.clear();
       router.push('/login_register'); // Redirect to login page
