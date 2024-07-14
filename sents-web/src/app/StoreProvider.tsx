@@ -1,11 +1,12 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../lib/store';
 import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -20,9 +21,9 @@ const StoreProvider = ({ children }: ProviderProps) => {
     data: CustomSession;
   };
   const router = useRouter();
+  const [toastShown, setToastShown] = useState(false);
 
   useEffect(() => {
-    // Check if the token has expired or if session is undefined
     const isTokenExpiredOrSessionUndefined = () => {
       if (!session || !session.token) {
         return true;
@@ -39,13 +40,24 @@ const StoreProvider = ({ children }: ProviderProps) => {
       }
     };
 
-    // Only sign out and redirect if the token is expired or session is undefined
     if (isTokenExpiredOrSessionUndefined() && session) {
       signOut();
       localStorage.clear();
-      router.push('/login_register'); // Redirect to login page
+      router.push('/login_register');
+    } else if (session && window.location.pathname === '/' && !toastShown) {
+      toast.success('Authentication successful', {
+        style: {
+          background: 'green',
+          color: 'white',
+          border: 'none',
+        },
+        position: 'top-right',
+        duration: 5000,
+      });
+      setToastShown(true);
+      router.push('/dashboard');
     }
-  }, [session, router]);
+  }, [session, router, toastShown]);
 
   return <Provider store={store}>{children}</Provider>;
 };
