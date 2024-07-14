@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useMemo } from 'react';
 import MainLayout from '@/layouts';
-import SubNav from '@/components/navigation/SubNav';
+import SubNav from '@/components/admin/Navs/SubNav';
 import TopNews from './_sections/TopNews';
 import News from './_sections/News';
 import Events from './_sections/Events';

@@ -118,10 +118,6 @@ const Financial_section = ({
     setRows(prevRows => prevRows.filter((_, index) => index !== rowIndex));
   };
 
-  const handleEditCompany = () => {
-    setShowEdit(!showEdit);
-  };
-
   // Function to handle input change in the table
   const handleInputChange = (e: any, rowIndex: number, column: any) => {
     const value = e.target.value;
@@ -167,101 +163,71 @@ const Financial_section = ({
     console.log('Cancel delete company');
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: any) => {
     e.preventDefault();
-    const formData = rows.flatMap(row => {
-      // Extract metrics and category from the row
-      const { metrics, category, ...years } = row;
 
-      // Convert metrics and category to numbers
-      const metricId = Number(metrics) || '';
-      const categoryIds = category ? category.map(Number) : [];
+    try {
+      // Convert rows state to an array of objects where each object represents a row
+      const formData = rows.flatMap(row => {
+        // Extract metrics and category from the row
+        const { metrics, category, ...years } = row;
 
-      // Map over the years in the row to create an object for each year
-      return Object.entries(years).map(([year, value]) => {
-        // Create an object for each year
-        let data: any = {
-          company: Number(companyID),
-          year: Number('20' + year.slice(-2)),
-        };
+        // Convert metrics and category to numbers
+        const metricId = Number(metrics) || '';
+        const categoryIds = category ? category.map(Number) : [];
 
-        // Only include metrics, category, and value if they have a value
-        if (metricId) data.metric = metricId;
-        if (categoryIds.length > 0) data.category = categoryIds;
-        if (value) data.value = String(value);
+        // Map over the years in the row to create an object for each year
+        return Object.entries(years).map(([year, value]) => {
+          // Create an object for each year
+          let data: any = {
+            company: Number(companyID),
+            year: Number('20' + year.slice(-2)),
+          };
 
-        return data;
+          // Only include metrics, category, and value if they have a value
+          if (metricId) data.metric = metricId;
+          if (categoryIds.length > 0) data.category = categoryIds;
+          if (value) data.value = String(value);
+
+          return data;
+        });
       });
-    });
 
-    console.info('Form data:', formData);
-    // try {
-    //   // Convert rows state to an array of objects where each object represents a row
-    //   const formData = rows.flatMap(row => {
-    //     // Extract metrics and category from the row
-    //     const { metrics, category, ...years } = row;
+      setIsLoading(true);
 
-    //     // Convert metrics and category to numbers
-    //     const metricId = Number(metrics) || '';
-    //     const categoryIds = category.map(Number) || '';
+      // Call the API to create/update financial data
+      const response = await createUpdateFinancialData(formData);
+      console.info('Form data:', response);
 
-    //     // Map over the years in the row to create an object for each year
-    //     return Object.entries(years).map(([year, value]) => {
-    //       // Create an object for each year
-    //       let data: any = {
-    //         company: Number(companyID),
-    //         year: Number('20' + year.slice(-2)),
-    //       };
+      // Check if the request was successful
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(response.message);
+      }
 
-    //       // Only include metrics, category, and value if they have a value
-    //       if (metricId) data.metric = metricId;
-    //       if (categoryIds.length > 0) data.category = categoryIds;
-    //       if (value) data.value = String(value);
-
-    //       return data;
-    //     });
-    //   });
-
-    //   console.info('Form data:', formData);
-    //   setIsLoading(true);
-
-    //   // Call the API to create/update financial data
-    //   // const response = await createUpdateFinancialData(formData);
-
-    //   // Check if the request was successful
-    //   // if (!response.ok) {
-    //   //   throw new Error(`API request failed with status ${response}`);
-    //   // }
-
-    //   // Show success message
-    //   toast.success('Financial data added successfully', {
-    //     style: {
-    //       background: 'green',
-    //       color: 'white',
-    //       border: 'none',
-    //     },
-    //     position: 'top-center',
-    //     duration: 5000,
-    //   });
-
-    //   // Reset rows state to initial state after form submission
-    //   // setRows([getEmptyRow(newYears)]);
-    //   // reload the page
-    //   // window.location.reload();
-    // } catch (error: any) {
-    //   console.error(error);
-    //   toast.error(`Failed to add financial data: ${error.message}`, {
-    //     style: { background: 'red', color: 'white', border: 'none' },
-    //     duration: 5000,
-    //     position: 'top-center',
-    //   });
-    // } finally {
-    //   setIsLoading(false);
-    // }
+      setShowEdit(!showEdit);
+      // Show success message
+      toast.success(response.message, {
+        style: {
+          background: 'green',
+          color: 'white',
+          border: 'none',
+        },
+        position: 'top-center',
+        duration: 5000,
+      });
+    } catch (error: any) {
+      toast.error(error, {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'top-center',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <form className="space-y-8" onSubmit={handleFormSubmit}>
+    <form className="space-y-8">
       {/* subNav */}
       <SubNav
         links={categoryList.map((item: any) => item.label)}
@@ -275,9 +241,10 @@ const Financial_section = ({
         <div className="flex items-center gap-4">
           {showEdit ? (
             <Button
-              type="submit"
+              type="button"
               className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#148C59ed9] hover:text-white"
-              onClick={handleEditCompany}
+              onClick={handleFormSubmit}
+              disabled={isLoading}
             >
               {isLoading ? (
                 <ScaleLoader height={20} color="#fff" />
@@ -382,13 +349,10 @@ const Financial_section = ({
                               name="metrics"
                               options={metricsList}
                               isClearable={false}
-                              value={metricsList.find(
-                                (item: any) => item.value === row.metrics,
-                              )}
                               className="react-select-container relative"
                               classNamePrefix="react-select"
                               placeholder="Metrics"
-                              onChange={item =>
+                              onChange={(item: any) =>
                                 handleSelectChange(
                                   item.value,
                                   rowIndex,
