@@ -45,7 +45,7 @@ const StoreProvider = ({ children }: ProviderProps) => {
       localStorage.clear();
       router.push('/login_register');
     } else if (session && window.location.pathname === '/' && !toastShown) {
-      toast.success('Authentication successful', {
+      toast.success(`Welcome, back ${session.user?.name}!`, {
         style: {
           background: 'green',
           color: 'white',
