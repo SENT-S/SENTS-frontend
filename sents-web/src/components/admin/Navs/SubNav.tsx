@@ -69,7 +69,7 @@ const SubNav = ({
       link === selectedLink
         ? `${bgColor ? 'bg-[#E6EEEA] dark:bg-[#39463E] dark:text-white' : 'bg-green-700 text-white hover:bg-green-800'} `
         : ''
-    } text-[39463E] dark:text-white hover:bg-[#E6EEEA]`;
+    } text-[39463E] dark:text-white hover:dark:text-black hover:bg-[#E6EEEA]`;
 
   const dropdownLinkClasses = `text-sm md:text-md cursor-pointer px-2 md:px-6 py-2 dark:text-white hover:bg-[#E6EEEA] hover:bg-gray-300 `;
 
