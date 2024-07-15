@@ -43,9 +43,10 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
     [],
   );
   const [countryName, setCountryName] = useState<string>('');
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   const fetchCompanies = useCallback(async () => {
-    setIsLoading(true);
+    setIsLoading(!refresh);
 
     try {
       const companyData = await getCompany(companyId);
@@ -76,8 +77,11 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       console.error('Failed to fetch company', error);
     } finally {
       setIsLoading(false);
+      if (refresh) {
+        setRefresh(false);
+      }
     }
-  }, [companyId]);
+  }, [companyId, refresh]);
 
   useEffect(() => {
     fetchCompanies();
@@ -102,6 +106,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
             metrics={financialMetrics}
             category={financialDataCategories}
             countryName={countryName}
+            setRefresh={setRefresh}
           />
         );
       case 'News':
