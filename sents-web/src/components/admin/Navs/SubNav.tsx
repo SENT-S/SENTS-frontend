@@ -71,7 +71,7 @@ const SubNav = ({
         : ''
     } text-[39463E] dark:text-white hover:dark:text-black hover:bg-[#E6EEEA]`;
 
-  const dropdownLinkClasses = `text-sm md:text-md cursor-pointer px-2 md:px-6 py-2 dark:text-white hover:bg-[#E6EEEA] hover:bg-gray-300 `;
+  const dropdownLinkClasses = `text-sm md:text-md cursor-pointer px-2 md:px-6 py-2 dark:text-white hover:dark:text-black hover:bg-[#E6EEEA] hover:bg-gray-300 `;
 
   const containerClasses = `flex flex-wrap justify-around mx-10
    md:mx-0 items-center p-3 dark:bg-[#39463E80] ${bgColor ? `${addCat ? 'bg-white' : 'dark:bg-[#0E120F] bg-[#F8FAF9] dark:text-white'}` : 'bg-white'}
