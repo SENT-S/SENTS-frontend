@@ -37,7 +37,8 @@ import { MdCancel } from 'react-icons/md';
 
 type Row = {
   metrics: string;
-  [key: string]: string | number | string[];
+  category: string[];
+  [key: string]: string | string[];
 };
 
 const Financial_section = ({
@@ -99,9 +100,14 @@ const Financial_section = ({
   }, [selectedLink, newYears]);
 
   const getEmptyRow = (years: string[]) => {
-    let row: Row = { metrics: '' };
+    let row: Row = {
+      metrics: '',
+      category: [
+        categoryList.find((item: any) => item.label === selectedLink)?.value,
+      ],
+    };
     years.forEach(year => {
-      const actualYear = 'FY’' + year.slice(3);
+      const actualYear = 'FY’' + year.slice(-2);
       row[actualYear] = '';
     });
     return row;
@@ -128,11 +134,22 @@ const Financial_section = ({
     });
   };
 
-  const handleSelectChange = (value: any, rowIndex: number, column: string) => {
+  const handleSelectChange = (
+    selectedOptions: any,
+    rowIndex: number,
+    column: string,
+  ) => {
     setRows(prevRows =>
       prevRows.map((row, index) => {
         if (index === rowIndex) {
-          return { ...row, [column]: String(value) };
+          if (column === 'category') {
+            const newValues = selectedOptions
+              ? selectedOptions.map((option: any) => option.value)
+              : [];
+            return { ...row, [column]: newValues };
+          } else {
+            return { ...row, [column]: String(selectedOptions) };
+          }
         }
         return row;
       }),
@@ -152,22 +169,26 @@ const Financial_section = ({
 
     try {
       setIsLoading(true);
-      const selectedCategoryId = categoryList.find(
-        (item: any) => item.label === selectedLink,
-      )?.value; // Get the ID of the selected link
 
       const formData = rows.flatMap(row => {
-        const { metrics, ...years } = row;
+        const { metrics, category, ...years } = row;
         const metricId = metricsList.find(
           (item: any) =>
             item.label === metrics || item.value === Number(metrics),
         )?.value;
 
+        const selectedCategoryId = category
+          ? category.map(Number)
+          : [
+              categoryList.find((item: any) => item.label === selectedLink)
+                ?.value,
+            ];
+
         return Object.entries(years).map(([year, value]) => {
           let data: any = {
             company: Number(companyID),
             year: Number('20' + year.slice(-2)),
-            category: [selectedCategoryId],
+            category: selectedCategoryId,
             value: String(value),
           };
 
@@ -311,6 +332,11 @@ const Financial_section = ({
                   ))}
                   {showEdit && (
                     <TableHead className="w-1/6 py-2 text-center">
+                      Category
+                    </TableHead>
+                  )}
+                  {showEdit && (
+                    <TableHead className="w-1/6 py-2 text-center">
                       Clear
                     </TableHead>
                   )}
@@ -353,9 +379,9 @@ const Financial_section = ({
                                   item.label === row.metrics ||
                                   item.value === Number(row.metrics),
                               )}
-                              onChange={(item: any) =>
+                              onChange={(selectedOption: any) =>
                                 handleSelectChange(
-                                  item.value,
+                                  selectedOption.value,
                                   rowIndex,
                                   'metrics',
                                 )
@@ -393,6 +419,35 @@ const Financial_section = ({
                           )}
                         </TableCell>
                       ))}
+
+                      {showEdit && (
+                        <TableCell className="text-center">
+                          <div className="relative">
+                            <ReactSelect
+                              name="category"
+                              key={rowIndex}
+                              isMulti={true}
+                              options={categoryList}
+                              isClearable={false}
+                              className="react-select-container relative dark:text-black"
+                              classNamePrefix="react-select"
+                              placeholder="Category"
+                              defaultValue={categoryList.find(
+                                (item: any) =>
+                                  item.label === selectedLink ||
+                                  item.value === Number(selectedLink),
+                              )}
+                              onChange={(selectedOptions: any) =>
+                                handleSelectChange(
+                                  selectedOptions,
+                                  rowIndex,
+                                  'category',
+                                )
+                              }
+                            />
+                          </div>
+                        </TableCell>
+                      )}
 
                       {showEdit && (
                         <TableCell className="flex justify-center">
