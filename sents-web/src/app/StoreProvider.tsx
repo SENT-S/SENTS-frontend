@@ -5,8 +5,8 @@ import { store } from '../lib/store';
 import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { usePathname, redirect } from 'next/navigation';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -17,11 +17,9 @@ interface DecodedToken {
 }
 
 const StoreProvider = ({ children }: ProviderProps) => {
-  const { data: session } = useSession() as {
-    data: CustomSession;
-  };
-  const router = useRouter();
+  const { data: session } = useSession() as { data: CustomSession };
   const [toastShown, setToastShown] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const isTokenExpiredOrSessionUndefined = () => {
@@ -43,8 +41,8 @@ const StoreProvider = ({ children }: ProviderProps) => {
     if (isTokenExpiredOrSessionUndefined() && session) {
       signOut();
       localStorage.clear();
-      router.push('/login_register');
-    } else if (session && window.location.pathname === '/' && !toastShown) {
+      redirect('/login_register');
+    } else if (session && !toastShown && pathname === '/') {
       toast.success(`Welcome, back ${session.user?.first_name}!`, {
         style: {
           background: 'green',
@@ -55,9 +53,9 @@ const StoreProvider = ({ children }: ProviderProps) => {
         duration: 5000,
       });
       setToastShown(true);
-      router.push('/dashboard');
+      redirect('/dashboard');
     }
-  }, [session, router, toastShown]);
+  }, [session, toastShown]);
 
   return <Provider store={store}>{children}</Provider>;
 };

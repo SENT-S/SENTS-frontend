@@ -1,9 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import MainLayout from '@/layouts';
 import Stepper from '@/components/ui/Stepper';
-import Step_1 from './_steps/step_1';
-import Step_2 from './_steps/step_2';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,6 +15,9 @@ import {
   getAllFinancialDataCategories,
   getAllFinancialMetrics,
 } from '@/services/apis/companies';
+
+const Step_1 = dynamic(() => import('./_steps/step_1'));
+const Step_2 = dynamic(() => import('./_steps/step_2'));
 
 const steps = ['Step 1', 'Step 2'];
 
