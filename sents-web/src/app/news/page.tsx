@@ -1,13 +1,8 @@
 'use client';
 import React, { useState, useEffect, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import MainLayout from '@/layouts';
-import SubNav from '@/components/admin/Navs/SubNav';
-import TopNews from './_sections/TopNews';
-import News from './_sections/News';
-import Events from './_sections/Events';
-import Resources from './_sections/Resources';
 import { Button } from '@/components/ui/button';
-import Teams from './_sections/Teams';
 import { getAllCompanyNews, getCompanies } from '@/services/apis/companies';
 import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,6 +20,13 @@ import {
 import ModalForms from '@/components/admin/modal';
 import { CompanyType } from '@/utils/types';
 import Pagination from '@/components/pagination';
+
+const SubNav = dynamic(() => import('@/components/admin/Navs/SubNav'));
+const TopNews = dynamic(() => import('./_sections/TopNews'));
+const News = dynamic(() => import('./_sections/News'));
+const Events = dynamic(() => import('./_sections/Events'));
+const Resources = dynamic(() => import('./_sections/Resources'));
+const Teams = dynamic(() => import('./_sections/Teams'));
 
 const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 

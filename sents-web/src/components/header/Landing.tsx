@@ -14,7 +14,7 @@ export default function Landing() {
   };
 
   return (
-    <header className="flex justify-between flex-wrap items-center pt-6">
+    <header className="flex justify-between flex-wrap items-center pt-6 z-50">
       <h1 className="text-3xl Unigoe-font tracking-wider text-[#0D4222] dark:text-[#E6F6F0]">
         SENTS.
       </h1>
@@ -23,7 +23,7 @@ export default function Landing() {
           <li>
             <Link
               href="/login_register"
-              className="p-3 rounded-xl bg-white dark:bg-[#39463E80]"
+              className="p-3 rounded-xl bg-white dark:bg-[#39463E80] cursor-pointer"
             >
               Sign in
             </Link>
@@ -31,7 +31,7 @@ export default function Landing() {
           <li>
             <Link
               href="/login_register"
-              className="p-3 rounded-xl bg-[#1EF1A5] dark:text-[#0D4222]"
+              className="p-3 rounded-xl bg-[#1EF1A5] dark:text-[#0D4222] cursor-pointer"
             >
               Sign Up
             </Link>
