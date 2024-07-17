@@ -1,16 +1,20 @@
 'use client';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { GoArrowRight } from 'react-icons/go';
 import Link from 'next/link';
-
-// Use dynamic import for components that are not immediately necessary
-const LandingHeader = dynamic(() => import('@/components/header/Landing'));
+import { useSession } from 'next-auth/react';
+import { CustomSession } from '@/utils/types';
+import LandingHeader from '@/components/header/Landing';
 
 export default function LandingPage() {
+  const { data: session, status } = useSession() as {
+    data: CustomSession;
+    status: 'loading' | 'authenticated' | 'unauthenticated';
+  };
+
   return (
     <div className="container relative mx-auto px-4 h-full flex flex-col">
-      <LandingHeader />
+      <LandingHeader session={session} status={status} />
       <main className="flex flex-col container justify-center md:justify-around flex-grow text-center">
         <section className="flex flex-col justify-center items-center text-[#0D4222] dark:text-[#E6F6F0] py-4 md:py-12 z-50">
           <h2 className="text-3xl leading-[65px] md:text-[80px] py-3 md:py-6 Unigoe-font">
@@ -27,7 +31,7 @@ export default function LandingPage() {
                 zIndex: 1000,
               }}
             >
-              Get Started
+              {session ? 'Go to Dashboard' : 'Get Started'}
               <GoArrowRight
                 className="ml-2 text-[#E6F6F0] bg-[#0D4222] p-1 md:p-2 rounded-lg"
                 size={32}
@@ -36,7 +40,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="flex justify-center items-center py-12 flex-grow">
+        <section className="flex flex-col justify-center items-center py-12 flex-grow">
           <Image
             src="/images/landingIllustration.png"
             alt="Landing Illustration"
