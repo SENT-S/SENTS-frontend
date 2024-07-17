@@ -36,7 +36,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="flex  justify-center items-center py-12 flex-grow">
+        <section className="flex justify-center items-center py-12 flex-grow">
           <Image
             src="/images/landingIllustration.png"
             alt="Landing Illustration"

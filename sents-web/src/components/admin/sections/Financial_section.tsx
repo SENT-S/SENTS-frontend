@@ -37,7 +37,7 @@ import { MdCancel } from 'react-icons/md';
 
 type Row = {
   metrics: string;
-  category: string[];
+  // category: string[];
   [key: string]: string | string[];
 };
 
@@ -102,9 +102,9 @@ const Financial_section = ({
   const getEmptyRow = (years: string[]) => {
     let row: Row = {
       metrics: '',
-      category: [
-        categoryList.find((item: any) => item.label === selectedLink)?.value,
-      ],
+      // category: [
+      //   categoryList.find((item: any) => item.label === selectedLink)?.value,
+      // ],
     };
     years.forEach(year => {
       const actualYear = 'FY’' + year.slice(-2);
@@ -177,12 +177,9 @@ const Financial_section = ({
             item.label === metrics || item.value === Number(metrics),
         )?.value;
 
-        const selectedCategoryId = category
-          ? category.map(Number)
-          : [
-              categoryList.find((item: any) => item.label === selectedLink)
-                ?.value,
-            ];
+        const selectedCategoryId = [
+          categoryList.find((item: any) => item.label === selectedLink)?.value,
+        ];
 
         return Object.entries(years).map(([year, value]) => {
           let data: any = {
@@ -330,11 +327,11 @@ const Financial_section = ({
                       {year}
                     </TableHead>
                   ))}
-                  {showEdit && (
+                  {/* {showEdit && (
                     <TableHead className="w-1/6 py-2 text-center">
                       Category
                     </TableHead>
-                  )}
+                  )} */}
                   {showEdit && (
                     <TableHead className="w-1/6 py-2 text-center">
                       Clear
@@ -420,7 +417,7 @@ const Financial_section = ({
                         </TableCell>
                       ))}
 
-                      {showEdit && (
+                      {/* {showEdit && (
                         <TableCell className="text-center">
                           <div className="relative">
                             <ReactSelect
@@ -447,7 +444,7 @@ const Financial_section = ({
                             />
                           </div>
                         </TableCell>
-                      )}
+                      )} */}
 
                       {showEdit && (
                         <TableCell className="flex justify-center">
@@ -456,7 +453,7 @@ const Financial_section = ({
                             ButtonStyle="p-0 m-0"
                             disabled
                             Icon={
-                              <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-[#F96868]">
+                              <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-[#F96868] cursor-not-allowed">
                                 <GrSubtractCircle
                                   className="text-[#EA0000]"
                                   size={20}

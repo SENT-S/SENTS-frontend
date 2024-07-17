@@ -54,7 +54,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const [refresh, setRefresh] = useState<boolean>(false);
 
   const fetchCompanies = useCallback(async () => {
-    setIsLoading(!refresh);
+    setIsLoading(true);
 
     try {
       const companyData = await getCompany(companyId);
