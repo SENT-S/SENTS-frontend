@@ -37,7 +37,7 @@ import { MdCancel } from 'react-icons/md';
 
 type Row = {
   metrics: string;
-  // category: string[];
+  category: string[];
   [key: string]: string | string[];
 };
 
@@ -64,6 +64,7 @@ const Financial_section = ({
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialRows, setInitialRows] = useState<Row[]>([]);
 
   const categoryList = category.map((item: any) => ({
     value: item.id,
@@ -92,19 +93,21 @@ const Financial_section = ({
 
   useEffect(() => {
     const selectedData = TableData[selectedLink];
-    setRows([...selectedData]);
+    const newData = [...selectedData];
+    setRows(newData);
+    setInitialRows(newData);
   }, [selectedLink]);
 
   useEffect(() => {
-    setRows([...TableData[selectedLink]]);
+    const newData = [...TableData[selectedLink]];
+    setRows(newData);
+    setInitialRows(newData);
   }, [selectedLink, newYears]);
 
   const getEmptyRow = (years: string[]) => {
     let row: Row = {
       metrics: '',
-      // category: [
-      //   categoryList.find((item: any) => item.label === selectedLink)?.value,
-      // ],
+      category: [categoryList.find((item: any) => item.label === selectedLink)],
     };
     years.forEach(year => {
       const actualYear = 'FY’' + year.slice(-2);
@@ -139,17 +142,30 @@ const Financial_section = ({
     rowIndex: number,
     column: string,
   ) => {
+    const value =
+      column === 'category'
+        ? selectedOptions?.map((option: any) => option.value) || []
+        : String(selectedOptions);
+
+    if (column === 'metrics') {
+      // Check if the selected metric already exists in the rows above
+      const isMetricAlreadySelected = rows.some(
+        (row, index) => row.metrics === value && index < rowIndex,
+      );
+
+      if (isMetricAlreadySelected) {
+        toast.error('This metric has already been selected for another row', {
+          style: { background: 'red', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'top-center',
+        });
+      }
+    }
+
     setRows(prevRows =>
       prevRows.map((row, index) => {
         if (index === rowIndex) {
-          if (column === 'category') {
-            const newValues = selectedOptions
-              ? selectedOptions.map((option: any) => option.value)
-              : [];
-            return { ...row, [column]: newValues };
-          } else {
-            return { ...row, [column]: String(selectedOptions) };
-          }
+          return { ...row, [column]: value };
         }
         return row;
       }),
@@ -170,16 +186,22 @@ const Financial_section = ({
     try {
       setIsLoading(true);
 
-      const formData = rows.flatMap(row => {
+      const changedRows = rows.filter((row, index) => {
+        return JSON.stringify(row) !== JSON.stringify(initialRows[index]);
+      });
+
+      const formData = changedRows.flatMap(row => {
         const { metrics, category, ...years } = row;
         const metricId = metricsList.find(
           (item: any) =>
             item.label === metrics || item.value === Number(metrics),
         )?.value;
 
-        const selectedCategoryId = [
-          categoryList.find((item: any) => item.label === selectedLink)?.value,
-        ];
+        const selectedCategoryId = category
+          ? category.map((item: any) => item.value || item)
+          : findCommonCategories(FinancialData.data, metrics).map(
+              (item: any) => item.value,
+            );
 
         return Object.entries(years).map(([year, value]) => {
           let data: any = {
@@ -221,6 +243,19 @@ const Financial_section = ({
       setIsLoading(false);
     }
   };
+
+  // categories
+  function findCommonCategories(data: any, metric: any) {
+    let commonCategories = [];
+    for (let category in data) {
+      if (data[category][metric]) {
+        commonCategories.push(category);
+      }
+    }
+    return commonCategories.map(commonCategory =>
+      categoryList.find((item: any) => item.label === commonCategory),
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -327,11 +362,11 @@ const Financial_section = ({
                       {year}
                     </TableHead>
                   ))}
-                  {/* {showEdit && (
+                  {showEdit && (
                     <TableHead className="w-1/6 py-2 text-center">
                       Category
                     </TableHead>
-                  )} */}
+                  )}
                   {showEdit && (
                     <TableHead className="w-1/6 py-2 text-center">
                       Clear
@@ -417,7 +452,7 @@ const Financial_section = ({
                         </TableCell>
                       ))}
 
-                      {/* {showEdit && (
+                      {showEdit && (
                         <TableCell className="text-center">
                           <div className="relative">
                             <ReactSelect
@@ -429,11 +464,18 @@ const Financial_section = ({
                               className="react-select-container relative dark:text-black"
                               classNamePrefix="react-select"
                               placeholder="Category"
-                              defaultValue={categoryList.find(
-                                (item: any) =>
-                                  item.label === selectedLink ||
-                                  item.value === Number(selectedLink),
-                              )}
+                              defaultValue={
+                                row?.category?.map((item: any) =>
+                                  categoryList.find(
+                                    (category: any) =>
+                                      category.label === item.label,
+                                  ),
+                                ) ||
+                                findCommonCategories(
+                                  FinancialData.data,
+                                  row.metrics,
+                                )
+                              }
                               onChange={(selectedOptions: any) =>
                                 handleSelectChange(
                                   selectedOptions,
@@ -444,7 +486,7 @@ const Financial_section = ({
                             />
                           </div>
                         </TableCell>
-                      )} */}
+                      )}
 
                       {showEdit && (
                         <TableCell className="flex justify-center">
