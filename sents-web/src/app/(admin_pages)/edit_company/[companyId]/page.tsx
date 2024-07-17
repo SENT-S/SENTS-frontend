@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useCallback, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import {
   getCompany,
   getCompanyNews,
@@ -15,17 +14,10 @@ import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/utils/types';
-
-const SubNav = dynamic(() => import('@/components/admin/Navs/SubNav'));
-const Overview_section = dynamic(
-  () => import('@/components/admin/sections/Overview_section'),
-);
-const Financial_section = dynamic(
-  () => import('@/components/admin/sections/Financial_section'),
-);
-const News_section = dynamic(
-  () => import('@/components/admin/sections/News_section'),
-);
+import SubNav from '@/components/admin/Navs/SubNav';
+import Overview_section from '@/components/admin/sections/Overview_section';
+import Financial_section from '@/components/admin/sections/Financial_section';
+import News_section from '@/components/admin/sections/News_section';
 
 interface CompanyDetailsProps {
   params: { companyId: string };
