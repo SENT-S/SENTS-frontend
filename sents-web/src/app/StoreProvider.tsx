@@ -53,7 +53,6 @@ const StoreProvider = ({ children }: ProviderProps) => {
         duration: 5000,
       });
       setToastShown(true);
-      redirect('/dashboard');
     }
   }, [session, toastShown]);
 
