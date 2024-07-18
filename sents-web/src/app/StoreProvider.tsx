@@ -5,7 +5,7 @@ import { store } from '../lib/store';
 import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -17,28 +17,30 @@ interface DecodedToken {
 
 const StoreProvider = ({ children }: ProviderProps) => {
   const { data: session } = useSession() as { data: CustomSession };
+  const router = useRouter();
 
   useEffect(() => {
-    const isTokenExpiredOrSessionUndefined = () => {
-      if (!session || !session.token) {
-        return true;
-      }
-      try {
-        const decoded = jwt.decode(session.token) as DecodedToken;
-        if (!decoded || !decoded.exp) {
-          return true;
-        }
-        const currentTime = Date.now() / 1000;
-        return decoded.exp < currentTime;
-      } catch (error) {
-        return true;
-      }
-    };
-
-    if (isTokenExpiredOrSessionUndefined() && session) {
+    if (!session || !session.token) {
       signOut();
       localStorage.clear();
-      redirect('/login_register');
+      router.push('/login_register');
+      return;
+    }
+
+    try {
+      const decoded = jwt.decode(session.token) as DecodedToken;
+      if (!decoded || !decoded.exp) {
+        throw new Error('Invalid token');
+      }
+
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp < currentTime) {
+        throw new Error('Token expired');
+      }
+    } catch (error) {
+      signOut();
+      localStorage.clear();
+      router.push('/login_register');
     }
   }, [session]);
 
