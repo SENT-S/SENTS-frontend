@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { store } from '../lib/store';
+import { store } from '@/lib/store';
 import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
@@ -35,12 +35,12 @@ const StoreProvider = ({ children }: ProviderProps) => {
       }
     };
 
-    if (isTokenExpiredOrSessionUndefined() && !session) {
+    if (isTokenExpiredOrSessionUndefined() && session) {
       signOut();
       localStorage.clear();
       redirect('/login_register');
     }
-  }, [session]);
+  }, []);
 
   return <Provider store={store}>{children}</Provider>;
 };
