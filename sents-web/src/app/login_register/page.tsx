@@ -1,26 +1,20 @@
 'use client';
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { IoChevronBackOutline } from 'react-icons/io5';
-import { useRouter } from 'next/navigation';
 import LoginForm from '@/components/authForm/forms/LoginForm';
 import RegisterForm from '@/components/authForm/forms/RegisterForm';
+import Link from 'next/link';
 
 const Auth = () => {
-  const router = useRouter();
   return (
     <div className="w-full h-full overflow-y-auto flex justify-center items-center relative">
-      <Button
-        variant="outline"
-        size="icon"
-        className="ml-3 absolute top-4 left-4 dark:text-white"
-        onClick={() => {
-          router.push('/landing');
-        }}
+      <Link
+        href="/landing"
+        className="ml-3 absolute top-4 left-4 dark:text-white border border-[#148C59] dark:border-[#148C59] rounded-[8px] p-1"
       >
         <IoChevronBackOutline />
-      </Button>
+      </Link>
       <Tabs
         defaultValue="sign_In"
         className="w-[558px] rounded-3xl bg-white dark:bg-[#070707] md:shadow p-14 lg:p-24"
