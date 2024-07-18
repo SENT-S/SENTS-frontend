@@ -5,7 +5,7 @@ import { store } from '../lib/store';
 import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 interface ProviderProps {
   children: React.ReactNode;
