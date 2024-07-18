@@ -1,7 +1,7 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { store } from '../lib/store';
+import { store } from '@/lib/store';
 import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
@@ -18,12 +18,16 @@ interface DecodedToken {
 const StoreProvider = ({ children }: ProviderProps) => {
   const { data: session } = useSession() as { data: CustomSession };
   const router = useRouter();
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     if (!session || !session.token) {
-      signOut();
-      localStorage.clear();
-      router.push('/login_register');
+      if (!redirecting) {
+        setRedirecting(true);
+        signOut();
+        localStorage.clear();
+        router.push('/login_register');
+      }
       return;
     }
 
@@ -38,9 +42,12 @@ const StoreProvider = ({ children }: ProviderProps) => {
         throw new Error('Token expired');
       }
     } catch (error) {
-      signOut();
-      localStorage.clear();
-      router.push('/login_register');
+      if (!redirecting) {
+        setRedirecting(true);
+        signOut();
+        localStorage.clear();
+        router.push('/login_register');
+      }
     }
   }, [session]);
 
