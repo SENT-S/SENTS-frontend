@@ -62,6 +62,9 @@ export default function FormComponent({
               position: 'top-center',
             });
           } else {
+            // Redirect to dashboard
+            router.push('/dashboard');
+
             toast.success('Logged in successfully', {
               style: {
                 background: 'green',
@@ -71,9 +74,6 @@ export default function FormComponent({
               position: 'top-center',
               duration: 5000,
             });
-
-            // Redirect to dashboard
-            router.push('/dashboard');
           }
         });
       } else {
