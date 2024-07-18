@@ -12,34 +12,29 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import {
-  getAllFinancialDataCategories,
-  getAllFinancialMetrics,
-} from '@/services/apis/companies';
+  fetchMetrics,
+  fetchCategories,
+} from '@/lib/ReduxSlices/metric_category';
+import { useSelector, useDispatch } from '@/lib/utils';
 
 const Step_1 = dynamic(() => import('./_steps/step_1'));
 const Step_2 = dynamic(() => import('./_steps/step_2'));
 
 const steps = ['Step 1', 'Step 2'];
 
-const fetchFinancialData = async () => {
-  const [categoriesRes, metricsRes] = await Promise.all([
-    getAllFinancialDataCategories(),
-    getAllFinancialMetrics(),
-  ]);
-
-  return { categories: categoriesRes, metrics: metricsRes.data };
-};
-
 const AddCompanyPage = () => {
+  const dispatch = useDispatch();
   const [step, setStep] = useState(1);
-  const [category, setCategory] = useState([]);
-  const [metrics, setMetrics] = useState([]);
+  const financialMetrics = useSelector<any>(
+    state => state.metricCategory.metricList,
+  );
+  const financialDataCategories = useSelector<any>(
+    state => state.metricCategory.categoryList,
+  );
 
   useEffect(() => {
-    fetchFinancialData().then(({ categories, metrics }) => {
-      setCategory(categories);
-      setMetrics(metrics);
-    });
+    dispatch(fetchMetrics());
+    dispatch(fetchCategories());
   }, []);
 
   return (
@@ -65,7 +60,11 @@ const AddCompanyPage = () => {
         {/* Display steps */}
         {step === 1 && <Step_1 setStep={setStep} step={step} />}
         {step === 2 && (
-          <Step_2 setStep={setStep} category={category} metrics={metrics} />
+          <Step_2
+            setStep={setStep}
+            category={financialDataCategories?.data || financialDataCategories}
+            metrics={financialMetrics.data}
+          />
         )}
       </div>
     </MainLayout>

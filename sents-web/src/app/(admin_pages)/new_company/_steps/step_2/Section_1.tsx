@@ -21,8 +21,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  MultiSelect,
-  MultiSelectItem,
 } from '@/components/ui/select';
 import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
 import FStatements from '@/components/admin/FStatements';
@@ -135,7 +133,7 @@ const Section_1 = ({
     setRows(prevRows => prevRows.filter((_, index) => index !== rowIndex));
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: any) => {
     e.preventDefault();
     try {
       // Convert rows state to an array of objects where each object represents a row
@@ -194,20 +192,11 @@ const Section_1 = ({
   };
 
   return (
-    <form className="space-y-8" onSubmit={handleFormSubmit}>
+    <div className="space-y-8">
       <h2 className="text-[#0D4222] text-center dark:text-[#E6F6F0]">
         Add Financials
       </h2>
-      <div className="flex flex-wrap justify-end gap-4 items-center">
-        <Button
-          type="button"
-          className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
-          onClick={addRow}
-        >
-          Add row <GoPlusCircle className="ml-3" size={18} />
-        </Button>
-        <Add_new_category ButtonText="Add Category" />
-        <Add_new_metric />
+      <div className="flex flex-wrap justify-between gap-4 items-center">
         <div>
           <Select
             onValueChange={value => setYearRange(value)}
@@ -227,6 +216,17 @@ const Section_1 = ({
               ))}
             </SelectContent>
           </Select>
+        </div>
+        <div className="flex flex-wrap gap-4 items-center">
+          <Button
+            type="button"
+            className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+            onClick={addRow}
+          >
+            Add row <GoPlusCircle className="ml-3" size={18} />
+          </Button>
+          <Add_new_category ButtonText="Add Category" />
+          <Add_new_metric />
         </div>
       </div>
       {/* table */}
@@ -272,7 +272,7 @@ const Section_1 = ({
                           value={metricsList.find(
                             (item: any) => item.value === row.metrics,
                           )}
-                          className="react-select-container"
+                          className="react-select-container dark:text-black"
                           classNamePrefix="react-select"
                           placeholder="Metrics"
                           onChange={(item: any) =>
@@ -305,7 +305,7 @@ const Section_1 = ({
                               (item: any) => item.value === cat,
                             ),
                           )}
-                          className="react-select-container"
+                          className="react-select-container dark:text-black"
                           classNamePrefix="react-select"
                           placeholder="Category"
                           onChange={(item: any) =>
@@ -339,13 +339,14 @@ const Section_1 = ({
       <FStatements financialStatements={[]} />
 
       <Button
-        type="submit"
+        type="button"
+        onClick={handleFormSubmit}
         className="bg-[#148C59] text-white w-full px-3 py-7 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
         disabled={isLoading}
       >
         {isLoading ? <ScaleLoader height={20} color="#fff" /> : 'Complete'}
       </Button>
-    </form>
+    </div>
   );
 };
 

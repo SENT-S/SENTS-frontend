@@ -4,11 +4,8 @@ import {
   getCompany,
   getCompanyNews,
   getCompanyFinancials,
-  getAllFinancialDataCategories,
-  getAllFinancialMetrics,
 } from '@/services/apis/companies';
 import MainLayout from '@/layouts';
-import { Button } from '@/components/ui/button';
 import BackButton from '@/components/backButton';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,6 +15,11 @@ import SubNav from '@/components/admin/Navs/SubNav';
 import Overview_section from '@/components/admin/sections/Overview_section';
 import Financial_section from '@/components/admin/sections/Financial_section';
 import News_section from '@/components/admin/sections/News_section';
+import {
+  fetchMetrics,
+  fetchCategories,
+} from '@/lib/ReduxSlices/metric_category';
+import { useSelector, useDispatch } from '@/lib/utils';
 
 interface CompanyDetailsProps {
   params: { companyId: string };
@@ -27,6 +29,7 @@ const links = ['Overview', 'Financials', 'News'];
 
 const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const companyId = parseInt(params.companyId);
   const { status } = useSession() as {
     data: CustomSession;
@@ -38,12 +41,14 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const [financialData, setFinancialData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [financialStatements, setFinancialStatements] = useState<any>([]);
-  const [financialMetrics, setFinancialMetrics] = useState<any>([]);
-  const [financialDataCategories, setFinancialDataCategories] = useState<any>(
-    [],
-  );
   const [countryName, setCountryName] = useState<string>('');
   const [refresh, setRefresh] = useState<boolean>(false);
+  const financialMetrics = useSelector<any>(
+    state => state.metricCategory.metricList,
+  );
+  const financialDataCategories = useSelector<any>(
+    state => state.metricCategory.categoryList,
+  );
 
   const fetchCompanies = useCallback(async () => {
     setIsLoading(true);
@@ -52,8 +57,8 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       const companyData = await getCompany(companyId);
       const newsData = await getCompanyNews(companyId);
       const financialData = await getCompanyFinancials(companyId);
-      const financialMetrics = await getAllFinancialMetrics();
-      const financialDataCategories = await getAllFinancialDataCategories();
+      dispatch(fetchMetrics());
+      dispatch(fetchCategories());
 
       if (
         companyData.status !== 200 ||
@@ -65,10 +70,6 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       }
 
       setCountryName(companyData.data.company_details.company_country);
-      setFinancialMetrics(financialMetrics.data);
-      setFinancialDataCategories(
-        financialDataCategories?.data || financialDataCategories,
-      );
       setFinancialStatements(companyData.data.company_documents);
       setCompanyData(companyData.data.company_details);
       setNewsData(newsData);
@@ -103,8 +104,8 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
             companyID={params.companyId}
             FinancialData={financialData}
             financialStatements={financialStatements}
-            metrics={financialMetrics}
-            category={financialDataCategories}
+            metrics={financialMetrics.data}
+            category={financialDataCategories?.data || financialDataCategories}
             countryName={countryName}
             setRefresh={setRefresh}
           />

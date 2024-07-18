@@ -4,6 +4,8 @@ import FormModal from '../modal';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { addFinancialDataCategory } from '@/services/apis/companies';
+import { fetchCategories } from '@/lib/ReduxSlices/metric_category';
+import { useDispatch } from '@/lib/utils';
 
 type Add_new_categoryProps = {
   ButtonText?: string;
@@ -16,6 +18,7 @@ const Add_new_category = ({
   Icon,
   ButtonStyle,
 }: Add_new_categoryProps) => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: any) => {
@@ -33,6 +36,9 @@ const Add_new_category = ({
       if (res.status === 201) {
         // If successful, clear the form
         e.target.reset();
+
+        dispatch(fetchCategories());
+
         // Display a success message
         toast.success('Financial data category added successfully', {
           style: {

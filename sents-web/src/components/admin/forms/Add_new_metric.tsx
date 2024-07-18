@@ -4,8 +4,11 @@ import FormModal from '../modal';
 import { Textarea } from '@/components/ui/textarea';
 import { addFinancialMetric } from '@/services/apis/companies';
 import { toast } from 'sonner';
+import { fetchMetrics } from '@/lib/ReduxSlices/metric_category';
+import { useDispatch } from '@/lib/utils';
 
 const Add_new_metric = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -22,6 +25,9 @@ const Add_new_metric = () => {
       if (res.status === 201) {
         // If successful, clear the form
         e.target.reset();
+
+        dispatch(fetchMetrics());
+
         // Display a success message
         toast.success('Financial data metric added successfully', {
           style: {
