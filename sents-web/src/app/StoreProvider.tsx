@@ -49,7 +49,7 @@ const StoreProvider = ({ children }: ProviderProps) => {
           color: 'white',
           border: 'none',
         },
-        position: 'top-right',
+        position: 'top-center',
         duration: 5000,
       });
       setToastShown(true);
