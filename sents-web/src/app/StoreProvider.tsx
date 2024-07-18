@@ -1,11 +1,11 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Provider } from 'react-redux';
-import { store } from '@/lib/store';
+import { store } from '../lib/store';
 import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -18,21 +18,22 @@ interface DecodedToken {
 const StoreProvider = ({ children }: ProviderProps) => {
   const { data: session } = useSession() as { data: CustomSession };
   const router = useRouter();
-  const [redirecting, setRedirecting] = useState(false);
+  const sessionRef = useRef(session);
 
   useEffect(() => {
-    if (!session || !session.token) {
-      if (!redirecting) {
-        setRedirecting(true);
-        signOut();
-        localStorage.clear();
-        router.push('/login_register');
-      }
+    sessionRef.current = session;
+  }, [session]);
+
+  useEffect(() => {
+    if (!sessionRef.current || !sessionRef.current.token) {
+      signOut();
+      localStorage.clear();
+      router.push('/login_register');
       return;
     }
 
     try {
-      const decoded = jwt.decode(session.token) as DecodedToken;
+      const decoded = jwt.decode(sessionRef.current.token) as DecodedToken;
       if (!decoded || !decoded.exp) {
         throw new Error('Invalid token');
       }
@@ -42,14 +43,11 @@ const StoreProvider = ({ children }: ProviderProps) => {
         throw new Error('Token expired');
       }
     } catch (error) {
-      if (!redirecting) {
-        setRedirecting(true);
-        signOut();
-        localStorage.clear();
-        router.push('/login_register');
-      }
+      signOut();
+      localStorage.clear();
+      router.push('/login_register');
     }
-  }, [session]);
+  }, []);
 
   return <Provider store={store}>{children}</Provider>;
 };
