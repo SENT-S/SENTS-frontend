@@ -57,14 +57,11 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       const companyData = await getCompany(companyId);
       const newsData = await getCompanyNews(companyId);
       const financialData = await getCompanyFinancials(companyId);
-      dispatch(fetchMetrics());
-      dispatch(fetchCategories());
 
       if (
         companyData.status !== 200 ||
         newsData.status !== 200 ||
-        financialData.status !== 200 ||
-        financialMetrics.status !== 200
+        financialData.status !== 200
       ) {
         throw new Error('Failed to fetch data');
       }
@@ -83,6 +80,11 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       }
     }
   }, [companyId, refresh]);
+
+  useEffect(() => {
+    dispatch(fetchMetrics());
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   useEffect(() => {
     fetchCompanies();

@@ -66,15 +66,17 @@ const Financial_section = ({
   const [isLoading, setIsLoading] = useState(false);
   const [initialRows, setInitialRows] = useState<Row[]>([]);
 
-  const categoryList = category.map((item: any) => ({
-    value: item.id,
-    label: item.category_name,
-  }));
+  const categoryList =
+    category?.map((item: any) => ({
+      value: item.id,
+      label: item.category_name,
+    })) || [];
 
-  const metricsList = metrics.map((item: any) => ({
-    value: item.id,
-    label: item.metric_name,
-  }));
+  const metricsList =
+    metrics?.map((item: any) => ({
+      value: item.id,
+      label: item.metric_name,
+    })) || [];
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);
@@ -82,24 +84,30 @@ const Financial_section = ({
   }, [yearRange]);
 
   const TableData: any = categoryList.reduce((acc: any, category: any) => {
-    acc[category.label] = formatData(FinancialData.data[category.label]);
+    if (
+      FinancialData &&
+      FinancialData.data &&
+      category.label in FinancialData.data
+    ) {
+      acc[category.label] = formatData(FinancialData.data[category.label]);
+    }
     return acc;
   }, {});
 
   const [rows, setRows] = useState<Row[]>(() => {
-    const selectedData = TableData[selectedLink];
-    return [...selectedData];
+    const selectedData = TableData[selectedLink] || [];
+    return selectedData ? [...selectedData] : [];
   });
 
   useEffect(() => {
-    const selectedData = TableData[selectedLink];
+    const selectedData = TableData[selectedLink] || [];
     const newData = [...selectedData];
     setRows(newData);
     setInitialRows(newData);
   }, [selectedLink]);
 
   useEffect(() => {
-    const newData = [...TableData[selectedLink]];
+    const newData = [...(TableData[selectedLink] || [])];
     setRows(newData);
     setInitialRows(newData);
   }, [selectedLink, newYears]);
