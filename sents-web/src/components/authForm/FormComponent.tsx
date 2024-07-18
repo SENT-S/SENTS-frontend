@@ -45,40 +45,42 @@ export default function FormComponent({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setLoading(true);
-
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
     try {
       if (title === 'Sign In') {
-        const result = await signIn('credentials', {
+        setLoading(true);
+        signIn('credentials', {
           redirect: false,
           ...data,
+        }).then(result => {
+          setLoading(false);
+          if (result?.error) {
+            toast.error(result.error, {
+              style: { background: 'red', color: 'white', border: 'none' },
+              position: 'top-center',
+            });
+          } else {
+            toast.success('Logged in successfully', {
+              style: {
+                background: 'green',
+                color: 'white',
+                border: 'none',
+              },
+              position: 'top-center',
+              duration: 5000,
+            });
+
+            // Redirect to dashboard
+            router.push('/dashboard');
+          }
         });
-
-        if (result?.error) {
-          toast.error(result.error, {
-            style: { background: 'red', color: 'white', border: 'none' },
-            position: 'top-center',
-          });
-        } else {
-          toast.success('Logged in successfully', {
-            style: {
-              background: 'green',
-              color: 'white',
-              border: 'none',
-            },
-            position: 'top-center',
-            duration: 5000,
-          });
-
-          // Redirect to dashboard
-          router.push('/dashboard');
-        }
       } else {
         // Register user
+        setLoading(true);
         const response = await registerUser(data);
+        setLoading(false);
 
         // Check if registration was successful
         if (response?.status === 201) {
@@ -101,13 +103,12 @@ export default function FormComponent({
         }
       }
     } catch (error) {
+      setLoading(false);
       toast.error('An error occurred during the process', {
         style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
         position: 'top-center',
       });
-    } finally {
-      setLoading(false);
     }
   };
 

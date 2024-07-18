@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import {
   addFinancialMetric,
   addFinancialDataCategory,
+  getAllFinancialMetrics,
+  getAllFinancialDataCategories,
 } from '@/services/apis/companies';
 
 // Async actions
@@ -19,6 +21,20 @@ export const addCategory = createAsyncThunk(
   },
 );
 
+export const fetchMetrics = createAsyncThunk(
+  'company/fetchMetrics',
+  async () => {
+    return await getAllFinancialMetrics();
+  },
+);
+
+export const fetchCategories = createAsyncThunk(
+  'company/fetchCategories',
+  async () => {
+    return await getAllFinancialDataCategories();
+  },
+);
+
 // Initial state
 const initialState = {
   metric: null,
@@ -31,7 +47,7 @@ const initialState = {
 
 // Slice
 const companySlice = createSlice({
-  name: 'company',
+  name: 'metric_category',
   initialState,
   reducers: {},
   extraReducers: builder => {
@@ -57,7 +73,16 @@ const companySlice = createSlice({
       .addCase(addCategory.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = 'idle';
         state.error = action.payload;
-      });
+      })
+      .addCase(fetchMetrics.fulfilled, (state, action: PayloadAction<any>) => {
+        state.metricList = action.payload;
+      })
+      .addCase(
+        fetchCategories.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.categoryList = action.payload;
+        },
+      );
   },
 });
 

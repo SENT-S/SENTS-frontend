@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Provider } from 'react-redux';
 import { store } from '@/lib/store';
 import { useSession, signOut } from 'next-auth/react';
@@ -18,29 +18,29 @@ interface DecodedToken {
 const StoreProvider = ({ children }: ProviderProps) => {
   const { data: session } = useSession() as { data: CustomSession };
 
-  useEffect(() => {
-    const isTokenExpiredOrSessionUndefined = () => {
-      if (!session || !session.token) {
+  const isTokenExpiredOrSessionUndefined = useCallback(() => {
+    if (!session || !session.token) {
+      return true;
+    }
+    try {
+      const decoded = jwt.decode(session.token) as DecodedToken;
+      if (!decoded || !decoded.exp) {
         return true;
       }
-      try {
-        const decoded = jwt.decode(session.token) as DecodedToken;
-        if (!decoded || !decoded.exp) {
-          return true;
-        }
-        const currentTime = Date.now() / 1000;
-        return decoded.exp < currentTime;
-      } catch (error) {
-        return true;
-      }
-    };
+      const currentTime = Date.now() / 1000;
+      return decoded.exp < currentTime;
+    } catch (error) {
+      return true;
+    }
+  }, [session]);
 
+  useEffect(() => {
     if (isTokenExpiredOrSessionUndefined() && session) {
       signOut();
       localStorage.clear();
       redirect('/login_register');
     }
-  }, []);
+  }, [isTokenExpiredOrSessionUndefined, session]);
 
   return <Provider store={store}>{children}</Provider>;
 };
