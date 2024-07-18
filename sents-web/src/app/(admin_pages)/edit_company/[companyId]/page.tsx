@@ -9,7 +9,7 @@ import {
 } from '@/services/apis/companies';
 import MainLayout from '@/layouts';
 import { Button } from '@/components/ui/button';
-import { IoArrowBack } from 'react-icons/io5';
+import BackButton from '@/components/backButton';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSession } from 'next-auth/react';
@@ -128,14 +128,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       ) : (
         <div className="mt-4">
           <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="icon"
-              className="ml-3 mb-4"
-              onClick={() => router.back()}
-            >
-              <IoArrowBack />
-            </Button>
+            <BackButton onClick={() => router.back()} customClass="mb-4" />
           </div>
           <div className="space-y-8">
             <SubNav

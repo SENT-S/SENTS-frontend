@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { IoArrowBack } from 'react-icons/io5';
+import BackButton from '@/components/backButton';
 import { addFinancialNews, getCompanies } from '@/services/apis/companies';
 import { CompanyType } from '@/utils/types';
 import { newsCategoryList } from '@/services/mockData/mock';
@@ -146,14 +146,7 @@ const page = () => {
   return (
     <MainLayout>
       <div className="flex items-center justify-between">
-        <Button
-          variant="outline"
-          size="icon"
-          className="ml-3"
-          onClick={() => router.back()}
-        >
-          <IoArrowBack />
-        </Button>
+        <BackButton onClick={() => router.back()} />
       </div>
 
       <h2 className="text-[#0D4222] text-center dark:text-[#E6F6F0] mt-4">

@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/utils/types';
 import LandingHeader from '@/components/header/Landing';
+import landingIllustration from '@/public/images/landingIllustration.png';
+import landingImage from '@/public/images/landingImage.png';
+import landingImage2 from '@/public/images/landingImage2.png';
 
 export default function LandingPage() {
   const { data: session, status } = useSession() as {
@@ -13,7 +16,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="container relative mx-auto px-4 h-full flex flex-col">
+    <div className="container relative mx-auto px-4 h-dvh flex flex-col">
       <LandingHeader session={session} status={status} />
       <main className="flex flex-col container justify-center md:justify-around flex-grow text-center">
         <section className="flex flex-col justify-center items-center text-[#0D4222] dark:text-[#E6F6F0] py-4 md:py-12 z-50">
@@ -40,30 +43,22 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="flex flex-col justify-center items-center py-12 flex-grow">
+        <section>
           <Image
-            src="/images/landingIllustration.png"
+            src={landingIllustration}
             alt="Landing Illustration"
-            layout="fill"
-            objectFit="contain"
             loading="lazy"
           />
-          <section className="justify-center items-center py-12 flex-grow  md:flex">
+          <section className="justify-center items-center flex-grow hidden md:flex">
             <Image
-              src="/images/landingImage.png"
+              src={landingImage}
               alt="Landing Image"
-              width={500}
-              height={300}
-              layout="responsive"
-              loading="lazy"
+              priority
               className="dark:hidden"
             />
             <Image
-              src="/images/landingImage2.png"
+              src={landingImage2}
               alt="Landing Image"
-              width={500}
-              height={300}
-              layout="responsive"
               priority
               className="hidden dark:block"
             />

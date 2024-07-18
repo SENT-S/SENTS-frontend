@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { IoArrowBack } from 'react-icons/io5';
+import BackButton from '@/components/backButton';
 import Section_1 from './Section_1';
 import Section_2 from './Section_2';
 import Preview from './Preview';
@@ -76,14 +76,7 @@ function index({ setStep, step }: { setStep: any; step: number }) {
       {innerStep === 2 && (
         <>
           <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="icon"
-              className="ml-3"
-              onClick={() => setInnerStep(innerStep - 1)}
-            >
-              <IoArrowBack />
-            </Button>
+            <BackButton onClick={() => setInnerStep(innerStep - 1)} />
           </div>
           <Section_2 />
         </>

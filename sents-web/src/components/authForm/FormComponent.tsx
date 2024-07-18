@@ -33,12 +33,12 @@ const defaultSocialButtons = [
   { id: 'microsoft', icon: Microsoft, name: 'Microsoft' },
 ];
 
-export default function FormComponent({
+const FormComponent = ({
   title,
   children,
   footerText,
   socialButtons = defaultSocialButtons,
-}: FormComponent) {
+}: FormComponent) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -51,31 +51,32 @@ export default function FormComponent({
     try {
       if (title === 'Sign In') {
         setLoading(true);
-        signIn('credentials', {
+        const result = await signIn('credentials', {
           redirect: false,
           ...data,
-        }).then(result => {
-          setLoading(false);
-          if (result?.error) {
-            toast.error(result.error, {
-              style: { background: 'red', color: 'white', border: 'none' },
-              position: 'top-center',
-            });
-          } else {
-            // Redirect to dashboard
-            router.push('/dashboard');
-
-            toast.success('Logged in successfully', {
-              style: {
-                background: 'green',
-                color: 'white',
-                border: 'none',
-              },
-              position: 'top-center',
-              duration: 5000,
-            });
-          }
         });
+
+        setLoading(false);
+
+        if (result?.error) {
+          toast.error(result.error, {
+            style: { background: 'red', color: 'white', border: 'none' },
+            position: 'top-center',
+          });
+        } else {
+          // Redirect to dashboard
+          router.push('/dashboard');
+
+          toast.success('Logged in successfully', {
+            style: {
+              background: 'green',
+              color: 'white',
+              border: 'none',
+            },
+            position: 'top-center',
+            duration: 5000,
+          });
+        }
       } else {
         // Register user
         setLoading(true);
@@ -151,4 +152,6 @@ export default function FormComponent({
       </CardDescription>
     </Card>
   );
-}
+};
+
+export default FormComponent;
