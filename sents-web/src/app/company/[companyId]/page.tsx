@@ -11,20 +11,14 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/layouts';
 import { CustomSession } from '@/utils/types';
+import Overview from '../_sections/Overview';
+import Financial from '../_sections/Financials';
+import News from '../_sections/News';
+import O_Right_Panel from '../_sections/panels/O_Right_Panel';
+import F_Right_Panel from '../_sections/panels/F_Right_Panel';
+import N_Right_Panel from '../_sections/panels/N_Right_Panel';
 
 const SubNav = dynamic(() => import('@/components/admin/Navs/SubNav'));
-const Overview = dynamic(() => import('../_sections/Overview'));
-const Financial = dynamic(() => import('../_sections/Financials'));
-const News = dynamic(() => import('../_sections/News'));
-const O_Right_Panel = dynamic(
-  () => import('../_sections/panels/O_Right_Panel'),
-);
-const F_Right_Panel = dynamic(
-  () => import('../_sections/panels/F_Right_Panel'),
-);
-const N_Right_Panel = dynamic(
-  () => import('../_sections/panels/N_Right_Panel'),
-);
 
 interface CompanyDetailsProps {
   params: { companyId: string };
