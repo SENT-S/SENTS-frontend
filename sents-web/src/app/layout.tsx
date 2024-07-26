@@ -1,9 +1,7 @@
 import '@/styles/styles.scss';
-import StoreProvider from '@/app/StoreProvider';
-import ThemeProvider from '../components/themeProvider/ThemeProvider';
-import ThemeToggle from '@/components/themeProvider/ThemeToggle';
 import AuthProvider from '@/app/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
+import Provider from './Provider';
 
 export const metadata = {
   title: 'Next.js',
@@ -17,19 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="overflow-y-auto">
+      <body className="overflow-y-auto dark:bg-[#0e120f]">
         <AuthProvider>
-          <StoreProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <ThemeToggle />
-              <>{children}</>
-            </ThemeProvider>
-          </StoreProvider>
+          <Provider>{children}</Provider>
         </AuthProvider>
         <Toaster />
       </body>

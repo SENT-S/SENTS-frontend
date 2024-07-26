@@ -14,7 +14,7 @@ html {
 
 body,
 html {
-  height: 100vh;
+  height: 100dvh;
   height: -webkit-fill-available;
   width: 100%;
   font-family: 'Urbanist', sans-serif;
@@ -30,10 +30,6 @@ html {
 
 .Unigoe-font {
   font-family: 'Unigeo64';
-}
-
-.dark {
-  background-color: #0e120f;
 }
 
 h1 {
