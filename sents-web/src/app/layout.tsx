@@ -1,7 +1,7 @@
 import '@/styles/styles.scss';
 import AuthProvider from '@/app/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
-import Provider from './Provider';
+import AppProvider from './AppProvider';
 
 export const metadata = {
   title: 'Next.js',
@@ -17,7 +17,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="overflow-y-auto dark:bg-[#0e120f]">
         <AuthProvider>
-          <Provider>{children}</Provider>
+          <AppProvider>
+            <>{children}</>
+          </AppProvider>
         </AuthProvider>
         <Toaster />
       </body>

@@ -1,7 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Provider as ReduxProvider } from 'react-redux';
-import { store } from '../lib/store';
 import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
@@ -17,7 +15,7 @@ interface DecodedToken {
   exp: number;
 }
 
-const Provider = ({ children }: ProviderProps) => {
+const AppProvider = ({ children }: ProviderProps) => {
   const { data: session } = useSession() as { data: CustomSession };
   const [toastShown, setToastShown] = useState(false);
   const pathname = usePathname();
@@ -62,17 +60,15 @@ const Provider = ({ children }: ProviderProps) => {
   if (!mounted) return [children];
 
   return (
-    <ReduxProvider store={store}>
-      <NextThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <>{children}</>
-      </NextThemeProvider>
-    </ReduxProvider>
+    <NextThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem
+      disableTransitionOnChange
+    >
+      {children}
+    </NextThemeProvider>
   );
 };
 
-export default Provider;
+export default AppProvider;
