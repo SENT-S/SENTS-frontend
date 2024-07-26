@@ -49,7 +49,7 @@ const SideBar = () => {
                     <Button
                       key={index}
                       type="button"
-                      className={`flex w-full ${isAdmin ? 'justify-between' : 'justify-center'} items-center space-x-2 px-6 py-4 relative ${
+                      className={`flex w-full ${isAdmin ? 'justify-between px-8 py-6' : 'justify-center px-8 py-9'} items-center space-x-2 relative ${
                         isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
                       } `}
                       disabled={link.disable}
@@ -59,7 +59,7 @@ const SideBar = () => {
                         className={`${isAdmin ? 'flex items-center' : ''}`}
                       >
                         <Icon
-                          size={isAdmin ? 20 : 30}
+                          size={isAdmin ? 25 : 30}
                           className={
                             isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
                           }
@@ -81,9 +81,9 @@ const SideBar = () => {
                     key={index}
                     className={`flex ${isAdmin ? 'justify-start' : 'justify-center'} items-center space-x-2 px-6 py-4 cursor-pointer relative text-gray-400`}
                   >
-                    <Skeleton className="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#0e120f]" />
+                    <Skeleton className="w-8 h-8 rounded-md bg-gray-200 dark:bg-[#0e120f]" />
                     <Skeleton
-                      className={`${isAdmin ? 'ml-2 w-20' : 'w-24'} h-8 rounded-xl bg-gray-200 dark:bg-[#0e120f]`}
+                      className={`${isAdmin ? 'ml-2 w-20 block' : 'w-24 hidden'} h-8 rounded-xl bg-gray-200 dark:bg-[#0e120f]`}
                     />
                   </li>
                 ))}
