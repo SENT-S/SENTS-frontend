@@ -41,7 +41,7 @@ const AppProvider = ({ children }: ProviderProps) => {
     if (isTokenExpiredOrSessionUndefined() && session) {
       signOut();
       localStorage.clear();
-      redirect('/');
+      redirect('/landing');
     } else if (session && !toastShown && pathname === '/') {
       toast.success(`Welcome, back ${session.user?.first_name}!`, {
         style: {

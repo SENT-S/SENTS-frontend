@@ -120,7 +120,10 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   };
 
   return (
-    <MainLayout>
+    <MainLayout
+      title="Sent's | Edit Company - Customize Your Financial Overview"
+      description="Welcome to Sent's Edit Company page. This is your platform to customize and update your company's financial overview. Make changes that reflect your company's growth and current financial status."
+    >
       {isLoading && status === 'authenticated' ? (
         Array.from({ length: 5 }).map((_, index) => (
           <Skeleton

@@ -1,13 +1,22 @@
 import React, { FC } from 'react';
 import Header from '@/components/header';
 import SideBar from '@/components/sidebar';
+import Head from 'next/head';
 
 interface MainLayoutProps {
   children: React.ReactNode;
+  title?: string;
+  description?: string;
 }
 
-const MainLayout: FC<MainLayoutProps> = ({ children }) => (
+const MainLayout: FC<MainLayoutProps> = ({ children, title, description }) => (
   <div className="flex h-full overflow-y-auto">
+    <Head>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+    </Head>
     <div className="w-auto">
       <SideBar />
     </div>

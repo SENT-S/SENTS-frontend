@@ -86,7 +86,10 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
     };
 
     return (
-      <MainLayout>
+      <MainLayout
+        title="Sents | Detailed Company Information"
+        description="Dive into the comprehensive details of Sents. Explore our company's history, values, mission, and the team that drives us forward. Stay informed about Sents and our commitment to excellence."
+      >
         {isLoading ? (
           <SkeletonLayout />
         ) : (

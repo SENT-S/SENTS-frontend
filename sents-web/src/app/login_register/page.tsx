@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import BackButton from '@/components/backButton';
 import LoginForm from '@/components/authForm/forms/LoginForm';
 import RegisterForm from '@/components/authForm/forms/RegisterForm';
-import Link from 'next/link';
 
 const Auth = () => {
   const router = useRouter();

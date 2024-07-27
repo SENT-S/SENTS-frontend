@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { UserLinks, AdminLinks } from '@/services/Links';
+import { ScaleLoader } from 'react-spinners';
 
 const SideBar = () => {
   const { data: session, status } = useSession() as {
@@ -64,9 +65,7 @@ const SideBar = () => {
                             isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
                           }
                         />
-                        <span
-                          className={`${isAdmin ? 'ml-2 block' : 'hidden'}`}
-                        >
+                        <span className={`${isAdmin ? 'ml-2' : 'hidden'}`}>
                           {link.name}
                         </span>
                       </Link>
@@ -79,12 +78,10 @@ const SideBar = () => {
               : Array.from({ length: 4 }).map((_, index) => (
                   <li
                     key={index}
-                    className={`flex ${isAdmin ? 'justify-start' : 'justify-center'} items-center space-x-2 px-6 py-4 cursor-pointer relative text-gray-400`}
+                    className="flex justify-start items-center space-x-2 px-6 py-4 cursor-pointer relative text-gray-400"
                   >
                     <Skeleton className="w-8 h-8 rounded-md bg-gray-200 dark:bg-[#0e120f]" />
-                    <Skeleton
-                      className={`${isAdmin ? 'ml-2 w-20 block' : 'w-24 hidden'} h-8 rounded-xl bg-gray-200 dark:bg-[#0e120f]`}
-                    />
+                    <Skeleton className="ml-2 w-24 h-8 rounded-xl bg-gray-200 dark:bg-[#0e120f]" />
                   </li>
                 ))}
           </div>
@@ -95,7 +92,18 @@ const SideBar = () => {
           className="flex justify-center items-center space-x-2 p-4 text-gray-400 hover:bg-gray-100 rounded-lg"
         >
           <IoIosLogOut size={24} />
-          <span>{loading ? 'Logging out...' : 'Logout'}</span>
+          <span>
+            {loading ? (
+              <ScaleLoader
+                color="#a3a3a3"
+                loading={loading}
+                height={16}
+                className="mt-1"
+              />
+            ) : (
+              'Logout'
+            )}
+          </span>
         </Button>
       </div>
     </div>

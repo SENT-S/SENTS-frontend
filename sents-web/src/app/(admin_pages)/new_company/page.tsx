@@ -36,7 +36,10 @@ const AddCompanyPage = () => {
   }, []);
 
   return (
-    <MainLayout>
+    <MainLayout
+      title="Sent's | Add New Company - Expand Your Portfolio"
+      description="Welcome to Sent's Add New Company page. This is your platform to expand your portfolio by adding new companies. Share the latest financial information and insights about the new company with our user community."
+    >
       <div className="space-y-8 mt-4 text-center">
         <Breadcrumb className="bg-white rounded-md shadow-md p-4 dark:bg-[#39463E80]">
           <BreadcrumbList>

@@ -144,7 +144,10 @@ const page = () => {
   };
 
   return (
-    <MainLayout>
+    <MainLayout
+      title="Sent's | Add News - Share Your Insights"
+      description="Welcome to Sent's Add News page. This is your platform to share valuable financial news and insights with our user community. Keep them updated on the latest trends and developments in the financial world."
+    >
       <div className="flex items-center justify-between">
         <BackButton onClick={() => router.back()} />
       </div>

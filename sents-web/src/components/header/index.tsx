@@ -28,6 +28,7 @@ import useOutsideClick from '@/utils/useOutsideClick';
 import { UserLinks, AdminLinks } from '@/services/Links';
 import { Button } from '@/components/ui/button';
 import { IoMdClose } from 'react-icons/io';
+import { ScaleLoader } from 'react-spinners';
 
 // Define the type for a company
 type Company = {
@@ -312,7 +313,18 @@ const Header = () => {
                     className="flex justify-center items-center space-x-2 p-4 cursor-pointer text-gray-400 hover:bg-gray-100 rounded-lg"
                   >
                     <IoIosLogOut size={24} />
-                    <span>{loading ? 'Logging out...' : 'Logout'}</span>
+                    <span>
+                      {loading ? (
+                        <ScaleLoader
+                          color="#a3a3a3"
+                          loading={loading}
+                          height={16}
+                          className="mt-1"
+                        />
+                      ) : (
+                        'Logout'
+                      )}
+                    </span>
                   </Button>
                 </div>
               </DrawerContent>
