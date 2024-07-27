@@ -8,7 +8,7 @@ import { CustomSession } from '@/utils/types';
 import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { UserLinks, AdminLinks } from '@/services/Links';
+import { UserLinks, AdminLinks } from '@/utils/Links';
 import { ScaleLoader } from 'react-spinners';
 
 const SideBar = () => {

@@ -162,10 +162,7 @@ const NewsPage = () => {
   };
 
   return (
-    <MainLayout
-      title="Sent's Financial News | Comprehensive Updates & Analysis"
-      description="Explore Sent's Financial News for comprehensive financial updates, in-depth analysis, and insightful commentary on global financial trends and market movements. Stay informed with Sent's."
-    >
+    <MainLayout>
       {isLoading ? (
         <>
           <Skeleton className="w-full p-8 rounded-2xl bg-slate-200" />

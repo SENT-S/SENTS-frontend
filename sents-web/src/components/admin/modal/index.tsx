@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import useOutsideClick from '@/utils/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import { ScaleLoader } from 'react-spinners';
 import { Button } from '@/components/ui/button';
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Add_new_category from '@/components/admin/forms/Add_new_category';
-import useOutsideClick from '@/utils/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/utils/types';
 

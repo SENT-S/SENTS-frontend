@@ -21,8 +21,8 @@ import Pagination from '@/components/pagination';
 import SubNav from '@/components/admin/Navs/SubNav';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
-import { formatData } from '@/utils/tableFunctions';
-import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
+import { formatData } from '@/hooks/tableFunctions';
+import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
 import { MdDone } from 'react-icons/md';
 import { GoPlusCircle } from 'react-icons/go';
 import Add_new_metric from '@/components/admin/forms/Add_new_metric';
@@ -32,7 +32,7 @@ import ModalForms from '@/components/admin/modal';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 import { createUpdateFinancialData } from '@/services/apis/companies';
-import getCurrencySymbol from '@/utils/getCurrencySymbol';
+import getCurrencySymbol from '@/hooks/getCurrencySymbol';
 import { MdCancel } from 'react-icons/md';
 
 type Row = {

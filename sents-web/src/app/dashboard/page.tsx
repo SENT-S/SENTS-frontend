@@ -68,10 +68,7 @@ const Dashboard = () => {
   };
 
   return (
-    <MainLayout
-      title="Sent's Dashboard | Your Personalized Financial Overview"
-      description="Welcome to your Sent's Dashboard. Here, you can monitor your financial activities, track market trends, and manage your portfolio with ease. Your personalized financial overview is just a click away with Sent's."
-    >
+    <MainLayout>
       {isLoading ? (
         <div className="space-y-8">
           <Skeleton className="text-2xl font-medium text-[#0D4222] dark:text-[#E6F6F0] text-left w-1/6 h-8 rounded-xl bg-slate-200 p-4" />

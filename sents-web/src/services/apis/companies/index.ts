@@ -1,4 +1,4 @@
-import useFetchData from '@/utils/useFetchData';
+import useFetchData from '@/hooks/useFetchData';
 
 export const getCompanies = () => useFetchData('/allcompanies/', 'get');
 

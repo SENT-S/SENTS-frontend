@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
+import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
 import FStatements from '@/components/admin/FStatements';
 import { createUpdateFinancialData } from '@/services/apis/companies';
 import { ScaleLoader } from 'react-spinners';
