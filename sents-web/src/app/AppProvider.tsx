@@ -9,13 +9,19 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes';
 
 interface ProviderProps {
   children: React.ReactNode;
+  themeProps: {
+    attribute: string;
+    defaultTheme: string;
+    enableSystem: boolean;
+    disableTransitionOnChange: boolean;
+  };
 }
 
 interface DecodedToken {
   exp: number;
 }
 
-const AppProvider = ({ children }: ProviderProps) => {
+const AppProvider = ({ children, themeProps }: ProviderProps) => {
   const { data: session } = useSession() as { data: CustomSession };
   const [toastShown, setToastShown] = useState(false);
   const pathname = usePathname();
@@ -59,16 +65,7 @@ const AppProvider = ({ children }: ProviderProps) => {
 
   if (!mounted) return null;
 
-  return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="light"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </NextThemesProvider>
-  );
+  return <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>;
 };
 
 export default AppProvider;

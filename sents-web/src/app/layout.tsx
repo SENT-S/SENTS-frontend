@@ -14,6 +14,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const themeProps = {
+    attribute: 'class',
+    defaultTheme: 'light',
+    enableSystem: true,
+    disableTransitionOnChange: true,
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="overflow-y-auto dark:bg-[#0e120f]">
@@ -30,9 +37,7 @@ export default function RootLayout({
         />
         <Toaster />
         <AuthProvider>
-          <AppProvider>
-            <>{children}</>
-          </AppProvider>
+          <AppProvider themeProps={themeProps}>{children}</AppProvider>
         </AuthProvider>
       </body>
     </html>
