@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { RiArrowRightSLine, RiDeleteBinLine } from 'react-icons/ri';
 import { Input } from '@/components/ui/input';
