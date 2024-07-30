@@ -103,7 +103,7 @@ const Dashboard = () => {
                 companyCountries.length >= 2 ? 2 : companyCountries.length
               } gap-6 md:gap-8 col-span-8`}
             >
-              {companyCountries?.map(item => (
+              {companyCountries?.map((item) => (
                 <div
                   key={item.country}
                   className={`relative w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]'} border border-[#148c5a33] hover:border-[#148C59]`}
@@ -158,7 +158,7 @@ const Dashboard = () => {
           <Pagination
             items={filteredCompanies}
             itemsPerPage={6}
-            render={currentItems => (
+            render={(currentItems) => (
               <TableComponent
                 showEdit={showEdit}
                 columns={[
@@ -178,7 +178,7 @@ const Dashboard = () => {
                     width: 'w-1/3',
                   },
                 ]}
-                onRowClick={row => {
+                onRowClick={(row) => {
                   {
                     isAdmin
                       ? showEdit

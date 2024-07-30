@@ -24,10 +24,10 @@ const AddCompanyPage = () => {
   const dispatch = useDispatch();
   const [step, setStep] = useState(1);
   const financialMetrics = useSelector<any>(
-    state => state.metricCategory.metricList,
+    (state) => state.metricCategory.metricList
   );
   const financialDataCategories = useSelector<any>(
-    state => state.metricCategory.categoryList,
+    (state) => state.metricCategory.categoryList
   );
 
   useEffect(() => {

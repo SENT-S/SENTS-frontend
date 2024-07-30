@@ -44,10 +44,10 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const [countryName, setCountryName] = useState<string>('');
   const [refresh, setRefresh] = useState<boolean>(false);
   const financialMetrics = useSelector<any>(
-    state => state.metricCategory.metricList,
+    (state) => state.metricCategory.metricList
   );
   const financialDataCategories = useSelector<any>(
-    state => state.metricCategory.categoryList,
+    (state) => state.metricCategory.categoryList
   );
 
   const fetchCompanies = useCallback(async () => {

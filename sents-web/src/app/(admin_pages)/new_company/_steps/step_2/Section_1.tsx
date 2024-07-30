@@ -50,7 +50,7 @@ const Section_1 = ({
   const [isLoading, setIsLoading] = useState(false);
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
-  const createdCompanyData = useSelector(state => state.company.response);
+  const createdCompanyData = useSelector((state) => state.company.response);
   const companyID = Number(createdCompanyData?.data?.id);
 
   // change the format of the data from categories and metric to react-select format
@@ -74,7 +74,7 @@ const Section_1 = ({
 
   function getEmptyRow(years: string[]) {
     let row: Row = { metrics: '', category: [] }; // Initialize category as an empty array
-    years.forEach(year => {
+    years.forEach((year) => {
       const actualYear = '20' + year.slice(3);
       row[actualYear] = '';
     });
@@ -83,13 +83,13 @@ const Section_1 = ({
 
   // Function to handle adding a new row
   const addRow = () => {
-    setRows(prevRows => [...prevRows, getEmptyRow(newYears)]);
+    setRows((prevRows) => [...prevRows, getEmptyRow(newYears)]);
   };
 
   // Function to handle input change in the table
   const handleInputChange = (e: any, rowIndex: number, column: any) => {
     const value = e.target.value;
-    setRows(prevRows => {
+    setRows((prevRows) => {
       return prevRows.map((row, index) => {
         if (index === rowIndex) {
           // If the column is a fiscal year, save the actual year instead
@@ -108,7 +108,7 @@ const Section_1 = ({
 
   // Function to handle select change in the table
   const handleSelectChange = (value: any, rowIndex: number, column: string) => {
-    setRows(prevRows => {
+    setRows((prevRows) => {
       return prevRows.map((row, index) => {
         if (index === rowIndex) {
           if (column === 'category') {
@@ -130,14 +130,14 @@ const Section_1 = ({
 
   // Function to handle clearing a row
   const clearRow = (rowIndex: number) => {
-    setRows(prevRows => prevRows.filter((_, index) => index !== rowIndex));
+    setRows((prevRows) => prevRows.filter((_, index) => index !== rowIndex));
   };
 
   const handleFormSubmit = async (e: any) => {
     e.preventDefault();
     try {
       // Convert rows state to an array of objects where each object represents a row
-      const formData = rows.flatMap(row => {
+      const formData = rows.flatMap((row) => {
         // Extract metrics and category from the row
         const { metrics, category, ...years } = row;
 
@@ -199,7 +199,7 @@ const Section_1 = ({
       <div className="flex flex-wrap justify-between gap-4 items-center">
         <div>
           <Select
-            onValueChange={value => setYearRange(value)}
+            onValueChange={(value) => setYearRange(value)}
             value={yearRange}
             defaultValue={yearRange}
           >
@@ -233,7 +233,7 @@ const Section_1 = ({
       <Pagination
         items={rows}
         itemsPerPage={5}
-        render={currentItems => (
+        render={(currentItems) => (
           <div className="relative shadow-md rounded-2xl w-full h-auto">
             <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
               {/* table header */}
@@ -242,7 +242,7 @@ const Section_1 = ({
                   <TableHead className="w-1/6 py-2 text-center">
                     Metrics
                   </TableHead>
-                  {newYears.map(year => (
+                  {newYears.map((year) => (
                     <TableHead key={year} className="w-[13%] py-2 text-center">
                       {year}
                     </TableHead>
@@ -270,7 +270,7 @@ const Section_1 = ({
                           options={metricsList}
                           isClearable={false}
                           value={metricsList.find(
-                            (item: any) => item.value === row.metrics,
+                            (item: any) => item.value === row.metrics
                           )}
                           className="react-select-container dark:text-black"
                           classNamePrefix="react-select"
@@ -287,7 +287,7 @@ const Section_1 = ({
                           type="text"
                           value={row['20' + year.slice(3)] || ''}
                           className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
-                          onChange={e =>
+                          onChange={(e) =>
                             handleInputChange(e, rowIndex, '20' + year.slice(3))
                           }
                         />
@@ -301,9 +301,7 @@ const Section_1 = ({
                           options={categoryList}
                           isClearable={false}
                           value={row.category.map((cat: any) =>
-                            categoryList.find(
-                              (item: any) => item.value === cat,
-                            ),
+                            categoryList.find((item: any) => item.value === cat)
                           )}
                           className="react-select-container dark:text-black"
                           classNamePrefix="react-select"

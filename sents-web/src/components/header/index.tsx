@@ -106,7 +106,7 @@ const Header = () => {
       if (response.status === 200) {
         // Flatten the data into a single array of companies
         const flattenedData = response.data.flatMap(
-          (data: any) => data.list_of_companies,
+          (data: any) => data.list_of_companies
         );
         setSearchData(flattenedData);
         // Update the fuse instance with the new data
@@ -123,7 +123,7 @@ const Header = () => {
     setQuery(e.target.value);
     if (e.target.value.trim() !== '') {
       const result = fuse.search(e.target.value);
-      setResults(result.map(res => res.item));
+      setResults(result.map((res) => res.item));
     } else {
       setResults([]);
     }

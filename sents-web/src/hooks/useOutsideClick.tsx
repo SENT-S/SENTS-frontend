@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 const useOutsideClick = (
   ref: React.RefObject<HTMLElement>,
-  callback: Function,
+  callback: Function
 ) => {
   const handleClickOutside = (event: Event) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {

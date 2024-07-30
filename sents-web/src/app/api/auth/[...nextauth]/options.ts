@@ -9,8 +9,7 @@ export const providers = [
     name: 'Credentials',
     credentials: {},
     async authorize(
-      credentials: { email?: string; password?: string } | undefined,
-      req: any,
+      credentials: { email?: string; password?: string } | undefined
     ) {
       if (!credentials) {
         throw new Error('No credentials provided');
@@ -39,7 +38,7 @@ export const providers = [
 
         // throw the message from the response
         throw new Error(
-          response?.message || 'Failed to log in, please try again',
+          response?.message || 'Failed to log in, please try again'
         );
       } catch (error: any) {
         throw new Error(error.message || 'Failed to log in, please try again');
@@ -53,7 +52,7 @@ export const providers = [
 ];
 
 export const pages = {
-  signIn: '/login_register',
+  signIn: '/dashboard',
   signOut: '/login_register',
   error: '/error',
 };

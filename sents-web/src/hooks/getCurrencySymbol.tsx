@@ -14,7 +14,7 @@ const getCurrencySymbol = (countryName: string) => {
     return;
   }
 
-  const country = countries.find(c => c.country === countryName);
+  const country = countries.find((c) => c.country === countryName);
   return country ? country.currency : 'Country not found';
 };
 

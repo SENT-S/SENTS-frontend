@@ -116,7 +116,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
         )}
       </MainLayout>
     );
-  },
+  }
 );
 
 const SkeletonLayout = () => (

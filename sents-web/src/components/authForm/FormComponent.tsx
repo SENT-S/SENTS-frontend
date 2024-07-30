@@ -1,4 +1,3 @@
-'use client';
 import React, { useState } from 'react';
 import {
   Card,
@@ -42,7 +41,7 @@ const FormComponent = ({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -52,8 +51,8 @@ const FormComponent = ({
       if (title === 'Sign In') {
         setLoading(true);
         const result = await signIn('credentials', {
-          redirect: false,
           ...data,
+          callbackUrl: '/dashboard',
         });
 
         setLoading(false);
@@ -64,9 +63,7 @@ const FormComponent = ({
             position: 'top-center',
           });
         } else {
-          // Redirect to dashboard
           router.push('/dashboard');
-
           toast.success('Logged in successfully', {
             style: {
               background: 'green',

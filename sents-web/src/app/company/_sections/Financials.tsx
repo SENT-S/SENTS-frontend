@@ -101,14 +101,14 @@ const Financials = ({
   const [barWidth, setBarWidth] = useState(60);
   const [selectedLink, setSelectedLink] = useState<string>('Financial Summary');
   const [selectedMetric, setSelectedMetric] = useState<FormattedMetric | null>(
-    null,
+    null
   );
   const currentYear = new Date().getFullYear();
   const yearRanges = getYearRanges();
 
   const chartYears = Array.from(
     { length: 5 },
-    (_, i) => `${currentYear - i - 1}`,
+    (_, i) => `${currentYear - i - 1}`
   ).reverse();
 
   const [yearRange, setYearRange] = useState(yearRanges[0]);
@@ -143,10 +143,10 @@ const Financials = ({
     'Profit & Loss': formatData(financialData['Profit & Loss' as any]),
     'Balance Sheet': formatData(financialData['Balance Sheet' as any]),
     'Cashflow Statement': formatData(
-      financialData['Cashflow Statement' as any],
+      financialData['Cashflow Statement' as any]
     ),
     'Financial Analysis': formatData(
-      financialData['Financial Analysis' as any],
+      financialData['Financial Analysis' as any]
     ),
   };
 
@@ -158,7 +158,7 @@ const Financials = ({
 
   const handleSelectMetric = (metricName: string) => {
     const selectedMetric = selectedData.find(
-      item => item.metrics === metricName,
+      (item) => item.metrics === metricName
     );
     if (selectedMetric) {
       setSelectedMetric(selectedMetric);
@@ -261,7 +261,7 @@ const Financials = ({
             <div className="flex justify-between gap-3 items-center">
               <div>
                 <Select
-                  onValueChange={value => setYearRange(value)}
+                  onValueChange={(value) => setYearRange(value)}
                   defaultValue={yearRanges[0]}
                 >
                   <SelectTrigger className="rounded-2xl p-2 md:p-4 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
@@ -295,13 +295,13 @@ const Financials = ({
           <Pagination
             items={selectedData}
             itemsPerPage={10}
-            render={currentItems => (
+            render={(currentItems) => (
               <div className="relative shadow-md rounded-2xl w-full h-auto">
                 <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
                   <TableHeader>
                     <TableRow className="text-black font-semibold">
                       <TableHead className="w-1/6 py-2">Metrics</TableHead>
-                      {newYears.map(year => (
+                      {newYears.map((year) => (
                         <TableHead key={year} className="w-[13%] py-2">
                           {year}
                         </TableHead>
@@ -320,7 +320,7 @@ const Financials = ({
                       currentItems.map(
                         (
                           item: { [key: string]: string | number },
-                          index: number,
+                          index: number
                         ) => (
                           <TableRow
                             key={index}
@@ -338,7 +338,7 @@ const Financials = ({
                             >
                               {item.metrics}
                             </TableCell>
-                            {newYears.map(year => (
+                            {newYears.map((year) => (
                               <TableCell key={year} className="flex-grow py-2">
                                 {isNaN(Number(item[year])) ||
                                 Number(item[year]) === 0
@@ -346,7 +346,7 @@ const Financials = ({
                                   : Number(item[year]).toLocaleString('en-US', {
                                       style: 'currency',
                                       currency: getCurrencySymbol(
-                                        data?.company_country,
+                                        data?.company_country
                                       ),
                                     })}
                               </TableCell>
@@ -363,7 +363,7 @@ const Financials = ({
                               </a>
                             </TableCell>
                           </TableRow>
-                        ),
+                        )
                       )
                     )}
                   </TableBody>
@@ -445,7 +445,7 @@ const Financials = ({
                       axisLine={false}
                       tickLine={false}
                       tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
-                      tickFormatter={value => {
+                      tickFormatter={(value) => {
                         if (value >= 1e18) {
                           return Math.round(value / 1e18) + ' ' + 'Qi';
                         } else if (value >= 1e15) {

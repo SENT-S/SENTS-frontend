@@ -32,7 +32,7 @@ export default function TopNews({
 
   return (
     <div className="flex flex-col gap-4 w-full p-4">
-      {data?.map(newsItem => (
+      {data?.map((newsItem) => (
         <NewsItem
           key={newsItem.id}
           label="Top News"

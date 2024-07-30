@@ -15,7 +15,7 @@ interface TableProps {
   onRowClick?: (row: { [key: string]: any }) => void;
   renderCell?: (
     row: { [key: string]: any },
-    column: TableColumn,
+    column: TableColumn
   ) => JSX.Element;
   showEdit?: boolean;
 }
@@ -39,7 +39,7 @@ const TableComponent: React.FC<TableProps> = ({
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    column: TableColumn,
+    column: TableColumn
   ) => {
     setRowData({ ...rowData, [column.field]: e.target.value });
   };
@@ -77,7 +77,7 @@ const TableComponent: React.FC<TableProps> = ({
                           <Input
                             value={row[column.field]}
                             className="bg-white"
-                            onChange={e => handleInputChange(e, column)}
+                            onChange={(e) => handleInputChange(e, column)}
                           />
                         ) : renderCell ? (
                           renderCell(row, column)

@@ -90,21 +90,21 @@ const NewsPage = () => {
 
     // Set selected country to the first country in the list
     if (countries.length > 0) {
-      setSelectedCountry(prevCountry => prevCountry || countries[0].label);
+      setSelectedCountry((prevCountry) => prevCountry || countries[0].label);
     }
   }, [companies]);
 
   useEffect(() => {
     // Filter companies by selected country
     const filteredCompanies = companies.filter(
-      company => company.company_country === selectedCountry,
+      (company) => company.company_country === selectedCountry
     )[0];
     if (filteredCompanies) {
       const companiesList = filteredCompanies.list_of_companies.map(
         (company: any) => ({
           label: company.company_name,
           value: company.id,
-        }),
+        })
       );
       setCompanyList(companiesList);
     }
@@ -124,7 +124,7 @@ const NewsPage = () => {
     // Filter news data by selected company
     if (selectedCompany) {
       return newsByLink.filter(
-        (news: any) => news.company_name === selectedCompany,
+        (news: any) => news.company_name === selectedCompany
       );
     } else {
       return newsByLink;
@@ -157,7 +157,7 @@ const NewsPage = () => {
     if (checked) {
       setSelectedIds([...selectedIds, id]);
     } else {
-      setSelectedIds(selectedIds.filter(item => item !== id));
+      setSelectedIds(selectedIds.filter((item) => item !== id));
     }
   };
 
@@ -281,7 +281,7 @@ const NewsPage = () => {
           <Pagination
             items={selectedNewsData}
             itemsPerPage={4}
-            render={currentItems => (
+            render={(currentItems) => (
               <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
                 {selectedLink === 'Top News' && (
                   <TopNews

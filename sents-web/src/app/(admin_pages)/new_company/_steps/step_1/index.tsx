@@ -11,18 +11,18 @@ import { toast } from 'sonner';
 
 function index({ setStep, step }: { setStep: any; step: number }) {
   const dispatch = useDispatch();
-  const companyFields = useSelector(state => state.company);
+  const companyFields = useSelector((state) => state.company);
   const [innerStep, setInnerStep] = useState(1);
 
   const handleFormSubmit = async () => {
     try {
       // Check if all fields are filled
       const allFieldsFilled = Object.values(companyFields).every(
-        field => field !== '',
+        (field) => field !== ''
       );
 
       if (innerStep === 1) {
-        setInnerStep(prevStep => prevStep + 1);
+        setInnerStep((prevStep) => prevStep + 1);
       }
 
       if (innerStep === 2) {
@@ -48,7 +48,7 @@ function index({ setStep, step }: { setStep: any; step: number }) {
 
   useEffect(() => {
     if (companyFields.response && companyFields.response.status === 201) {
-      setInnerStep(prevStep => prevStep + 1);
+      setInnerStep((prevStep) => prevStep + 1);
       toast.success('Company created successfully', {
         style: {
           background: 'green',

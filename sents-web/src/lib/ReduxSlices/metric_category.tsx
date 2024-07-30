@@ -11,28 +11,28 @@ export const addMetric = createAsyncThunk(
   'company/addMetric',
   async (metricData: any) => {
     return await addFinancialMetric(metricData);
-  },
+  }
 );
 
 export const addCategory = createAsyncThunk(
   'company/addCategory',
   async (categoryData: any) => {
     return await addFinancialDataCategory(categoryData);
-  },
+  }
 );
 
 export const fetchMetrics = createAsyncThunk(
   'company/fetchMetrics',
   async () => {
     return await getAllFinancialMetrics();
-  },
+  }
 );
 
 export const fetchCategories = createAsyncThunk(
   'company/fetchCategories',
   async () => {
     return await getAllFinancialDataCategories();
-  },
+  }
 );
 
 // Initial state
@@ -50,9 +50,9 @@ const companySlice = createSlice({
   name: 'metric_category',
   initialState,
   reducers: {},
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(addMetric.pending, state => {
+      .addCase(addMetric.pending, (state) => {
         state.isLoading = 'loading';
       })
       .addCase(addMetric.fulfilled, (state, action: PayloadAction<any>) => {
@@ -63,7 +63,7 @@ const companySlice = createSlice({
         state.isLoading = 'idle';
         state.error = action.payload;
       })
-      .addCase(addCategory.pending, state => {
+      .addCase(addCategory.pending, (state) => {
         state.isLoading = 'loading';
       })
       .addCase(addCategory.fulfilled, (state, action: PayloadAction<any>) => {
@@ -81,7 +81,7 @@ const companySlice = createSlice({
         fetchCategories.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.categoryList = action.payload;
-        },
+        }
       );
   },
 });

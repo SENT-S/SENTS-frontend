@@ -18,7 +18,7 @@ const Preview = ({
   setInnerStep: any;
 }) => {
   const dispatch = useDispatch();
-  const companyFields = useSelector(state => state.company);
+  const companyFields = useSelector((state) => state.company);
   return (
     <div className="space-y-8">
       <CompanyCard

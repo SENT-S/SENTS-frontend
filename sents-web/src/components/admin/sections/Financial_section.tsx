@@ -117,7 +117,7 @@ const Financial_section = ({
       metrics: '',
       category: [categoryList.find((item: any) => item.label === selectedLink)],
     };
-    years.forEach(year => {
+    years.forEach((year) => {
       const actualYear = 'FY’' + year.slice(-2);
       row[actualYear] = '';
     });
@@ -125,16 +125,16 @@ const Financial_section = ({
   };
 
   const addRow = () => {
-    setRows(prevRows => [...prevRows, getEmptyRow(newYears)]);
+    setRows((prevRows) => [...prevRows, getEmptyRow(newYears)]);
   };
 
   const clearRow = (rowIndex: number) => {
-    setRows(prevRows => prevRows.filter((_, index) => index !== rowIndex));
+    setRows((prevRows) => prevRows.filter((_, index) => index !== rowIndex));
   };
 
   const handleInputChange = (e: any, rowIndex: number, column: any) => {
     const value = e.target.value;
-    setRows(prevRows => {
+    setRows((prevRows) => {
       return prevRows.map((row, index) => {
         if (index === rowIndex) {
           return { ...row, [column]: value };
@@ -148,7 +148,7 @@ const Financial_section = ({
   const handleSelectChange = (
     selectedOptions: any,
     rowIndex: number,
-    column: string,
+    column: string
   ) => {
     const value =
       column === 'category'
@@ -158,7 +158,7 @@ const Financial_section = ({
     if (column === 'metrics') {
       // Check if the selected metric already exists in the rows above
       const isMetricAlreadySelected = rows.some(
-        (row, index) => row.metrics === value && index < rowIndex,
+        (row, index) => row.metrics === value && index < rowIndex
       );
 
       if (isMetricAlreadySelected) {
@@ -170,13 +170,13 @@ const Financial_section = ({
       }
     }
 
-    setRows(prevRows =>
+    setRows((prevRows) =>
       prevRows.map((row, index) => {
         if (index === rowIndex) {
           return { ...row, [column]: value };
         }
         return row;
-      }),
+      })
     );
   };
 
@@ -198,17 +198,17 @@ const Financial_section = ({
         return JSON.stringify(row) !== JSON.stringify(initialRows[index]);
       });
 
-      const formData = changedRows.flatMap(row => {
+      const formData = changedRows.flatMap((row) => {
         const { metrics, category, ...years } = row;
         const metricId = metricsList.find(
           (item: any) =>
-            item.label === metrics || item.value === Number(metrics),
+            item.label === metrics || item.value === Number(metrics)
         )?.value;
 
         const selectedCategoryId = category
           ? category.map((item: any) => item.value || item)
           : findCommonCategories(FinancialData.data, metrics).map(
-              (item: any) => item.value,
+              (item: any) => item.value
             );
 
         return Object.entries(years).map(([year, value]) => {
@@ -260,8 +260,8 @@ const Financial_section = ({
         commonCategories.push(category);
       }
     }
-    return commonCategories.map(commonCategory =>
-      categoryList.find((item: any) => item.label === commonCategory),
+    return commonCategories.map((commonCategory) =>
+      categoryList.find((item: any) => item.label === commonCategory)
     );
   }
 
@@ -319,7 +319,7 @@ const Financial_section = ({
             </Button>
           )}
           <Select
-            onValueChange={value => setYearRange(value)}
+            onValueChange={(value) => setYearRange(value)}
             value={yearRange}
             defaultValue={yearRange}
           >
@@ -356,7 +356,7 @@ const Financial_section = ({
       <Pagination
         items={rows}
         itemsPerPage={5}
-        render={currentItems => (
+        render={(currentItems) => (
           <div className="relative shadow-md rounded-2xl w-full h-auto">
             <Table className="min-w-full text-black dark:text-white">
               {/* table header */}
@@ -365,7 +365,7 @@ const Financial_section = ({
                   <TableHead className="w-1/6 py-2 text-center">
                     Metrics
                   </TableHead>
-                  {newYears.map(year => (
+                  {newYears.map((year) => (
                     <TableHead key={year} className="w-[13%] py-2 text-center">
                       {year}
                     </TableHead>
@@ -417,13 +417,13 @@ const Financial_section = ({
                               defaultValue={metricsList.find(
                                 (item: any) =>
                                   item.label === row.metrics ||
-                                  item.value === Number(row.metrics),
+                                  item.value === Number(row.metrics)
                               )}
                               onChange={(selectedOption: any) =>
                                 handleSelectChange(
                                   selectedOption.value,
                                   rowIndex,
-                                  'metrics',
+                                  'metrics'
                                 )
                               }
                             />
@@ -432,7 +432,7 @@ const Financial_section = ({
                           metricsList.find(
                             (item: any) =>
                               item.label === row.metrics ||
-                              item.value === Number(row.metrics),
+                              item.value === Number(row.metrics)
                           )?.label || '__'
                         )}
                       </TableCell>
@@ -444,7 +444,7 @@ const Financial_section = ({
                               type="text"
                               value={row[year]}
                               className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
-                              onChange={e =>
+                              onChange={(e) =>
                                 handleInputChange(e, rowIndex, year)
                               }
                             />
@@ -476,19 +476,19 @@ const Financial_section = ({
                                 row?.category?.map((item: any) =>
                                   categoryList.find(
                                     (category: any) =>
-                                      category.label === item.label,
-                                  ),
+                                      category.label === item.label
+                                  )
                                 ) ||
                                 findCommonCategories(
                                   FinancialData.data,
-                                  row.metrics,
+                                  row.metrics
                                 )
                               }
                               onChange={(selectedOptions: any) =>
                                 handleSelectChange(
                                   selectedOptions,
                                   rowIndex,
-                                  'category',
+                                  'category'
                                 )
                               }
                             />

@@ -62,21 +62,21 @@ const page = () => {
 
     // Set selected country to the first country in the list
     if (countries.length > 0) {
-      setSelectedCountry(prevCountry => prevCountry || countries[0].label);
+      setSelectedCountry((prevCountry) => prevCountry || countries[0].label);
     }
   }, [companies]);
 
   useEffect(() => {
     // Filter companies by selected country
     const filteredCompanies = companies.filter(
-      company => company.company_country === selectedCountry,
+      (company) => company.company_country === selectedCountry
     )[0];
     if (filteredCompanies) {
       const companiesList = filteredCompanies.list_of_companies.map(
         (company: any) => ({
           label: company.company_name,
           value: company.id,
-        }),
+        })
       );
       setCompanyList(companiesList);
     }
@@ -96,7 +96,7 @@ const page = () => {
     const data = Object.fromEntries(formData.entries());
 
     const selectedCompanyID = companyList.find(
-      company => company.label === selectedCompany,
+      (company) => company.label === selectedCompany
     )?.value;
 
     data.company = selectedCompanyID || '';
@@ -174,7 +174,7 @@ const page = () => {
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="flex gap-6 items-center">
             <Select
-              onValueChange={value => setSelectedCountry(value)}
+              onValueChange={(value) => setSelectedCountry(value)}
               name="country"
               value={selectedCountry}
               defaultValue={selectedCountry}
@@ -196,7 +196,7 @@ const page = () => {
               </SelectContent>
             </Select>
             <Select
-              onValueChange={item => {
+              onValueChange={(item) => {
                 setSelectedCompany(item);
               }}
               name="company"
@@ -221,7 +221,7 @@ const page = () => {
             </Select>
           </div>
           <Select
-            onValueChange={value => setSelectedCategory(value)}
+            onValueChange={(value) => setSelectedCategory(value)}
             name="news_category"
           >
             <SelectTrigger className="rounded-2xl p-7 flex justify-between border border-[#8D9D93] dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">

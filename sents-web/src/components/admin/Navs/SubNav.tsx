@@ -105,7 +105,7 @@ const SubNav = ({
               }}
               ref={dropRef}
             >
-              {dropdownLinks.map(link => (
+              {dropdownLinks.map((link) => (
                 <div
                   key={link}
                   className={dropdownLinkClasses}

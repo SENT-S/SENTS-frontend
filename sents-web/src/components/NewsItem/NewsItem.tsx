@@ -68,7 +68,7 @@ const NewsItem = ({
           type="checkbox"
           className="bg-gray-700 ml-2 -mr-2 cursor-pointer checked:bg-gray-700 checked:border-transparent checked:text-white transition-colors duration-200 ease-in-out"
           id={`news-${newsItem.id}`}
-          onChange={e => onCheckboxChange(newsItem?.id, e.target.checked)}
+          onChange={(e) => onCheckboxChange(newsItem?.id, e.target.checked)}
           checked={selectedIds?.includes(newsItem?.id)}
         />
       )}

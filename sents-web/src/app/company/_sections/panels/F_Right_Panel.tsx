@@ -56,7 +56,7 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
         <h1 className="text-2xl font-semibold">Related Stocks</h1>
         <ul className="list-none divide-y divide-[#E6EEEA] dark:divide-[#39463E]  space-y-3">
           {mockdata.length !== 0 ? (
-            mockdata.map(stock => (
+            mockdata.map((stock) => (
               <li
                 key={stock.id}
                 className="flex justify-between items-center py-2 cursor-pointer"

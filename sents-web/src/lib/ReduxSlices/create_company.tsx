@@ -39,7 +39,7 @@ const companySlice = createSlice({
   reducers: {
     updateCompanyField: (
       state,
-      action: PayloadAction<{ field: keyof Company; value: any }>,
+      action: PayloadAction<{ field: keyof Company; value: any }>
     ) => {
       const { field, value } = action.payload;
       (state[field] as any) = value;

@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
 const useFetchData = async (
   endpoint: string,
   method: string = 'get',
-  body?: any,
+  body?: any
 ) => {
   try {
     const session = await getSession();
@@ -40,7 +40,7 @@ const useFetchData = async (
   } catch (error) {
     console.error(
       `Error ${method.toUpperCase()} data from ${endpoint}: `,
-      error,
+      error
     );
     throw error;
   }
