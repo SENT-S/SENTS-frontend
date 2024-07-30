@@ -37,7 +37,6 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   };
   const [selectedLink, setSelectedLink] = useState(links[0]);
   const [companyData, setCompanyData] = useState<any>({});
-  const [newsData, setNewsData] = useState<any>([]);
   const [financialData, setFinancialData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [financialStatements, setFinancialStatements] = useState<any>([]);
@@ -69,7 +68,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       setCountryName(companyData.data.company_details.company_country);
       setFinancialStatements(companyData.data.company_documents);
       setCompanyData(companyData.data.company_details);
-      setNewsData(newsData);
+
       setFinancialData(financialData);
     } catch (error) {
       console.error('Failed to fetch company', error);
@@ -146,5 +145,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
     </MainLayout>
   );
 });
+
+EditPage.displayName = 'EditPage';
 
 export default EditPage;

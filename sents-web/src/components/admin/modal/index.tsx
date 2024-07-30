@@ -20,7 +20,7 @@ interface Props {
   FormTitle: string;
   Icon?: React.ReactNode;
   onCancel?: () => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: () => void;
   className?: string;
   children?: React.ReactNode;
   loading?: boolean;

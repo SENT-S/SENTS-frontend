@@ -33,7 +33,7 @@ const AddCompanyPage = () => {
   useEffect(() => {
     dispatch(fetchMetrics());
     dispatch(fetchCategories());
-  }, []);
+  }, [dispatch]);
 
   return (
     <MainLayout>

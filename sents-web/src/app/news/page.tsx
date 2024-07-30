@@ -108,7 +108,7 @@ const NewsPage = () => {
       );
       setCompanyList(companiesList);
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, companies]);
 
   // Get the news data for the selected link
   const selectedNewsData = useMemo(() => {

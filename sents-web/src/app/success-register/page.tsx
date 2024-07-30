@@ -3,7 +3,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { LuCheckCircle } from 'react-icons/lu';
 
-export default function page() {
+export default function Page() {
   const router = useRouter();
 
   const handleContinue = () => {

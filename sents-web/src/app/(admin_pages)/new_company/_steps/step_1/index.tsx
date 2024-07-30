@@ -9,7 +9,7 @@ import { createCompany } from '@/lib/ReduxSlices/create_company';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
-function index({ setStep, step }: { setStep: any; step: number }) {
+function Index({ setStep, step }: { setStep: any; step: number }) {
   const dispatch = useDispatch();
   const companyFields = useSelector((state) => state.company);
   const [innerStep, setInnerStep] = useState(1);
@@ -111,4 +111,4 @@ function index({ setStep, step }: { setStep: any; step: number }) {
   );
 }
 
-export default index;
+export default Index;

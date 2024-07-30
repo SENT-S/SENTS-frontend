@@ -2,7 +2,6 @@ import React from 'react';
 import ModalForms from '@/components/admin/modal';
 import AddNewStatementContent from '@/components/admin/forms/Add_new_statement';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { financialStatements } from '@/services/mockData/mock';
 
 const FStatements = ({
   financialStatements,

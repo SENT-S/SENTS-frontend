@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { RiArrowRightSLine } from 'react-icons/ri';
 import { TfiDownload } from 'react-icons/tfi';
-import { financialStatements, mockdata } from '@/services/mockData/mock';
+import { mockdata } from '@/services/mockData/mock';
 
 interface FinancialProps {
   data: any;

@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 });
 
 // Generic function to fetch data
-const useFetchData = async (
+const FetchData = async (
   endpoint: string,
   method: string = 'get',
   body?: any
@@ -46,4 +46,4 @@ const useFetchData = async (
   }
 };
 
-export default useFetchData;
+export default FetchData;

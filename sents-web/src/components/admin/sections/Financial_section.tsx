@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useState, useEffect } from 'react';
 import ReactSelect from 'react-select';
@@ -110,7 +111,7 @@ const Financial_section = ({
     const newData = [...(TableData[selectedLink] || [])];
     setRows(newData);
     setInitialRows(newData);
-  }, [selectedLink, newYears]);
+  }, [selectedLink]);
 
   const getEmptyRow = (years: string[]) => {
     let row: Row = {
@@ -437,7 +438,7 @@ const Financial_section = ({
                         )}
                       </TableCell>
 
-                      {newYears.map((year, yearIndex) => (
+                      {newYears.map((year) => (
                         <TableCell key={year} className="text-center">
                           {showEdit ? (
                             <Input

@@ -55,7 +55,7 @@ const AppProvider = ({ children }: ProviderProps) => {
       setToastShown(true);
     }
     setMounted(true);
-  }, [session, toastShown]);
+  }, [session, toastShown, pathname]);
 
   if (!mounted) return [children];
 

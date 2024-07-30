@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { useSession } from 'next-auth/react';
 import {
   getCompany,
   getCompanyNews,
@@ -10,7 +9,6 @@ import {
 } from '@/services/apis/companies';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/layouts';
-import { CustomSession } from '@/utils/types';
 import Overview from '../_sections/Overview';
 import Financial from '../_sections/Financials';
 import News from '../_sections/News';
@@ -28,10 +26,6 @@ const links = ['Overview', 'Financials', 'News'];
 
 const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
   ({ params }) => {
-    const { data: session } = useSession() as {
-      data: CustomSession;
-      status: 'loading' | 'authenticated' | 'unauthenticated';
-    };
     const [selectedLink, setSelectedLink] = useState(links[0]);
     const [companyData, setCompanyData] = useState<any>({});
     const [newsData, setNewsData] = useState<any>([]);
@@ -133,5 +127,7 @@ const SkeletonLayout = () => (
     </div>
   </div>
 );
+
+CompanyDetails.displayName = 'CompanyDetails';
 
 export default CompanyDetails;

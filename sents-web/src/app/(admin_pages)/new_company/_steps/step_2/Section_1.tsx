@@ -35,17 +35,7 @@ type Row = {
   [key: string]: string | string[];
 };
 
-const Section_1 = ({
-  setStep,
-  step,
-  metrics,
-  category,
-}: {
-  setStep: any;
-  step: number;
-  metrics: any;
-  category: any;
-}) => {
+const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
   const yearRanges = getYearRanges();
   const [isLoading, setIsLoading] = useState(false);
   const [yearRange, setYearRange] = useState(yearRanges[0]);
@@ -281,7 +271,7 @@ const Section_1 = ({
                         />
                       </div>
                     </TableCell>
-                    {newYears.map((year, yearIndex) => (
+                    {newYears.map((year) => (
                       <TableCell key={year} className="text-center">
                         <Input
                           type="text"

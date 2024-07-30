@@ -2,8 +2,6 @@
 import React, { useState } from 'react';
 import {
   Pagination as PaginationContainer,
-  PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,

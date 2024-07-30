@@ -15,7 +15,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  Curve,
 } from 'recharts';
 import {
   Select,
@@ -97,7 +96,6 @@ const Financials = ({
 }) => {
   const { theme } = useTheme();
   const chartRef = useRef(null);
-  const [exported, setExported] = useState(false);
   const [barWidth, setBarWidth] = useState(60);
   const [selectedLink, setSelectedLink] = useState<string>('Financial Summary');
   const [selectedMetric, setSelectedMetric] = useState<FormattedMetric | null>(

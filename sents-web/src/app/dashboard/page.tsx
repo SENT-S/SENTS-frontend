@@ -13,6 +13,7 @@ import { RxPlus } from 'react-icons/rx';
 import { FiEdit } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { MdDone } from 'react-icons/md';
+import { MdCancel } from 'react-icons/md';
 
 interface Company {
   company_country: string;
@@ -63,9 +64,7 @@ const Dashboard = () => {
     .map((item: Company) => item.list_of_companies)
     .flat();
 
-  const handleEditCompany = () => {
-    setShowEdit(false);
-  };
+  const handleEditCompany = () => {};
 
   return (
     <MainLayout>
@@ -138,17 +137,29 @@ const Dashboard = () => {
                 Add New Company <RxPlus className="ml-3" size={18} />
               </Button>
               {showEdit ? (
-                <Button
-                  className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#148C59ed9] hover:text-white"
-                  onClick={handleEditCompany}
-                >
-                  Done <MdDone className="ml-3" size={20} />
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#148C59ed9] hover:text-white"
+                    onClick={handleEditCompany}
+                    disabled={isLoading}
+                  >
+                    Done <MdDone className="ml-3" size={20} />
+                  </Button>
+                  <Button
+                    type="button"
+                    className="bg-[#EA0000] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#EA0000ed9] hover:text-white"
+                    onClick={() => {
+                      setShowEdit(false);
+                    }}
+                    disabled={isLoading}
+                  >
+                    Cancel <MdCancel className="ml-3" size={20} />
+                  </Button>
+                </div>
               ) : (
                 <Button
                   className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
                   onClick={() => setShowEdit(!showEdit)}
-                  disabled={true}
                 >
                   Edit Company <FiEdit className="ml-3" size={18} />
                 </Button>

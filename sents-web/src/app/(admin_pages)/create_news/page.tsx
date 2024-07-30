@@ -22,7 +22,7 @@ import { newsCategoryList } from '@/services/mockData/mock';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScaleLoader } from 'react-spinners';
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const [companies, setCompanies] = useState<CompanyType[]>([]);
   const [loading, setLoading] = useState(false);
@@ -80,7 +80,7 @@ const page = () => {
       );
       setCompanyList(companiesList);
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, companies]);
 
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
@@ -293,4 +293,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
