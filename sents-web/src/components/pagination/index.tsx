@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Pagination.js
 import React, { useState } from 'react';
 import {

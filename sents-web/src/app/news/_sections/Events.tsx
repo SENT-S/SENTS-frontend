@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import NewsItem from '@/components/NewsItem/NewsItem';
 import { defaultImageUrl } from '@/services/mockData/mock';

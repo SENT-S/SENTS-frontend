@@ -57,6 +57,7 @@ const Financial_section = ({
   metrics: any;
   category: any;
   countryName: string;
+  // eslint-disable-next-line no-unused-vars
   setRefresh: (value: boolean) => void;
 }) => {
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
