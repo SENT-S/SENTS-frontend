@@ -96,8 +96,13 @@ const Header = () => {
 
   const handleLogout = async () => {
     setLoading(true);
+    const response = await signOut({
+      redirect: false,
+      callbackUrl: '/login_register',
+    });
+    setLoading(false);
+    router.push(response.url);
     localStorage.clear();
-    await signOut().then(() => setLoading(false));
   };
 
   useEffect(() => {

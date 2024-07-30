@@ -20,7 +20,8 @@ interface Props {
   FormTitle: string;
   Icon?: React.ReactNode;
   onCancel?: () => void;
-  onSubmit: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onSubmit: (e: any) => void;
   className?: string;
   children?: React.ReactNode;
   loading?: boolean;

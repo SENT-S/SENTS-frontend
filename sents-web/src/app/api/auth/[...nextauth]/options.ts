@@ -54,7 +54,7 @@ export const providers = [
 export const pages = {
   signIn: '/dashboard',
   signOut: '/login_register',
-  error: '/error',
+  error: '/login_register',
 };
 
 export const secret = process.env.NEXT_AUTH_SECRET;

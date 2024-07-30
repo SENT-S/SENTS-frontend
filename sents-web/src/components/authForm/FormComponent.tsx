@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import {
   Card,
@@ -50,35 +51,14 @@ const FormComponent = ({
     try {
       if (title === 'Sign In') {
         setLoading(true);
-        const result = await signIn('credentials', {
+        await signIn('credentials', {
           ...data,
           callbackUrl: '/dashboard',
         });
-
-        setLoading(false);
-
-        if (result?.error) {
-          toast.error(result.error, {
-            style: { background: 'red', color: 'white', border: 'none' },
-            position: 'top-center',
-          });
-        } else {
-          router.push('/dashboard');
-          toast.success('Logged in successfully', {
-            style: {
-              background: 'green',
-              color: 'white',
-              border: 'none',
-            },
-            position: 'top-center',
-            duration: 5000,
-          });
-        }
       } else {
         // Register user
         setLoading(true);
         const response = await registerUser(data);
-        setLoading(false);
 
         // Check if registration was successful
         if (response?.status === 201) {
@@ -101,12 +81,13 @@ const FormComponent = ({
         }
       }
     } catch (error) {
-      setLoading(false);
       toast.error('An error occurred during the process', {
         style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
         position: 'top-center',
       });
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -10,8 +10,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { UserLinks, AdminLinks } from '@/utils/Links';
 import { ScaleLoader } from 'react-spinners';
+import { useRouter } from 'next/navigation';
 
 const SideBar = () => {
+  const router = useRouter();
   const { data: session, status } = useSession() as {
     data: CustomSession;
     status: 'loading' | 'authenticated' | 'unauthenticated';
@@ -24,9 +26,13 @@ const SideBar = () => {
 
   const handleLogout = async () => {
     setLoading(true);
-    localStorage.clear();
-    await signOut();
+    const response = await signOut({
+      redirect: false,
+      callbackUrl: '/login_register',
+    });
     setLoading(false);
+    router.push(response.url);
+    localStorage.clear();
   };
 
   return (
