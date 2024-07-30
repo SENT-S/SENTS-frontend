@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { CustomSession } from '@/utils/types';
 import { toast } from 'sonner';
 import { redirect, usePathname } from 'next/navigation';
-import { ThemeProvider as NextThemeProvider } from 'next-themes';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -57,17 +57,17 @@ const AppProvider = ({ children }: ProviderProps) => {
     setMounted(true);
   }, [session, toastShown, pathname]);
 
-  if (!mounted) return [children];
+  if (!mounted) return null;
 
   return (
-    <NextThemeProvider
+    <NextThemesProvider
       attribute="class"
       defaultTheme="light"
       enableSystem
       disableTransitionOnChange
     >
       {children}
-    </NextThemeProvider>
+    </NextThemesProvider>
   );
 };
 
