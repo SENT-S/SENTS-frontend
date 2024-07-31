@@ -21,7 +21,7 @@ interface Props {
   Icon?: React.ReactNode;
   onCancel?: () => void;
   // eslint-disable-next-line no-unused-vars
-  onSubmit: (e: any) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   className?: string;
   children?: React.ReactNode;
   loading?: boolean;
@@ -36,6 +36,11 @@ const Index = (props: Props) => {
       props.onCancel();
     }
   });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    props.onSubmit(e);
+  };
 
   return (
     <Dialog open={props.openDialog}>
@@ -54,7 +59,7 @@ const Index = (props: Props) => {
           {props.FormTitle}
         </DialogTitle>
         <div>
-          <form onSubmit={props.onSubmit}>
+          <form onSubmit={handleSubmit}>
             {props.children}
             <footer className="w-full mt-4 space-y-3">
               <Button
