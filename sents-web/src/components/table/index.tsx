@@ -29,13 +29,14 @@ const TableComponent: React.FC<TableProps> = ({
   showEdit,
 }) => {
   const [rowData, setRowData] = useState<{ [key: string]: any }>({});
+  const [showModal, setShowModal] = useState(false);
 
-  const handleEdit = (row: { [key: string]: any }) => {
-    setRowData(row);
+  const handleDelete = (row: { [key: string]: any }) => {
+    setShowModal(false);
   };
 
   const handleCancelDeleteCompany = () => {
-    console.log('Cancel delete company');
+    setShowModal(false);
   };
 
   const handleInputChange = (
@@ -77,7 +78,7 @@ const TableComponent: React.FC<TableProps> = ({
                         {showEdit ? (
                           <Input
                             value={row[column.field]}
-                            className="bg-white"
+                            className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
                             onChange={(e) => handleInputChange(e, column)}
                           />
                         ) : renderCell ? (
@@ -96,14 +97,15 @@ const TableComponent: React.FC<TableProps> = ({
                           <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-[#F96868]">
                             <RiDeleteBinLine
                               size={20}
-                              onClick={() => handleEdit(row)}
+                              onClick={() => setShowModal(true)}
                             />
                           </div>
                         }
-                        onSubmit={() => handleEdit(row)}
+                        onSubmit={() => handleDelete(row)}
                         onCancel={handleCancelDeleteCompany}
                         SubmitText="Yes"
                         CancelText="No"
+                        openDialog={showModal}
                         SubmitButtonStyle="bg-[#EA0000]"
                       />
                     ) : (

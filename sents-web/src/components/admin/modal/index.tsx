@@ -26,6 +26,7 @@ interface Props {
   children?: React.ReactNode;
   loading?: boolean;
   disabled?: boolean;
+  openDialog?: boolean;
 }
 
 const Index = (props: Props) => {
@@ -37,7 +38,7 @@ const Index = (props: Props) => {
   });
 
   return (
-    <Dialog>
+    <Dialog open={props.openDialog}>
       <DialogTrigger
         disabled={props.disabled}
         className={`${props.ButtonStyle ? props.ButtonStyle : 'bg-[#39463E] text-white dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white hover:dark:bg-[#39463ed9] hover:dark:text-white'} p-2 md:p-4 rounded-2xl flex items-center`}
