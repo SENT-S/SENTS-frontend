@@ -25,6 +25,7 @@ import News from './_sections/News';
 import Events from './_sections/Events';
 import Resources from './_sections/Resources';
 import Teams from './_sections/Teams';
+import { deleteCompanyFNews } from '@/services/apis/companies';
 
 const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
@@ -204,7 +205,6 @@ const NewsPage = () => {
                 <Button
                   className="bg-[#F5ECEC] text-[#EA0000] p-2 md:p-7 rounded-2xl hover:bg-[#f5e5e5] hover:text-[39463E]"
                   onClick={() => setShowCheckbox(true)}
-                  disabled={true}
                 >
                   Delete News
                   <RiDeleteBin6Line className="ml-3" size={18} />
