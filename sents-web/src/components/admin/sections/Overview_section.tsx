@@ -9,6 +9,7 @@ import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
 import { MdOutlineWebAsset } from 'react-icons/md';
 import { ScaleLoader } from 'react-spinners';
+import { updateCompanyDetails } from '@/services/apis/companies';
 
 const Overview_section = ({ companyData, companyID, isLoading }: any) => {
   const [loading, setLoading] = useState(false);

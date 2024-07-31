@@ -530,7 +530,10 @@ const Financial_section = ({
       />
 
       {/* Statements */}
-      <FStatements financialStatements={financialStatements} />
+      <FStatements
+        financialStatements={financialStatements}
+        companyID={companyID}
+      />
     </div>
   );
 };

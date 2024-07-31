@@ -5,8 +5,10 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 
 const FStatements = ({
   financialStatements,
+  companyID,
 }: {
   financialStatements: any[];
+  companyID: any;
 }) => {
   const getFileNameFromUrl = (url: string) => {
     if (!url) {
@@ -58,7 +60,7 @@ const FStatements = ({
       </ul>
 
       <div className="flex justify-center items-center">
-        <AddNewStatementContent />
+        <AddNewStatementContent companyID={companyID} />
       </div>
     </div>
   );

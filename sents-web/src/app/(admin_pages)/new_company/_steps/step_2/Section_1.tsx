@@ -324,7 +324,7 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
       />
 
       {/* statements */}
-      <FStatements financialStatements={[]} />
+      <FStatements financialStatements={[]} companyID={companyID} />
 
       <Button
         type="button"

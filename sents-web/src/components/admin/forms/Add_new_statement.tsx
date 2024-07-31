@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import FormModal from '../modal';
 
-const AddNewStatement = () => {
+const AddNewStatement = ({ companyID }: any) => {
   const [document, setDocument] = useState<File | null>(null);
 
   const handleFileChange = (event: any) => {
