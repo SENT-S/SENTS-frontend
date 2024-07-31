@@ -32,10 +32,27 @@ const FetchData = async (
     // Set the Authorization header for this request
     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    const res =
-      method === 'get'
-        ? await axiosInstance.get(endpoint)
-        : await axiosInstance.post(endpoint, body);
+    let res;
+    switch (method.toLowerCase()) {
+      case 'get':
+        res = await axiosInstance.get(endpoint);
+        break;
+      case 'post':
+        res = await axiosInstance.post(endpoint, body);
+        break;
+      case 'patch':
+        res = await axiosInstance.patch(endpoint, body);
+        break;
+      case 'put':
+        res = await axiosInstance.put(endpoint, body);
+        break;
+      case 'delete':
+        res = await axiosInstance.delete(endpoint);
+        break;
+      default:
+        throw new Error(`Unsupported method: ${method}`);
+    }
+
     return res.data;
   } catch (error) {
     console.error(

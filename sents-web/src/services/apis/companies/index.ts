@@ -32,3 +32,21 @@ export const getAllFinancialMetrics = () =>
 
 export const getAllFinancialDataCategories = () =>
   FetchData('/allfinancialdatacategories/', 'get');
+
+export const updateCompanyDetails = (data: any, id: any) =>
+  FetchData(`/update/company/${id}/`, 'patch', data);
+
+export const deleteCompany = (id: any) =>
+  FetchData(`/delete/company/${id}/`, 'delete');
+
+export const addCompanyDocuments = (data: any) =>
+  FetchData('/upload/companydocuments/', 'post', data);
+
+export const deleteCompanyDocument = (id: any) =>
+  FetchData(`/delete/companydocuments/${id}/`, 'delete');
+
+export const updateCompanyFNews = (data: any, id: any) =>
+  FetchData(`/update/financialnews/${id}/`, 'patch', data);
+
+export const deleteCompanyFNews = (id: any) =>
+  FetchData(`/delete/financialnews/${id}/`, 'delete');
