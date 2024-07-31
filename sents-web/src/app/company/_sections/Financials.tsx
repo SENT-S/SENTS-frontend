@@ -112,10 +112,12 @@ const Financials = ({
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
 
-  const categoryList = category.map((item: any) => ({
-    value: item.id,
-    label: item.category_name,
-  }));
+  const categoryList = Array.isArray(category)
+    ? category.map((item: any) => ({
+        value: item.id,
+        label: item.category_name,
+      }))
+    : [];
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);

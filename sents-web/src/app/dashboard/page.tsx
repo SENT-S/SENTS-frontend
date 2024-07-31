@@ -9,11 +9,6 @@ import { CustomSession } from '@/utils/types';
 import { getCompanies } from '@/services/apis/companies';
 import { Skeleton } from '@/components/ui/skeleton';
 import Pagination from '@/components/pagination';
-import { RxPlus } from 'react-icons/rx';
-import { FiEdit } from 'react-icons/fi';
-import { Button } from '@/components/ui/button';
-import { MdDone } from 'react-icons/md';
-import { MdCancel } from 'react-icons/md';
 
 interface Company {
   company_country: string;
@@ -34,7 +29,7 @@ const Dashboard = () => {
     data: CustomSession;
   };
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
-  const [showEdit, setShowEdit] = useState(false);
+
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'ADMIN';
@@ -63,8 +58,6 @@ const Dashboard = () => {
     .filter((item: Company) => item.company_country === selectedCountry)
     .map((item: Company) => item.list_of_companies)
     .flat();
-
-  const handleEditCompany = () => {};
 
   return (
     <MainLayout>
@@ -127,51 +120,12 @@ const Dashboard = () => {
               ))}
             </div>
           </div>
-          {/* Admin features */}
-          {isAdmin && (
-            <div className="flex justify-between items-center">
-              <Button
-                className="bg-[#39463E] flex items-center text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
-                onClick={() => router.push(`/new_company`)}
-              >
-                Add New Company <RxPlus className="ml-3" size={18} />
-              </Button>
-              {showEdit ? (
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#148C59ed9] hover:text-white"
-                    onClick={handleEditCompany}
-                    disabled={isLoading}
-                  >
-                    Done <MdDone className="ml-3" size={20} />
-                  </Button>
-                  <Button
-                    type="button"
-                    className="bg-[#EA0000] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#EA0000ed9] hover:text-white"
-                    onClick={() => {
-                      setShowEdit(false);
-                    }}
-                    disabled={isLoading}
-                  >
-                    Cancel <MdCancel className="ml-3" size={20} />
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
-                  onClick={() => setShowEdit(!showEdit)}
-                >
-                  Edit Company <FiEdit className="ml-3" size={18} />
-                </Button>
-              )}
-            </div>
-          )}
+
           <Pagination
             items={filteredCompanies}
             itemsPerPage={6}
             render={(currentItems) => (
               <TableComponent
-                showEdit={showEdit}
                 columns={[
                   {
                     field: 'company_name',
@@ -189,15 +143,6 @@ const Dashboard = () => {
                     width: 'w-1/3',
                   },
                 ]}
-                onRowClick={(row) => {
-                  {
-                    isAdmin
-                      ? showEdit
-                        ? null
-                        : router.push(`/edit_company/${row.id}`)
-                      : router.push(`/company/${row.id}`);
-                  }
-                }}
                 rows={currentItems}
               />
             )}

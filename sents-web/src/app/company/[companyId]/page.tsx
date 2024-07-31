@@ -42,13 +42,14 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
       if (
         response.status === 200 &&
         newsResponse.status === 200 &&
-        financialResponse.status === 200
+        financialResponse.status === 200 &&
+        categoryResponse.status === 200
       ) {
         setCompanyData(response.data);
         setNewsData(newsResponse.data);
         setFinancialData(financialResponse.data);
         setIsLoading(false);
-        setCategory(categoryResponse);
+        setCategory(categoryResponse.data);
       } else {
         console.error('Failed to fetch company', response);
       }
