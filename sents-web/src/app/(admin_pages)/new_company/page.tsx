@@ -17,10 +17,12 @@ import {
 import { useSelector, useDispatch } from '@/lib/utils';
 import Step_1 from './_steps/step_1';
 import Step_2 from './_steps/step_2';
+import { useRouter } from 'next/navigation';
 
 const steps = ['Step 1', 'Step 2'];
 
 const AddCompanyPage = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [step, setStep] = useState(1);
   const financialMetrics = useSelector<any>(
@@ -41,9 +43,12 @@ const AddCompanyPage = () => {
         <Breadcrumb className="bg-white rounded-md shadow-md p-4 dark:bg-[#39463E80]">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard" className="text-green-600">
+              <div
+                className="text-green-600 cursor-pointer"
+                onClick={() => router.push('/dashboard')}
+              >
                 Dashboard
-              </BreadcrumbLink>
+              </div>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
