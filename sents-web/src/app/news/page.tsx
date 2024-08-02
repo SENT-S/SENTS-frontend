@@ -119,7 +119,6 @@ const NewsPage = () => {
 
     // Check if newsByLink is defined
     if (!newsByLink) {
-      console.error('Invalid selected link:', selectedLink);
       return [];
     }
 
