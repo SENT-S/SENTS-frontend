@@ -17,7 +17,7 @@ const NewsItem = ({
   windowWidth: number;
   showCheckbox: boolean;
   onCheckboxChange: (id: string, checked: boolean) => void;
-  selectedIds?: string[];
+  selectedIds?: Number[];
 }) => {
   const [hovered, setHovered] = useState(false);
 

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import MainLayout from '@/layouts';
 import Image from 'next/image';
 import TableComponent from '@/components/table';
-import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/utils/types';
 import { getCompanies } from '@/services/apis/companies';
@@ -24,7 +23,6 @@ interface Company {
 }
 
 const Dashboard = () => {
-  const router = useRouter();
   const { data: session } = useSession() as {
     data: CustomSession;
   };

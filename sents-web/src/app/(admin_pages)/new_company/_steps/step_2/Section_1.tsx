@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/select';
 import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
 import FStatements from '@/components/admin/FStatements';
-import { createUpdateFinancialData } from '@/services/apis/companies';
+import { addCompanyFinancialData } from '@/services/apis/companies';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 import { useSelector } from '@/lib/utils';
@@ -148,7 +148,7 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
       setIsLoading(true);
 
       // Call the API to create/update financial data
-      const response = await createUpdateFinancialData(formData);
+      const response = await addCompanyFinancialData(formData);
 
       // Check if the request was successful
       if (response.status !== 201 && response.status !== 200) {

@@ -49,18 +49,30 @@ const FormComponent = ({
     const data = Object.fromEntries(formData.entries());
 
     try {
+      setLoading(true);
       if (title === 'Sign In') {
-        setLoading(true);
-        await signIn('credentials', {
+        const res = await signIn('credentials', {
           ...data,
-          callbackUrl: '/dashboard',
+          redirect: false,
         });
+
+        if (res?.ok) {
+          toast.success('Sign in successful, redirecting...', {
+            style: { background: 'green', color: 'white', border: 'none' },
+            duration: 5000,
+            position: 'top-center',
+          });
+          router.push('/dashboard');
+        } else {
+          toast.error(res?.error || 'Sign in failed', {
+            style: { background: 'red', color: 'white', border: 'none' },
+            duration: 5000,
+            position: 'top-center',
+          });
+        }
       } else {
-        // Register user
-        setLoading(true);
         const response = await registerUser(data);
 
-        // Check if registration was successful
         if (response?.status === 201) {
           toast.success('Registration successful, redirecting...', {
             style: { background: 'green', color: 'white', border: 'none' },
@@ -68,7 +80,6 @@ const FormComponent = ({
             position: 'top-center',
           });
 
-          // Redirect to success page after 2 seconds
           setTimeout(() => {
             router.push('/success-register');
           }, 500);

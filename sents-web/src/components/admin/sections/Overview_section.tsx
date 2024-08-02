@@ -9,31 +9,34 @@ import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
 import { MdOutlineWebAsset } from 'react-icons/md';
 import { ScaleLoader } from 'react-spinners';
+import { toast } from 'sonner';
 import { updateCompanyDetails } from '@/services/apis/companies';
 
 const Overview_section = ({ companyData, companyID, isLoading }: any) => {
   const [loading, setLoading] = useState(false);
   const [formState, setFormState] = useState({
-    about_company: '',
-    mission_statement: '',
-    vision_statement: '',
-    ceo: '',
-    number_of_employees: 0,
-    year_founded: 0,
-    website_url: '',
+    company_id: Number(companyID) || '',
+    about_company: companyData?.about_company || '',
+    mission_statement: companyData?.mission_statement || '',
+    vision_statement: companyData?.vision_statement || '',
+    ceo: companyData?.ceo || '',
+    number_of_employees: companyData?.number_of_employees || 0,
+    year_founded: companyData?.year_founded || 0,
+    website_url: companyData?.website_url || '',
   });
 
   useEffect(() => {
     setFormState({
-      about_company: companyData?.about_company,
-      mission_statement: companyData?.mission_statement,
-      vision_statement: companyData?.vision_statement,
-      ceo: companyData?.ceo,
-      number_of_employees: companyData?.number_of_employees,
-      year_founded: companyData?.year_founded,
-      website_url: companyData?.website_url,
+      company_id: Number(companyID) || '',
+      about_company: companyData?.about_company || '',
+      mission_statement: companyData?.mission_statement || '',
+      vision_statement: companyData?.vision_statement || '',
+      ceo: companyData?.ceo || '',
+      number_of_employees: companyData?.number_of_employees || 0,
+      year_founded: companyData?.year_founded || 0,
+      website_url: companyData?.website_url || '',
     });
-  }, [companyData]);
+  }, [companyData, companyID]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -44,9 +47,31 @@ const Overview_section = ({ companyData, companyID, isLoading }: any) => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formState);
+    setLoading(true);
+
+    try {
+      const response = await updateCompanyDetails([formState]);
+
+      if (response.status === 200) {
+        toast.success('Company details updated successfully', {
+          style: { background: 'green', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'top-center',
+        });
+      } else {
+        throw new Error('An error occurred, please try again');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred, please try again', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'top-center',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

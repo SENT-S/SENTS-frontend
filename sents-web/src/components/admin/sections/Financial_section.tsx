@@ -32,7 +32,10 @@ import FStatements from '@/components/admin/FStatements';
 import ModalForms from '@/components/admin/modal';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
-import { createUpdateFinancialData } from '@/services/apis/companies';
+import {
+  addCompanyFinancialData,
+  updateCompanyFinancialData,
+} from '@/services/apis/companies';
 import getCurrencySymbol from '@/hooks/getCurrencySymbol';
 import { MdCancel } from 'react-icons/md';
 
@@ -227,7 +230,7 @@ const Financial_section = ({
         });
       });
 
-      const response = await createUpdateFinancialData(formData);
+      const response = await addCompanyFinancialData(formData);
       if (response.status !== 200 && response.status !== 201) {
         throw new Error(response.message);
       }

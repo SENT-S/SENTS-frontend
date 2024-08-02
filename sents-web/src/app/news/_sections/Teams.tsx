@@ -12,7 +12,7 @@ export default function Teams({
   data: any[];
   showCheckbox: boolean;
   onCheckboxChange: (id: string, checked: boolean) => void;
-  selectedIDs: string[];
+  selectedIDs: Number[];
 }) {
   const [windowWidth, setWindowWidth] = useState(0);
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { RiArrowRightSLine, RiDeleteBinLine } from 'react-icons/ri';
 import { Input } from '@/components/ui/input';
@@ -9,6 +10,7 @@ import { MdDone, MdCancel } from 'react-icons/md';
 import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/utils/types';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { updateCompanyDetails, deleteCompany } from '@/services/apis/companies';
 
 interface TableColumn {
@@ -42,20 +44,41 @@ const TableComponent: React.FC<TableProps> = ({
   const [showEdit, setShowEdit] = useState(false);
   const [rowIdToDelete, setRowIdToDelete] = useState<string | null>(null);
   const isAdmin = session?.user?.role === 'ADMIN';
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setEditableRows(rows);
   }, [rows]);
 
-  const handleDelete = () => {
-    if (rowIdToDelete) {
-      const updatedRows = editableRows.filter((r) => r.id !== rowIdToDelete);
-      setEditableRows(updatedRows);
-      setShowModal(false);
-      setRowIdToDelete(null);
-      console.log(`Deleting row with id: ${rowIdToDelete}`);
-      // Here you would typically call an API to delete the row
-      // deleteCompany(rowIdToDelete);
+  const handleDelete = async () => {
+    if (!rowIdToDelete) return;
+
+    const updatedRows = editableRows.filter((r) => r.id !== rowIdToDelete);
+    setEditableRows(updatedRows);
+    setShowModal(false);
+    setRowIdToDelete(null);
+
+    try {
+      setLoading(true);
+      const response = await deleteCompany(rowIdToDelete);
+
+      if (response.status === 200 || response.status === 204) {
+        toast.success('Company deleted successfully', {
+          style: { background: 'green', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'top-center',
+        });
+      } else {
+        throw new Error('Failed to delete company');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to delete company', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'top-center',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,18 +101,40 @@ const TableComponent: React.FC<TableProps> = ({
     setEditableRows(updatedRows);
   };
 
-  const handleEditCompany = () => {
-    const editedRows = editableRows.filter((row) => row.isEdited);
-    const updatedRows = editedRows.map((row) => ({
-      id: row.id,
-      company_name: row.company_name,
-      stock_symbol: row.stock_symbol,
-      sector_or_industry: row.sector_or_industry,
-    }));
-    console.log(updatedRows);
-    setShowEdit(false);
-    // Here you would typically call an API to update the rows
-    // updateCompanyDetails(updatedRows);
+  const handleEditCompany = async () => {
+    try {
+      const editedRows = editableRows.filter((row) => row.isEdited);
+      const updatedRows = editedRows.map((row) => ({
+        company_id: row.id,
+        company_name: row.company_name,
+        stock_symbol: row.stock_symbol,
+        sector_or_industry: row.sector_or_industry,
+      }));
+
+      setLoading(true);
+      if (updatedRows.length > 0) {
+        const response = await updateCompanyDetails(updatedRows);
+
+        if (response.status === 200) {
+          toast.success('Company details updated successfully', {
+            style: { background: 'green', color: 'white', border: 'none' },
+            duration: 5000,
+            position: 'top-center',
+          });
+        } else {
+          throw new Error('Failed to update company details');
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update company details', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'top-center',
+      });
+    } finally {
+      setLoading(false);
+      setShowEdit(false);
+    }
   };
 
   return (
@@ -108,7 +153,13 @@ const TableComponent: React.FC<TableProps> = ({
                 className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#148C59ed9] hover:text-white"
                 onClick={handleEditCompany}
               >
-                Done <MdDone className="ml-3" size={20} />
+                {loading ? (
+                  <>Updating...</>
+                ) : (
+                  <>
+                    Done <MdDone className="ml-3" size={20} />
+                  </>
+                )}
               </Button>
               <Button
                 type="button"
@@ -213,7 +264,7 @@ const TableComponent: React.FC<TableProps> = ({
       <ModalForms
         FormTitle="Are you sure you want to delete Company?"
         ButtonStyle="p-0 m-0"
-        disabled={false}
+        disabled={loading}
         Icon={null}
         onSubmit={handleDelete}
         onCancel={handleCancelDeleteCompany}

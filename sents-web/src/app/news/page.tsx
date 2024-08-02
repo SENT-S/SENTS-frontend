@@ -25,6 +25,7 @@ import News from './_sections/News';
 import Events from './_sections/Events';
 import Resources from './_sections/Resources';
 import Teams from './_sections/Teams';
+import { toast } from 'sonner';
 import { deleteCompanyFNews } from '@/services/apis/companies';
 
 const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
@@ -48,7 +49,7 @@ const NewsPage = () => {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [showCheckbox, setShowCheckbox] = useState(false);
-  const [selectedIds, setSelectedIds] = useState([] as string[]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -140,9 +141,36 @@ const NewsPage = () => {
     setSelectedCompany(value);
   };
 
-  const handleDeleteNews = () => {
+  const handleDeleteNews = async () => {
     setShowCheckbox(false);
-    setSelectedIds([]);
+    const data = {
+      news_ids: selectedIds,
+    };
+
+    try {
+      const response = await deleteCompanyFNews(data);
+      console.log(response);
+      if (response.status === 200 || response.status === 204) {
+        toast.success('News deleted successfully', {
+          style: { background: 'green', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'top-center',
+        });
+        // Remove deleted news from newsData
+        setNewsData((prevNewsData) =>
+          prevNewsData.filter((news) => !selectedIds.includes(news.id))
+        );
+        setSelectedIds([]);
+      } else {
+        throw new Error('Failed to delete news');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred, please try again', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'top-center',
+      });
+    }
   };
 
   const handleCancelDeleteNews = () => {
@@ -156,9 +184,9 @@ const NewsPage = () => {
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedIds([...selectedIds, id]);
+      setSelectedIds([...selectedIds, Number(id)]);
     } else {
-      setSelectedIds(selectedIds.filter((item) => item !== id));
+      setSelectedIds(selectedIds.filter((newsId) => newsId !== Number(id)));
     }
   };
 
@@ -199,7 +227,7 @@ const NewsPage = () => {
                   onCancel={handleCancelDeleteNews}
                   SubmitText="Yes"
                   CancelText="No"
-                  SubmitButtonStyle="bg-[#EA0000]"
+                  SubmitButtonStyle="bg-[#EA0000] text-white hover:bg-[#EA0000]"
                 />
               ) : (
                 <Button
