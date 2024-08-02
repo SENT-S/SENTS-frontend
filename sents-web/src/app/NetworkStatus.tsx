@@ -9,10 +9,6 @@ interface NetworkStatusProps {
 const NetworkStatus: React.FC<NetworkStatusProps> = ({ children }) => {
   const isOnline = useNetwork();
 
-  useEffect(() => {
-    console.log('Network status:', isOnline ? 'Online' : 'Offline');
-  }, [isOnline]);
-
   if (!isOnline) {
     return (
       <div className="flex justify-center items-center h-screen">
