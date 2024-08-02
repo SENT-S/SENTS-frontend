@@ -3,6 +3,7 @@ import AuthProvider from '@/app/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
 import AppProvider from './AppProvider';
 import NextTopLoader from 'nextjs-toploader';
+import NetworkStatus from './NetworkStatus';
 
 export const metadata = {
   title: "Sent's",
@@ -37,7 +38,9 @@ export default function RootLayout({
         />
         <Toaster />
         <AuthProvider>
-          <AppProvider themeProps={themeProps}>{children}</AppProvider>
+          <AppProvider themeProps={themeProps}>
+            <NetworkStatus>{children}</NetworkStatus>
+          </AppProvider>
         </AuthProvider>
       </body>
     </html>
