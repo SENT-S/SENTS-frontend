@@ -1,4 +1,4 @@
-import FetchData from '@/hooks/FetchData';
+import FetchData from '@/utils/FetchData';
 
 export const getCompanies = () => FetchData('/allcompanies/', 'get');
 
@@ -42,8 +42,8 @@ export const updateCompanyDetails = (data: any) =>
 export const deleteCompany = (id: any) =>
   FetchData(`/delete/company/${id}/`, 'delete');
 
-export const addCompanyDocuments = (data: any) =>
-  FetchData('/upload/companydocuments/', 'post', data);
+export const addCompanyDocuments = (data: FormData) =>
+  FetchData('/upload/companydocuments/', 'post', data, true);
 
 export const deleteCompanyDocument = (id: any) =>
   FetchData(`/delete/companydocuments/${id}/`, 'delete');
@@ -52,4 +52,4 @@ export const updateCompanyFNews = (data: any, id: any) =>
   FetchData(`/update/financialnews/${id}/`, 'patch', data);
 
 export const deleteCompanyFNews = (data: any) =>
-  FetchData(`/delete/financialnews/`, 'delete', data);
+  FetchData(`/delete/financialnews/`, 'delete2', data);

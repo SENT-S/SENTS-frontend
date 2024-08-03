@@ -1,28 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import FormModal from '../modal';
+import { addCompanyDocuments } from '@/services/apis/companies';
+import { toast } from 'sonner';
 
-const AddNewStatement = ({ companyID }: any) => {
+const AddNewStatement = ({ companyID }: { companyID: number }) => {
   const [document, setDocument] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleFileChange = (event: any) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
     setDocument(file);
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    if (document) {
-      const data = Object.fromEntries(formData.entries());
-      console.log('Form Data:', data);
+    if (!document) {
+      toast.error('Please upload a document', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        position: 'top-center',
+        duration: 5000,
+      });
+      return;
     }
 
-    // clear form after
-    e.target.reset();
-    setDocument(null);
+    const formData = new FormData();
+    formData.append('company_document', document);
+    formData.append('company', companyID.toString());
+
+    setLoading(true);
+    try {
+      const res = await addCompanyDocuments(formData);
+      if (res.status === 201 || res.status === 200) {
+        toast.success('Document added successfully', {
+          style: { background: 'green', color: 'white', border: 'none' },
+          position: 'top-center',
+          duration: 5000,
+        });
+        // Reset form
+        setDocument(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      } else {
+        throw new Error('Failed to add document');
+      }
+    } catch (error: any) {
+      toast.error('An error occurred, please try again', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        position: 'top-center',
+        duration: 5000,
+      });
+    } finally {
+      setLoading(false);
+      setShowModal(false);
+    }
   };
 
   return (
@@ -30,21 +66,20 @@ const AddNewStatement = ({ companyID }: any) => {
       ButtonText="Add New Statement"
       FormTitle="Add a New Statement"
       onSubmit={handleSubmit}
+      loading={loading}
+      openDialog={showModal}
+      setDialog={setShowModal}
       ButtonStyle="bg-[#39463E] text-white p-4 rounded-2xl hover:bg-[#39463ece]"
+      formProps={{ encType: 'multipart/form-data' }}
     >
       <div className="space-y-3">
-        <Input
-          type="text"
-          name="document_name"
-          placeholder="Enter Document Name"
-          className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-        />
         <div className="flex items-center rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-4 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white">
           <Input
             type="file"
-            name="document"
+            name="company_document"
             accept=".pdf,.xlsx,.xls,.doc,.docx"
             id="fileUpload"
+            ref={fileInputRef}
             className="w-full border-none hidden"
             onChange={handleFileChange}
           />

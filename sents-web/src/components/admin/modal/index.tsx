@@ -27,9 +27,12 @@ interface Props {
   loading?: boolean;
   disabled?: boolean;
   openDialog?: boolean;
+  // eslint-disable-next-line no-unused-vars
+  setDialog?: (value: boolean) => void;
+  formProps?: React.FormHTMLAttributes<HTMLFormElement>;
 }
 
-const Index = (props: Props) => {
+const FormModal = (props: Props) => {
   const ref = useRef(null);
   useOutsideClick(ref, () => {
     if (props.onCancel) {
@@ -43,10 +46,14 @@ const Index = (props: Props) => {
   };
 
   return (
-    <Dialog open={props.openDialog}>
+    <Dialog
+      open={props.openDialog}
+      onOpenChange={(open) => props.setDialog?.(open)}
+    >
       <DialogTrigger
         disabled={props.disabled}
-        className={`${props.ButtonStyle ? props.ButtonStyle : 'bg-[#39463E] text-white dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white hover:dark:bg-[#39463ed9] hover:dark:text-white'} p-2 md:p-4 rounded-2xl flex items-center`}
+        onClick={() => props.setDialog?.(true)}
+        className={`${props.ButtonStyle || 'bg-[#39463E] text-white dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white hover:dark:bg-[#39463ed9] hover:dark:text-white'} p-2 md:p-4 rounded-2xl flex items-center`}
       >
         {props.ButtonText}
         {props.Icon}
@@ -59,12 +66,18 @@ const Index = (props: Props) => {
           {props.FormTitle}
         </DialogTitle>
         <div>
-          <form onSubmit={handleSubmit}>
+          <form
+            onSubmit={handleSubmit}
+            encType={
+              props.formProps?.encType || 'application/x-www-form-urlencoded'
+            }
+            {...props.formProps}
+          >
             {props.children}
             <footer className="w-full mt-4 space-y-3">
               <Button
                 type="submit"
-                className={`${props.SubmitButtonStyle ? props.SubmitButtonStyle : 'bg-[#148C59] hover:bg-[#148c5ad7]'} text-white w-full p-3 rounded-2xl flex justify-center items-center`}
+                className={`${props.SubmitButtonStyle || 'bg-[#148C59] hover:bg-[#148c5ad7]'} text-white w-full p-3 rounded-2xl flex justify-center items-center`}
                 disabled={props.loading}
               >
                 {props.loading ? (
@@ -75,7 +88,7 @@ const Index = (props: Props) => {
               </Button>
               {props.CancelText && (
                 <Button
-                  className={`${props.CancelButtonStyle ? props.CancelButtonStyle : 'bg-[#F5ECEC] hover:bg-[#f5ececd8] text-[#EA0000]'} w-full p-3 rounded-2xl flex justify-center items-center`}
+                  className={`${props.CancelButtonStyle || 'bg-[#F5ECEC] hover:bg-[#f5ececd8] text-[#EA0000]'} w-full p-3 rounded-2xl flex justify-center items-center`}
                   type="button"
                   onClick={props.onCancel}
                 >
@@ -90,4 +103,4 @@ const Index = (props: Props) => {
   );
 };
 
-export default Index;
+export default FormModal;

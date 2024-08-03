@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ModalForms from '@/components/admin/modal';
 import AddNewStatementContent from '@/components/admin/forms/Add_new_statement';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -10,6 +10,7 @@ const FStatements = ({
   financialStatements: any[];
   companyID: any;
 }) => {
+  const [open, setOpen] = useState(false);
   const getFileNameFromUrl = (url: string) => {
     if (!url) {
       return '';
@@ -18,6 +19,14 @@ const FStatements = ({
     const pathname = urlObject.pathname;
     const parts = pathname.split('/');
     return parts[parts.length - 1];
+  };
+
+  const handleDelete = (id: any) => {
+    console.log(id);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
   };
   return (
     <div>
@@ -36,6 +45,8 @@ const FStatements = ({
               <ModalForms
                 FormTitle="Are you sure you want to delete document"
                 ButtonStyle="p-0 m-0"
+                openDialog={open}
+                setDialog={setOpen}
                 Icon={
                   <div className="rounded-full flex items-center p-2 bg-[#F5ECEC]">
                     <RiDeleteBin6Line
@@ -44,11 +55,11 @@ const FStatements = ({
                     />
                   </div>
                 }
-                onSubmit={() => null}
-                onCancel={() => null}
+                onSubmit={() => handleDelete(statement)}
+                onCancel={() => handleCancel()}
                 SubmitText="Yes"
                 CancelText="No"
-                SubmitButtonStyle="bg-[#EA0000]"
+                SubmitButtonStyle="bg-[#EA0000] hover:bg-[#EA0000] text-white w-1/2 p-3 rounded-2xl flex justify-center items-center"
               />
             </li>
           ))

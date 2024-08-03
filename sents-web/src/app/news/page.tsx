@@ -32,9 +32,7 @@ const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
 const NewsPage = () => {
   const router = useRouter();
-  const { data: session } = useSession() as {
-    data: CustomSession;
-  };
+  const { data: session } = useSession() as { data: CustomSession };
   const [newsData, setNewsData] = useState<any[]>([]);
   const [selectedLink, setSelectedLink] = useState<any>(Categories[0]);
   const [isLoading, setIsLoading] = useState(true);
@@ -83,24 +81,21 @@ const NewsPage = () => {
   }, []);
 
   useEffect(() => {
-    // Generate country list from companies
     const countries = companies.map((company: any) => ({
       label: company.company_country,
       value: company.company_country,
     }));
     setCountryList(countries);
 
-    // Set selected country to the first country in the list
     if (countries.length > 0) {
       setSelectedCountry((prevCountry) => prevCountry || countries[0].label);
     }
   }, [companies]);
 
   useEffect(() => {
-    // Filter companies by selected country
-    const filteredCompanies = companies.filter(
+    const filteredCompanies = companies.find(
       (company) => company.company_country === selectedCountry
-    )[0];
+    );
     if (filteredCompanies) {
       const companiesList = filteredCompanies.list_of_companies.map(
         (company: any) => ({
@@ -112,17 +107,9 @@ const NewsPage = () => {
     }
   }, [selectedCountry, companies]);
 
-  // Get the news data for the selected link
   const selectedNewsData = useMemo(() => {
-    // Get news data by selected link
-    const newsByLink = newsData[selectedLink];
+    const newsByLink = newsData[selectedLink] || [];
 
-    // Check if newsByLink is defined
-    if (!newsByLink) {
-      return [];
-    }
-
-    // Filter news data by selected company
     if (selectedCompany) {
       return newsByLink.filter(
         (news: any) => news.company_name === selectedCompany
@@ -148,18 +135,12 @@ const NewsPage = () => {
 
     try {
       const response = await deleteCompanyFNews(data);
-      console.log(response);
       if (response.status === 200 || response.status === 204) {
         toast.success('News deleted successfully', {
           style: { background: 'green', color: 'white', border: 'none' },
           duration: 5000,
           position: 'top-center',
         });
-        // Remove deleted news from newsData
-        setNewsData((prevNewsData) =>
-          prevNewsData.filter((news) => !selectedIds.includes(news.id))
-        );
-        setSelectedIds([]);
       } else {
         throw new Error('Failed to delete news');
       }

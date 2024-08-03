@@ -29,10 +29,10 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [news_image, setNewsImage] = useState<File | null>(null);
   const [countryList, setCountryList] = useState<
-    { label: string; value: string }[]
+    { label: string; value: any }[]
   >([]);
   const [companyList, setCompanyList] = useState<
-    { label: string; value: string }[]
+    { label: string; value: any }[]
   >([]);
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
@@ -40,12 +40,16 @@ const Page = () => {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response = await getCompanies();
-      if (response.status === 200) {
-        setCompanies(response.data);
-        setIsLoading(false);
-      } else {
-        console.error('Failed to fetch companies', response);
+      try {
+        const response = await getCompanies();
+        if (response.status === 200) {
+          setCompanies(response.data);
+          setIsLoading(false);
+        } else {
+          console.error('Failed to fetch companies', response);
+        }
+      } catch (error) {
+        console.error('Error fetching companies:', error);
       }
     };
 
@@ -53,27 +57,24 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    // Generate country list from companies
-    const countries = companies.map((company: any) => ({
+    const countries = companies.map((company) => ({
       label: company.company_country,
       value: company.company_country,
     }));
     setCountryList(countries);
 
-    // Set selected country to the first country in the list
     if (countries.length > 0) {
       setSelectedCountry((prevCountry) => prevCountry || countries[0].label);
     }
   }, [companies]);
 
   useEffect(() => {
-    // Filter companies by selected country
     const filteredCompanies = companies.filter(
       (company) => company.company_country === selectedCountry
     )[0];
     if (filteredCompanies) {
       const companiesList = filteredCompanies.list_of_companies.map(
-        (company: any) => ({
+        (company) => ({
           label: company.company_name,
           value: company.id,
         })
@@ -82,15 +83,14 @@ const Page = () => {
     }
   }, [selectedCountry, companies]);
 
-  const handleFileChange = (event: any) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
     setNewsImage(file);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Extract form data at the beginning
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
@@ -104,7 +104,6 @@ const Page = () => {
     setLoading(true);
 
     try {
-      // Attempt to add the financial news
       const response = await addFinancialNews(data);
 
       if (response.status === 201) {
@@ -133,7 +132,7 @@ const Page = () => {
         throw new Error(errorMessage);
       }
     } catch (error: any) {
-      toast.error(error, {
+      toast.error(error.message || 'An error occurred', {
         style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
         position: 'top-center',

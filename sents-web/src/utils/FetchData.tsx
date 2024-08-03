@@ -4,19 +4,15 @@ import { getSession } from 'next-auth/react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// Create an Axios instance outside the function to reuse it across different function calls
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
-// Generic function to fetch data
 const FetchData = async (
   endpoint: string,
   method: string = 'get',
-  body?: any
+  body?: any,
+  isFormData: boolean = false
 ) => {
   try {
     const session = await getSession();
@@ -31,6 +27,15 @@ const FetchData = async (
 
     // Set the Authorization header for this request
     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    // Set the correct Content-Type for FormData
+    if (isFormData) {
+      axiosInstance.defaults.headers.common['Content-Type'] =
+        'multipart/form-data';
+    } else {
+      axiosInstance.defaults.headers.common['Content-Type'] =
+        'application/json';
+    }
 
     let res;
     switch (method.toLowerCase()) {
@@ -48,6 +53,9 @@ const FetchData = async (
         break;
       case 'delete':
         res = await axiosInstance.delete(endpoint);
+        break;
+      case 'delete2':
+        res = await axiosInstance.delete(endpoint, { data: body });
         break;
       default:
         throw new Error(`Unsupported method: ${method}`);
