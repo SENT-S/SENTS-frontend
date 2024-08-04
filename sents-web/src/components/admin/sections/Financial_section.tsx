@@ -193,18 +193,16 @@ const Financial_section = ({
     }
   };
 
-  const handleFormSubmit = async (e: any) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      setIsLoading(true);
+      const updatedRows = [] as any[];
+      const newRows = [] as any[];
 
-      const changedRows = rows.filter((row, index) => {
-        return JSON.stringify(row) !== JSON.stringify(initialRows[index]);
-      });
-
-      const formData = changedRows.flatMap((row) => {
-        const { metrics, category, ...years } = row;
+      rows.forEach((row) => {
+        const { id, metrics, category, ...years } = row;
         const metricId = metricsList.find(
           (item: any) =>
             item.label === metrics || item.value === Number(metrics)
@@ -216,42 +214,52 @@ const Financial_section = ({
               (item: any) => item.value
             );
 
-        return Object.entries(years).map(([year, value]) => {
-          let data: any = {
-            company: Number(companyID),
-            year: Number('20' + year.slice(-2)),
-            category: selectedCategoryId,
-            value: String(value),
-          };
+        Object.entries(years).forEach(([year, value]) => {
+          if (value !== '') {
+            const data = {
+              company: Number(companyID),
+              year: Number('20' + year.slice(-2)),
+              category: selectedCategoryId,
+              value: String(value),
+              metric: metricId,
+            };
 
-          if (metricId) data.metric = metricId;
+            const initialRow = TableData[selectedLink]?.find(
+              (r: Row) => r.metrics === metrics
+            );
+            const initialValue = initialRow ? initialRow[year] : undefined;
 
-          return data;
+            if (initialValue === undefined || initialValue === '') {
+              newRows.push(data);
+            } else if (value !== initialValue) {
+              updatedRows.push(data);
+            }
+          }
         });
       });
 
-      const response = await addCompanyFinancialData(formData);
-      if (response.status !== 200 && response.status !== 201) {
-        throw new Error(response.message);
+      console.log('updatedRows', updatedRows);
+      console.log('newRows', newRows);
+
+      if (updatedRows.length > 0) {
+        const updateResponse = await updateCompanyFinancialData(updatedRows);
+        if (updateResponse.status !== 200 && updateResponse.status !== 201) {
+          throw new Error(updateResponse.message || updateResponse.error);
+        }
+      }
+
+      if (newRows.length > 0) {
+        const addResponse = await addCompanyFinancialData(newRows);
+        if (addResponse.status !== 200 && addResponse.status !== 201) {
+          throw new Error(addResponse.message || addResponse.error);
+        }
       }
 
       setRefresh(true);
-      setShowEdit(!showEdit);
-      toast.success(response.message, {
-        style: {
-          background: 'green',
-          color: 'white',
-          border: 'none',
-        },
-        position: 'top-center',
-        duration: 5000,
-      });
+      setShowEdit(false);
+      toast.success('Financial data updated successfully');
     } catch (error: any) {
-      toast.error(error.message, {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
-        position: 'top-center',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
