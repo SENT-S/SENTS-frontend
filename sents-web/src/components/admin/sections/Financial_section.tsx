@@ -244,9 +244,6 @@ const Financial_section = ({
         });
       });
 
-      console.log('updatedRows', updatedRows);
-      console.log('newRows', newRows);
-
       if (updatedRows.length > 0) {
         const updateResponse = await updateCompanyFinancialData(updatedRows);
         if (updateResponse.status !== 200 && updateResponse.status !== 201) {
@@ -263,9 +260,17 @@ const Financial_section = ({
 
       setRefresh(true);
       setShowEdit(false);
-      toast.success('Financial data updated successfully');
+      toast.success('Financial data updated successfully', {
+        style: { background: 'green', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'bottom-right',
+      });
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message, {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'bottom-right',
+      });
     } finally {
       setIsLoading(false);
     }
