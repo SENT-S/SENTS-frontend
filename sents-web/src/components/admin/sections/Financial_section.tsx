@@ -214,26 +214,32 @@ const Financial_section = ({
               (item: any) => item.value
             );
 
+        const initialRow = TableData[selectedLink]?.find(
+          (r: Row) => r.metrics === metrics
+        );
+
         Object.entries(years).forEach(([year, value]) => {
-          if (value !== '') {
-            const data = {
-              company: Number(companyID),
-              year: Number('20' + year.slice(-2)),
-              category: selectedCategoryId,
-              value: String(value),
-              metric: metricId,
-            };
+          const initialValue = initialRow ? initialRow[year] : undefined;
 
-            const initialRow = TableData[selectedLink]?.find(
-              (r: Row) => r.metrics === metrics
-            );
-            const initialValue = initialRow ? initialRow[year] : undefined;
+          // Process the value, treating empty string as null
+          const processedValue = value === '' ? '' : String(value);
 
-            if (initialValue === undefined || initialValue === '') {
-              newRows.push(data);
-            } else if (value !== initialValue) {
+          const data = {
+            company: Number(companyID),
+            year: Number('20' + year.slice(-2)),
+            category: selectedCategoryId,
+            value: processedValue,
+            metric: metricId,
+          };
+
+          if (initialValue !== undefined) {
+            // Existing data: update if changed (including cleared cells)
+            if (processedValue !== initialValue) {
               updatedRows.push(data);
             }
+          } else if (processedValue !== null) {
+            // New data: only add if not null
+            newRows.push(data);
           }
         });
       });
