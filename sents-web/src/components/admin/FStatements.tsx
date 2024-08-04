@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ModalForms from '@/components/admin/modal';
 import AddNewStatementContent from '@/components/admin/forms/Add_new_statement';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { deleteCompanyDocument } from '@/services/apis/companies';
+import { toast } from 'sonner';
 
 const FStatements = ({
   financialStatements,
@@ -10,7 +12,8 @@ const FStatements = ({
   financialStatements: any[];
   companyID: any;
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<{ [key: number]: boolean }>({});
+
   const getFileNameFromUrl = (url: string) => {
     if (!url) {
       return '';
@@ -21,13 +24,41 @@ const FStatements = ({
     return parts[parts.length - 1];
   };
 
-  const handleDelete = (id: any) => {
-    console.log(id);
+  const handleDelete = async (id: any, index: number) => {
+    try {
+      const response = await deleteCompanyDocument(id);
+      if (response.status === 200) {
+        toast.success('Document deleted successfully', {
+          style: { background: 'green', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'bottom-right',
+        });
+        setOpen((prev) => ({ ...prev, [index]: false }));
+      } else {
+        toast.error('Failed to delete document', {
+          style: { background: 'red', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'bottom-right',
+        });
+      }
+    } catch (error) {
+      toast.error('An error occurred while deleting the document', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'bottom-right',
+      });
+      console.log(error);
+    }
   };
 
-  const handleCancel = () => {
-    setOpen(false);
+  const handleCancel = (index: number) => {
+    setOpen((prev) => ({ ...prev, [index]: false }));
   };
+
+  const handleOpen = (index: number) => {
+    setOpen((prev) => ({ ...prev, [index]: true }));
+  };
+
   return (
     <div>
       <h2 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
@@ -41,22 +72,23 @@ const FStatements = ({
               key={index}
               className={`flex items-center justify-between p-2 ${index !== financialStatements.length - 1 ? 'border-b border-[#E6EEEA] dark:border-[#39463E]' : ''}`}
             >
-              <span>{getFileNameFromUrl(statement)}</span>
+              <span>{getFileNameFromUrl(statement.docurl)}</span>
               <ModalForms
                 FormTitle="Are you sure you want to delete document"
                 ButtonStyle="p-0 m-0"
-                openDialog={open}
-                setDialog={setOpen}
+                openDialog={open[index] || false}
+                setDialog={() => handleOpen(index)}
                 Icon={
                   <div className="rounded-full flex items-center p-2 bg-[#F5ECEC]">
                     <RiDeleteBin6Line
                       className="text-[#EA0000] cursor-pointer"
                       size={20}
+                      onClick={() => handleOpen(index)}
                     />
                   </div>
                 }
-                onSubmit={() => handleDelete(statement)}
-                onCancel={() => handleCancel()}
+                onSubmit={() => handleDelete(statement.docid, index)}
+                onCancel={() => handleCancel(index)}
                 SubmitText="Yes"
                 CancelText="No"
                 SubmitButtonStyle="bg-[#EA0000] hover:bg-[#EA0000] text-white w-1/2 p-3 rounded-2xl flex justify-center items-center"
