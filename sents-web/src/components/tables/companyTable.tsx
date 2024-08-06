@@ -1,17 +1,18 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
-import { RiArrowRightSLine, RiDeleteBinLine } from 'react-icons/ri';
-import { Input } from '@/components/ui/input';
-import ModalForms from '@/components/admin/modal';
-import { RxPlus } from 'react-icons/rx';
-import { FiEdit } from 'react-icons/fi';
-import { Button } from '@/components/ui/button';
-import { MdDone, MdCancel } from 'react-icons/md';
-import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/utils/types';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import React, { useState, useEffect } from 'react';
+import { FiEdit } from 'react-icons/fi';
+import { MdDone, MdCancel } from 'react-icons/md';
+import { RiArrowRightSLine, RiDeleteBinLine } from 'react-icons/ri';
+import { RxPlus } from 'react-icons/rx';
 import { toast } from 'sonner';
+
+import ModalForms from '@/components/admin/modal';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { updateCompanyDetails, deleteCompany } from '@/services/apis/companies';
+import { CustomSession } from '@/utils/types';
 
 interface TableColumn {
   field: string;
@@ -26,7 +27,7 @@ interface TableProps {
   renderCell?: (row: { [key: string]: any }, column: TableColumn) => JSX.Element;
 }
 
-const TableComponent: React.FC<TableProps> = ({ columns, rows, onRowClick, renderCell }) => {
+const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderCell }) => {
   const router = useRouter();
   const { data: session } = useSession() as { data: CustomSession };
   const [editableRows, setEditableRows] = useState<{ [key: string]: any }[]>([]);
@@ -192,14 +193,29 @@ const TableComponent: React.FC<TableProps> = ({ columns, rows, onRowClick, rende
                   editableRows.map((row, rowIndex) => (
                     <div
                       key={rowIndex}
+                      role="button"
+                      tabIndex={0}
                       className="flex items-center bg-gray-50 dark:bg-[#39463E] rounded-2xl mt-4 cursor-pointer hover:bg-gray-100"
-                      onClick={() =>
-                        isAdmin
-                          ? showEdit
-                            ? null
-                            : router.push(`/edit_company/${row.id}`)
-                          : router.push(`/company/${row.id}`)
-                      }
+                      onClick={() => {
+                        if (isAdmin) {
+                          if (!showEdit) {
+                            router.push(`/edit_company/${row.id}`);
+                          }
+                        } else {
+                          router.push(`/company/${row.id}`);
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          if (isAdmin) {
+                            if (!showEdit) {
+                              router.push(`/edit_company/${row.id}`);
+                            }
+                          } else {
+                            router.push(`/company/${row.id}`);
+                          }
+                        }
+                      }}
                     >
                       {columns.map((column: TableColumn, cellIndex: number) => (
                         <div
@@ -263,4 +279,4 @@ const TableComponent: React.FC<TableProps> = ({ columns, rows, onRowClick, rende
   );
 };
 
-export default TableComponent;
+export default CompanyTable;

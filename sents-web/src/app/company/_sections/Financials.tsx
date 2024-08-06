@@ -17,8 +17,8 @@ import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
 import SubNav from "@/components/admin/Navs/SubNav";
-import Pagination from "@/components/pagination";
 import { Button } from "@/components/ui/button";
+import CustomPagination from "@/components/ui/customPagination";
 import {
   Select,
   SelectContent,
@@ -293,7 +293,7 @@ const Financials = ({
               </Button>
             </div>
           )}
-          <Pagination
+          <CustomPagination
             items={selectedData}
             itemsPerPage={10}
             render={(currentItems) => (

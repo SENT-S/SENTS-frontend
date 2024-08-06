@@ -1,14 +1,23 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import { CiSearch } from 'react-icons/ci';
+import Fuse from 'fuse.js';
 import Link from 'next/link';
-import { IoIosMenu } from 'react-icons/io';
-import { MdOutlineLightMode } from 'react-icons/md';
-import { BsFillMoonStarsFill } from 'react-icons/bs';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { IoClose } from 'react-icons/io5';
+import React, { useState, useEffect, useRef } from 'react';
+import { BsFillMoonStarsFill } from 'react-icons/bs';
+import { CiSearch } from 'react-icons/ci';
+import { IoIosMenu } from 'react-icons/io';
 import { IoIosLogOut } from 'react-icons/io';
+import { IoMdClose } from 'react-icons/io';
+import { IoClose } from 'react-icons/io5';
+import { MdOutlineLightMode } from 'react-icons/md';
+import { ScaleLoader } from 'react-spinners';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   Drawer,
   DrawerClose,
@@ -16,19 +25,11 @@ import {
   DrawerHeader,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
-import { getCompanies } from '@/services/apis/companies';
-import Fuse from 'fuse.js';
-import { useRouter } from 'next/navigation';
-import { CustomSession } from '@/utils/types';
 import useOutsideClick from '@/hooks/useOutsideClick';
+import { getCompanies } from '@/services/apis/companies';
 import { UserLinks, AdminLinks } from '@/utils/Links';
-import { Button } from '@/components/ui/button';
-import { IoMdClose } from 'react-icons/io';
-import { ScaleLoader } from 'react-spinners';
+import { CustomSession } from '@/utils/types';
 
 // Define the type for a company
 type Company = {
@@ -160,9 +161,17 @@ const Header = () => {
                   >
                     {results.map((item, index) => (
                       <div
+                        role="button"
+                        tabIndex={0}
                         onClick={() => {
                           router.push(`/company/${item.id}`);
                           setResults([]);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            router.push(`/company/${item.id}`);
+                            setResults([]);
+                          }
                         }}
                         key={index}
                         className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-500"

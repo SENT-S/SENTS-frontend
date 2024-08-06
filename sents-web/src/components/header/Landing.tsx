@@ -1,11 +1,12 @@
-import React from 'react';
-import { TfiWorld } from 'react-icons/tfi';
+import Link from 'next/link';
 import { useTheme } from 'next-themes';
+import React from 'react';
 import { BsFillMoonStarsFill } from 'react-icons/bs';
 import { MdOutlineKeyboardArrowDown, MdOutlineLightMode } from 'react-icons/md';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { TfiWorld } from 'react-icons/tfi';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const SkeletonComponent = ({ height, width }: { height: string; width: string }) => (

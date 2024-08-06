@@ -14,8 +14,8 @@ import TopNews from "./_sections/TopNews";
 
 import ModalForms from "@/components/admin/modal";
 import SubNav from "@/components/admin/Navs/SubNav";
-import Pagination from "@/components/pagination";
 import { Button } from "@/components/ui/button";
+import CustomPagination from "@/components/ui/customPagination";
 import {
   Select,
   SelectContent,
@@ -288,7 +288,7 @@ const NewsPage = () => {
             />
           </div>
 
-          <Pagination
+          <CustomPagination
             items={selectedNewsData}
             itemsPerPage={4}
             render={(currentItems) => (

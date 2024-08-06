@@ -1,32 +1,25 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import React, { useState, useCallback, useEffect } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import React, { useState, useCallback, useEffect } from 'react';
 
-import SubNav from "@/components/admin/Navs/SubNav";
-import Financial_section from "@/components/admin/sections/Financial_section";
-import News_section from "@/components/admin/sections/News_section";
-import Overview_section from "@/components/admin/sections/Overview_section";
-import BackButton from "@/components/backButton";
-import { Skeleton } from "@/components/ui/skeleton";
-import MainLayout from "@/layouts";
-import {
-  fetchMetrics,
-  fetchCategories,
-} from "@/lib/ReduxSlices/metric_category";
-import { useSelector, useDispatch } from "@/lib/utils";
-import {
-  getCompany,
-  getCompanyNews,
-  getCompanyFinancials,
-} from "@/services/apis/companies";
-import { CustomSession } from "@/utils/types";
+import SubNav from '@/components/admin/Navs/SubNav';
+import Financial_section from '@/components/admin/sections/Financial_section';
+import News_section from '@/components/admin/sections/News_section';
+import Overview_section from '@/components/admin/sections/Overview_section';
+import CustomBackButton from '@/components/ui/customBackButton';
+import { Skeleton } from '@/components/ui/skeleton';
+import MainLayout from '@/layouts';
+import { fetchMetrics, fetchCategories } from '@/lib/ReduxSlices/metric_category';
+import { useSelector, useDispatch } from '@/lib/utils';
+import { getCompany, getCompanyNews, getCompanyFinancials } from '@/services/apis/companies';
+import { CustomSession } from '@/utils/types';
 
 interface CompanyDetailsProps {
   params: { companyId: string };
 }
 
-const links = ["Overview", "Financials", "News"];
+const links = ['Overview', 'Financials', 'News'];
 
 const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const router = useRouter();
@@ -41,14 +34,10 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const [financialData, setFinancialData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [financialStatements, setFinancialStatements] = useState<any>([]);
-  const [countryName, setCountryName] = useState<string>("");
+  const [countryName, setCountryName] = useState<string>('');
   const [refresh, setRefresh] = useState<boolean>(false);
-  const financialMetrics = useSelector<any>(
-    (state) => state.metricCategory.metricList,
-  );
-  const financialDataCategories = useSelector<any>(
-    (state) => state.metricCategory.categoryList,
-  );
+  const financialMetrics = useSelector<any>((state) => state.metricCategory.metricList);
+  const financialDataCategories = useSelector<any>((state) => state.metricCategory.categoryList);
 
   const fetchCompanies = useCallback(async () => {
     setIsLoading(true);
@@ -58,12 +47,8 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       const newsData = await getCompanyNews(companyId);
       const financialData = await getCompanyFinancials(companyId);
 
-      if (
-        companyData.status !== 200 ||
-        newsData.status !== 200 ||
-        financialData.status !== 200
-      ) {
-        throw new Error("Failed to fetch data");
+      if (companyData.status !== 200 || newsData.status !== 200 || financialData.status !== 200) {
+        throw new Error('Failed to fetch data');
       }
 
       setCountryName(companyData.data.company_details.company_country);
@@ -72,7 +57,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
 
       setFinancialData(financialData);
     } catch (error) {
-      console.error("Failed to fetch company", error);
+      console.error('Failed to fetch company', error);
     } finally {
       setIsLoading(false);
       if (refresh) {
@@ -92,7 +77,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
 
   const renderSection = () => {
     switch (selectedLink) {
-      case "Overview":
+      case 'Overview':
         return (
           <Overview_section
             isLoading={isLoading}
@@ -100,7 +85,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
             companyID={params.companyId}
           />
         );
-      case "Financials":
+      case 'Financials':
         return (
           <Financial_section
             companyID={params.companyId}
@@ -112,7 +97,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
             setRefresh={setRefresh}
           />
         );
-      case "News":
+      case 'News':
         return <News_section companyID={params.companyId} />;
       default:
         return null;
@@ -121,7 +106,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
 
   return (
     <MainLayout>
-      {isLoading && status === "authenticated" ? (
+      {isLoading && status === 'authenticated' ? (
         Array.from({ length: 5 }).map((_, index) => (
           <Skeleton
             key={index}
@@ -131,14 +116,10 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       ) : (
         <div className="mt-4">
           <div className="flex items-center justify-between">
-            <BackButton onClick={() => router.back()} customClass="mb-4" />
+            <CustomBackButton onClick={() => router.back()} customClass="mb-4" />
           </div>
           <div className="space-y-8">
-            <SubNav
-              links={links}
-              selectedLink={selectedLink}
-              setSelectedLink={setSelectedLink}
-            />
+            <SubNav links={links} selectedLink={selectedLink} setSelectedLink={setSelectedLink} />
             <div className="overflow-hidden">{renderSection()}</div>
           </div>
         </div>
@@ -147,6 +128,6 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   );
 });
 
-EditPage.displayName = "EditPage";
+EditPage.displayName = 'EditPage';
 
 export default EditPage;

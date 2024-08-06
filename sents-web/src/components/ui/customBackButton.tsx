@@ -1,5 +1,6 @@
 import React from 'react';
 import { IoArrowBack } from 'react-icons/io5';
+
 import { Button } from '@/components/ui/button';
 
 type BackButtonProps = {
@@ -7,7 +8,7 @@ type BackButtonProps = {
   customClass?: string;
 };
 
-const BackButton: React.FC<BackButtonProps> = ({ onClick, customClass }) => {
+const CustomBackButton = ({ onClick, customClass }: BackButtonProps) => {
   return (
     <Button
       variant="outline"
@@ -20,4 +21,4 @@ const BackButton: React.FC<BackButtonProps> = ({ onClick, customClass }) => {
   );
 };
 
-export default BackButton;
+export default CustomBackButton;

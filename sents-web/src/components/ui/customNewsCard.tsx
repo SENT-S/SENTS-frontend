@@ -1,8 +1,17 @@
-/* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
 import Image from 'next/image';
+import React, { useState } from 'react';
 
-const NewsItem = ({
+interface CustomNewsCardProps {
+  label: string;
+  showCheckbox: boolean;
+  imgURL: string;
+  newsItem: any;
+  windowWidth: number;
+  onCheckboxChange: (id: string, checked: boolean) => void;
+  selectedIds?: number[];
+}
+
+const CustomNewsCard = ({
   label,
   showCheckbox,
   imgURL,
@@ -10,20 +19,14 @@ const NewsItem = ({
   windowWidth,
   onCheckboxChange,
   selectedIds,
-}: {
-  label: string;
-  imgURL: string;
-  newsItem: any;
-  windowWidth: number;
-  showCheckbox: boolean;
-  onCheckboxChange: (id: string, checked: boolean) => void;
-  selectedIds?: Number[];
-}) => {
+}: CustomNewsCardProps) => {
   const [hovered, setHovered] = useState(false);
 
   return (
     <div className="flex flex-row">
       <div
+        role="button"
+        tabIndex={0}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         key={newsItem.id}
@@ -31,12 +34,17 @@ const NewsItem = ({
         onClick={() => {
           window.open(newsItem.link_to_news_page, '_blank');
         }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            window.open(newsItem.link_to_news_page, '_blank');
+          }
+        }}
       >
         <div className="w-64 h-40 relative">
           <Image
             src={imgURL}
             alt={newsItem?.news_source}
-            className="w-full  h-full object-cover rounded-bl-2xl rounded-tl-2xl"
+            className="w-full h-full object-cover rounded-bl-2xl rounded-tl-2xl"
             fill={true}
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, 50vw"
           />
@@ -62,6 +70,7 @@ const NewsItem = ({
           {newsItem?.news_source}
         </span>
       </div>
+
       {showCheckbox && (
         <input
           type="checkbox"
@@ -75,4 +84,4 @@ const NewsItem = ({
   );
 };
 
-export default NewsItem;
+export default CustomNewsCard;

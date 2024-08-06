@@ -1,9 +1,9 @@
-"use client";
-import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 
-import Step_1 from "./_steps/step_1";
-import Step_2 from "./_steps/step_2";
+import Step_1 from './_steps/step_1';
+import Step_2 from './_steps/step_2';
 
 import {
   Breadcrumb,
@@ -11,27 +11,20 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import Stepper from "@/components/ui/Stepper";
-import MainLayout from "@/layouts";
-import {
-  fetchMetrics,
-  fetchCategories,
-} from "@/lib/ReduxSlices/metric_category";
-import { useSelector, useDispatch } from "@/lib/utils";
+} from '@/components/ui/breadcrumb';
+import Stepper from '@/components/ui/Stepper';
+import MainLayout from '@/layouts';
+import { fetchMetrics, fetchCategories } from '@/lib/ReduxSlices/metric_category';
+import { useSelector, useDispatch } from '@/lib/utils';
 
-const steps = ["Step 1", "Step 2"];
+const steps = ['Step 1', 'Step 2'];
 
 const AddCompanyPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [step, setStep] = useState(1);
-  const financialMetrics = useSelector<any>(
-    (state) => state.metricCategory.metricList,
-  );
-  const financialDataCategories = useSelector<any>(
-    (state) => state.metricCategory.categoryList,
-  );
+  const financialMetrics = useSelector<any>((state) => state.metricCategory.metricList);
+  const financialDataCategories = useSelector<any>((state) => state.metricCategory.categoryList);
 
   useEffect(() => {
     dispatch(fetchMetrics());
@@ -48,10 +41,10 @@ const AddCompanyPage = () => {
                 role="button"
                 tabIndex={0}
                 className="text-green-600 cursor-pointer"
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push('/dashboard')}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    router.push("/dashboard");
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    router.push('/dashboard');
                   }
                 }}
               >

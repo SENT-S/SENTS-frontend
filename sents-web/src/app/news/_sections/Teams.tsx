@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import NewsItem from "@/components/NewsItem/NewsItem";
-import { defaultImageUrl } from "@/services/mockData/mock";
+import CustomNewsCard from '@/components/ui/customNewsCard';
+import { defaultImageUrl } from '@/services/mockData/mock';
 
 export default function Teams({
   data,
@@ -19,9 +19,9 @@ export default function Teams({
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize();
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   if (!data || data.length === 0) {
@@ -35,7 +35,7 @@ export default function Teams({
   return (
     <div className="flex flex-col gap-4 w-full p-4">
       {data?.map((newsItem) => (
-        <NewsItem
+        <CustomNewsCard
           key={newsItem.id}
           label="Teams"
           imgURL={defaultImageUrl}

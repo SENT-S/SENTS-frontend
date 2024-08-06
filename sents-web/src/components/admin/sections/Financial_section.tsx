@@ -1,7 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
-import React, { useState, useEffect } from 'react';
-import ReactSelect from 'react-select';
+"use client";
+import React, { useState, useEffect } from "react";
+import { FiEdit } from "react-icons/fi";
+import { GoPlusCircle } from "react-icons/go";
+import { GrSubtractCircle } from "react-icons/gr";
+import { MdDone } from "react-icons/md";
+import { MdCancel } from "react-icons/md";
+import ReactSelect from "react-select";
+import { ScaleLoader } from "react-spinners";
+import { toast } from "sonner";
+
+import Add_new_metric from "@/components/admin/forms/Add_new_metric";
+import FStatements from "@/components/admin/FStatements";
+import ModalForms from "@/components/admin/modal";
+import SubNav from "@/components/admin/Navs/SubNav";
+import { Button } from "@/components/ui/button";
+import CustomPagination from "@/components/ui/customPagination";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -9,32 +31,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
+import getCurrencySymbol from "@/hooks/getCurrencySymbol";
+import { formatData } from "@/hooks/tableFunctions";
+import { getYearRanges, getRangeYears } from "@/hooks/tableFunctions";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import Pagination from '@/components/pagination';
-import SubNav from '@/components/admin/Navs/SubNav';
-import { FiEdit } from 'react-icons/fi';
-import { Button } from '@/components/ui/button';
-import { formatData } from '@/hooks/tableFunctions';
-import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
-import { MdDone } from 'react-icons/md';
-import { GoPlusCircle } from 'react-icons/go';
-import Add_new_metric from '@/components/admin/forms/Add_new_metric';
-import { GrSubtractCircle } from 'react-icons/gr';
-import FStatements from '@/components/admin/FStatements';
-import ModalForms from '@/components/admin/modal';
-import { ScaleLoader } from 'react-spinners';
-import { toast } from 'sonner';
-import { addCompanyFinancialData, updateCompanyFinancialData } from '@/services/apis/companies';
-import getCurrencySymbol from '@/hooks/getCurrencySymbol';
-import { MdCancel } from 'react-icons/md';
+  addCompanyFinancialData,
+  updateCompanyFinancialData,
+} from "@/services/apis/companies";
 
 type Row = {
   metrics: string;
@@ -60,7 +64,7 @@ const Financial_section = ({
   // eslint-disable-next-line no-unused-vars
   setRefresh: (value: boolean) => void;
 }) => {
-  const [selectedLink, setSelectedLink] = useState('Financial Summary');
+  const [selectedLink, setSelectedLink] = useState("Financial Summary");
   const [showEdit, setShowEdit] = useState(false);
   const yearRanges = getYearRanges();
   const [yearRange, setYearRange] = useState(yearRanges[0]);
@@ -86,7 +90,11 @@ const Financial_section = ({
   }, [yearRange]);
 
   const TableData: any = categoryList.reduce((acc: any, category: any) => {
-    if (FinancialData && FinancialData.data && category.label in FinancialData.data) {
+    if (
+      FinancialData &&
+      FinancialData.data &&
+      category.label in FinancialData.data
+    ) {
       acc[category.label] = formatData(FinancialData.data[category.label]);
     }
     return acc;
@@ -111,13 +119,13 @@ const Financial_section = ({
   }, [selectedLink]);
 
   const getEmptyRow = (years: string[]) => {
-    let row: Row = {
-      metrics: '',
+    const row: Row = {
+      metrics: "",
       category: [categoryList.find((item: any) => item.label === selectedLink)],
     };
     years.forEach((year) => {
-      const actualYear = 'FY’' + year.slice(-2);
-      row[actualYear] = '';
+      const actualYear = "FY’" + year.slice(-2);
+      row[actualYear] = "";
     });
     return row;
   };
@@ -143,23 +151,27 @@ const Financial_section = ({
     });
   };
 
-  const handleSelectChange = (selectedOptions: any, rowIndex: number, column: string) => {
+  const handleSelectChange = (
+    selectedOptions: any,
+    rowIndex: number,
+    column: string,
+  ) => {
     const value =
-      column === 'category'
+      column === "category"
         ? selectedOptions?.map((option: any) => option.value) || []
         : String(selectedOptions);
 
-    if (column === 'metrics') {
+    if (column === "metrics") {
       // Check if the selected metric already exists in the rows above
       const isMetricAlreadySelected = rows.some(
         (row, index) => row.metrics === value && index < rowIndex,
       );
 
       if (isMetricAlreadySelected) {
-        toast.error('This metric has already been selected for another row', {
-          style: { background: 'red', color: 'white', border: 'none' },
+        toast.error("This metric has already been selected for another row", {
+          style: { background: "red", color: "white", border: "none" },
           duration: 5000,
-          position: 'top-center',
+          position: "top-center",
         });
       }
     }
@@ -175,10 +187,10 @@ const Financial_section = ({
   };
 
   const handleDelete = async (rowIndex: number, name: string) => {
-    if (name === 'delete') {
+    if (name === "delete") {
       clearRow(rowIndex);
     } else {
-      console.log('Cancel delete company');
+      console.log("Cancel delete company");
     }
   };
 
@@ -193,24 +205,29 @@ const Financial_section = ({
       rows.forEach((row) => {
         const { id, metrics, category, ...years } = row;
         const metricId = metricsList.find(
-          (item: any) => item.label === metrics || item.value === Number(metrics),
+          (item: any) =>
+            item.label === metrics || item.value === Number(metrics),
         )?.value;
 
         const selectedCategoryId = category
           ? category.map((item: any) => item.value || item)
-          : findCommonCategories(FinancialData.data, metrics).map((item: any) => item.value);
+          : findCommonCategories(FinancialData.data, metrics).map(
+              (item: any) => item.value,
+            );
 
-        const initialRow = TableData[selectedLink]?.find((r: Row) => r.metrics === metrics);
+        const initialRow = TableData[selectedLink]?.find(
+          (r: Row) => r.metrics === metrics,
+        );
 
         Object.entries(years).forEach(([year, value]) => {
           const initialValue = initialRow ? initialRow[year] : undefined;
 
           // Process the value, treating empty string as null
-          const processedValue = value === '' ? '' : String(value);
+          const processedValue = value === "" ? "" : String(value);
 
           const data = {
             company: Number(companyID),
-            year: Number('20' + year.slice(-2)),
+            year: Number("20" + year.slice(-2)),
             category: selectedCategoryId,
             value: processedValue,
             metric: metricId,
@@ -244,16 +261,16 @@ const Financial_section = ({
 
       setRefresh(true);
       setShowEdit(false);
-      toast.success('Financial data updated successfully', {
-        style: { background: 'green', color: 'white', border: 'none' },
+      toast.success("Financial data updated successfully", {
+        style: { background: "green", color: "white", border: "none" },
         duration: 5000,
-        position: 'bottom-right',
+        position: "bottom-right",
       });
     } catch (error: any) {
       toast.error(error.message, {
-        style: { background: 'red', color: 'white', border: 'none' },
+        style: { background: "red", color: "white", border: "none" },
         duration: 5000,
-        position: 'bottom-right',
+        position: "bottom-right",
       });
     } finally {
       setIsLoading(false);
@@ -262,8 +279,8 @@ const Financial_section = ({
 
   // categories
   function findCommonCategories(data: any, metric: any) {
-    let commonCategories = [];
-    for (let category in data) {
+    const commonCategories = [];
+    for (const category in data) {
       if (data[category][metric]) {
         commonCategories.push(category);
       }
@@ -361,7 +378,7 @@ const Financial_section = ({
       </div>
 
       {/* table */}
-      <Pagination
+      <CustomPagination
         items={rows}
         itemsPerPage={5}
         render={(currentItems) => (
@@ -370,14 +387,24 @@ const Financial_section = ({
               {/* table header */}
               <TableHeader className="bg-[#1EF1A5]">
                 <TableRow className="text-black text-lg font-bold">
-                  <TableHead className="w-1/6 py-2 text-center">Metrics</TableHead>
+                  <TableHead className="w-1/6 py-2 text-center">
+                    Metrics
+                  </TableHead>
                   {newYears.map((year) => (
                     <TableHead key={year} className="w-[13%] py-2 text-center">
                       {year}
                     </TableHead>
                   ))}
-                  {showEdit && <TableHead className="w-1/6 py-2 text-center">Category</TableHead>}
-                  {showEdit && <TableHead className="w-1/6 py-2 text-center">Clear</TableHead>}
+                  {showEdit && (
+                    <TableHead className="w-1/6 py-2 text-center">
+                      Category
+                    </TableHead>
+                  )}
+                  {showEdit && (
+                    <TableHead className="w-1/6 py-2 text-center">
+                      Clear
+                    </TableHead>
+                  )}
                 </TableRow>
               </TableHeader>
 
@@ -385,7 +412,10 @@ const Financial_section = ({
               <TableBody className="bg-white dark:bg-[#39463E]">
                 {currentItems.length === 0 && !showEdit ? (
                   <TableRow>
-                    <TableCell className="text-center" colSpan={newYears.length + 3}>
+                    <TableCell
+                      className="text-center"
+                      colSpan={newYears.length + 3}
+                    >
                       No Financial Data Available
                     </TableCell>
                   </TableRow>
@@ -395,8 +425,8 @@ const Financial_section = ({
                       <TableCell
                         className="text-left"
                         style={{
-                          width: 'max-content',
-                          minWidth: '180px',
+                          width: "max-content",
+                          minWidth: "180px",
                         }}
                       >
                         {showEdit ? (
@@ -411,18 +441,24 @@ const Financial_section = ({
                               placeholder="Metrics"
                               defaultValue={metricsList.find(
                                 (item: any) =>
-                                  item.label === row.metrics || item.value === Number(row.metrics),
+                                  item.label === row.metrics ||
+                                  item.value === Number(row.metrics),
                               )}
                               onChange={(selectedOption: any) =>
-                                handleSelectChange(selectedOption.value, rowIndex, 'metrics')
+                                handleSelectChange(
+                                  selectedOption.value,
+                                  rowIndex,
+                                  "metrics",
+                                )
                               }
                             />
                           </div>
                         ) : (
                           metricsList.find(
                             (item: any) =>
-                              item.label === row.metrics || item.value === Number(row.metrics),
-                          )?.label || '__'
+                              item.label === row.metrics ||
+                              item.value === Number(row.metrics),
+                          )?.label || "__"
                         )}
                       </TableCell>
 
@@ -433,13 +469,16 @@ const Financial_section = ({
                               type="text"
                               value={row[year]}
                               className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
-                              onChange={(e) => handleInputChange(e, rowIndex, year)}
+                              onChange={(e) =>
+                                handleInputChange(e, rowIndex, year)
+                              }
                             />
-                          ) : isNaN(Number(row[year])) || Number(row[year]) === 0 ? (
-                            '__'
+                          ) : isNaN(Number(row[year])) ||
+                            Number(row[year]) === 0 ? (
+                            "__"
                           ) : (
-                            Number(row[year]).toLocaleString('en-US', {
-                              style: 'currency',
+                            Number(row[year]).toLocaleString("en-US", {
+                              style: "currency",
                               currency: getCurrencySymbol(countryName),
                             })
                           )}
@@ -461,12 +500,21 @@ const Financial_section = ({
                               defaultValue={
                                 row?.category?.map((item: any) =>
                                   categoryList.find(
-                                    (category: any) => category.label === item.label,
+                                    (category: any) =>
+                                      category.label === item.label,
                                   ),
-                                ) || findCommonCategories(FinancialData.data, row.metrics)
+                                ) ||
+                                findCommonCategories(
+                                  FinancialData.data,
+                                  row.metrics,
+                                )
                               }
                               onChange={(selectedOptions: any) =>
-                                handleSelectChange(selectedOptions, rowIndex, 'category')
+                                handleSelectChange(
+                                  selectedOptions,
+                                  rowIndex,
+                                  "category",
+                                )
                               }
                             />
                           </div>
@@ -481,11 +529,14 @@ const Financial_section = ({
                             disabled
                             Icon={
                               <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-[#F96868] cursor-not-allowed">
-                                <GrSubtractCircle className="text-[#EA0000]" size={20} />
+                                <GrSubtractCircle
+                                  className="text-[#EA0000]"
+                                  size={20}
+                                />
                               </div>
                             }
-                            onSubmit={() => handleDelete(rowIndex, 'delete')}
-                            onCancel={() => handleDelete(rowIndex, 'cancel')}
+                            onSubmit={() => handleDelete(rowIndex, "delete")}
+                            onCancel={() => handleDelete(rowIndex, "cancel")}
                             SubmitText="Yes"
                             CancelText="No"
                             SubmitButtonStyle="bg-[#EA0000] hover:bg-[#ea0000e7]"
@@ -502,7 +553,10 @@ const Financial_section = ({
       />
 
       {/* Statements */}
-      <FStatements financialStatements={financialStatements} companyID={companyID} />
+      <FStatements
+        financialStatements={financialStatements}
+        companyID={companyID}
+      />
     </div>
   );
 };

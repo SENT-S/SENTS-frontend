@@ -1,14 +1,14 @@
-"use client";
-import Image from "next/image";
-import { useSession } from "next-auth/react";
-import React, { useState, useEffect } from "react";
+'use client';
+import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import React, { useState, useEffect } from 'react';
 
-import Pagination from "@/components/pagination";
-import TableComponent from "@/components/table";
-import { Skeleton } from "@/components/ui/skeleton";
-import MainLayout from "@/layouts";
-import { getCompanies } from "@/services/apis/companies";
-import { CustomSession } from "@/utils/types";
+import CompanyTable from '@/components/tables/companyTable';
+import CustomPagination from '@/components/ui/customPagination';
+import { Skeleton } from '@/components/ui/skeleton';
+import MainLayout from '@/layouts';
+import { getCompanies } from '@/services/apis/companies';
+import { CustomSession } from '@/utils/types';
 
 interface Company {
   company_country: string;
@@ -27,11 +27,11 @@ const Dashboard = () => {
   const { data: session } = useSession() as {
     data: CustomSession;
   };
-  const [selectedCountry, setSelectedCountry] = useState("Uganda");
+  const [selectedCountry, setSelectedCountry] = useState('Uganda');
 
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const isAdmin = session?.user?.role === "ADMIN";
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -40,7 +40,7 @@ const Dashboard = () => {
         setCompanies(response.data);
         setIsLoading(false);
       } else {
-        console.error("Failed to fetch companies", response);
+        console.error('Failed to fetch companies', response);
       }
     };
 
@@ -83,12 +83,10 @@ const Dashboard = () => {
       ) : (
         <div className="space-y-8">
           <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
-            {isAdmin ? "Admin Dashboard" : "Dashboard"}
+            {isAdmin ? 'Admin Dashboard' : 'Dashboard'}
           </h1>
           {/* admin features */}
-          <div
-            className={`${isAdmin && "grid grid-cols-2 gap-6 md:gap-8 mt-4"}`}
-          >
+          <div className={`${isAdmin && 'grid grid-cols-2 gap-6 md:gap-8 mt-4'}`}>
             <div
               className={`grid grid-cols-${
                 companyCountries.length >= 2 ? 2 : companyCountries.length
@@ -99,18 +97,16 @@ const Dashboard = () => {
                   key={item.country}
                   role="button"
                   tabIndex={0}
-                  className={`relative w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${item.country === selectedCountry ? "bg-[#148C59] text-white" : "bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]"} border border-[#148c5a33] hover:border-[#148C59]`}
+                  className={`relative w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${item.country === selectedCountry ? 'bg-[#148C59] text-white' : 'bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]'} border border-[#148c5a33] hover:border-[#148C59]`}
                   onClick={() => setSelectedCountry(item.country)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
+                    if (e.key === 'Enter' || e.key === ' ') {
                       setSelectedCountry(item.country);
                     }
                   }}
                 >
                   <div className="flex flex-col text-left">
-                    <h2 className="font-thin text-[18px] md:text-[24px]">
-                      {item.country}
-                    </h2>
+                    <h2 className="font-thin text-[18px] md:text-[24px]">{item.country}</h2>
                     <span className="text-xl font-semibold">{item.total}</span>
                   </div>
                   <div className="relative w-10 h-10 md:h-12 md:w-12 overflow-hidden">
@@ -127,26 +123,26 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <Pagination
+          <CustomPagination
             items={filteredCompanies}
             itemsPerPage={6}
             render={(currentItems) => (
-              <TableComponent
+              <CompanyTable
                 columns={[
                   {
-                    field: "company_name",
-                    label: "Company Name",
-                    width: "w-1/2",
+                    field: 'company_name',
+                    label: 'Company Name',
+                    width: 'w-1/2',
                   },
                   {
-                    field: "stock_symbol",
-                    label: "Stock Symbol",
-                    width: "w-1/4",
+                    field: 'stock_symbol',
+                    label: 'Stock Symbol',
+                    width: 'w-1/4',
                   },
                   {
-                    field: "sector_or_industry",
-                    label: "Sector/Industry",
-                    width: "w-1/3",
+                    field: 'sector_or_industry',
+                    label: 'Sector/Industry',
+                    width: 'w-1/3',
                   },
                 ]}
                 rows={currentItems}

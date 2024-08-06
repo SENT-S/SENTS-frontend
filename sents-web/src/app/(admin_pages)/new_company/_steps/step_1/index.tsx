@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { ScaleLoader } from "react-spinners";
-import { toast } from "sonner";
+import React, { useState, useEffect } from 'react';
+import { ScaleLoader } from 'react-spinners';
+import { toast } from 'sonner';
 
-import Preview from "./Preview";
-import Section_1 from "./Section_1";
-import Section_2 from "./Section_2";
+import Preview from './Preview';
+import Section_1 from './Section_1';
+import Section_2 from './Section_2';
 
-import BackButton from "@/components/backButton";
-import { Button } from "@/components/ui/button";
-import { createCompany } from "@/lib/ReduxSlices/create_company";
-import { useDispatch, useSelector } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import CustomBackButton from '@/components/ui/customBackButton';
+import { createCompany } from '@/lib/ReduxSlices/create_company';
+import { useDispatch, useSelector } from '@/lib/utils';
 
 function Index({ setStep, step }: { setStep: any; step: number }) {
   const dispatch = useDispatch();
@@ -19,9 +19,7 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
   const handleFormSubmit = async () => {
     try {
       // Check if all fields are filled
-      const allFieldsFilled = Object.values(companyFields).every(
-        (field) => field !== "",
-      );
+      const allFieldsFilled = Object.values(companyFields).every((field) => field !== '');
 
       if (innerStep === 1) {
         setInnerStep((prevStep) => prevStep + 1);
@@ -29,21 +27,21 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
 
       if (innerStep === 2) {
         if (!allFieldsFilled) {
-          toast.error("All fields must be filled to create a company", {
-            style: { background: "red", color: "white", border: "none" },
+          toast.error('All fields must be filled to create a company', {
+            style: { background: 'red', color: 'white', border: 'none' },
             duration: 5000,
-            position: "top-center",
+            position: 'top-center',
           });
           return;
         }
         return await dispatch(createCompany(companyFields));
       }
     } catch (error) {
-      console.error("Failed to create company", error);
-      toast.error("Failed to create company, please try again", {
-        style: { background: "red", color: "white", border: "none" },
+      console.error('Failed to create company', error);
+      toast.error('Failed to create company, please try again', {
+        style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
-        position: "top-center",
+        position: 'top-center',
       });
     }
   };
@@ -51,23 +49,20 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
   useEffect(() => {
     if (companyFields.response && companyFields.response.status === 201) {
       setInnerStep((prevStep) => prevStep + 1);
-      toast.success("Company created successfully", {
+      toast.success('Company created successfully', {
         style: {
-          background: "green",
-          color: "white",
-          border: "none",
+          background: 'green',
+          color: 'white',
+          border: 'none',
         },
-        position: "top-center",
+        position: 'top-center',
         duration: 5000,
       });
-    } else if (
-      companyFields.response &&
-      companyFields.response.status !== 201
-    ) {
+    } else if (companyFields.response && companyFields.response.status !== 201) {
       toast.error(companyFields.response.error, {
-        style: { background: "red", color: "white", border: "none" },
+        style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
-        position: "top-center",
+        position: 'top-center',
       });
     }
   }, [companyFields.response]);
@@ -78,18 +73,13 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
       {innerStep === 2 && (
         <>
           <div className="flex items-center justify-between">
-            <BackButton onClick={() => setInnerStep(innerStep - 1)} />
+            <CustomBackButton onClick={() => setInnerStep(innerStep - 1)} />
           </div>
           <Section_2 />
         </>
       )}
       {innerStep === 3 && (
-        <Preview
-          innerStep={innerStep}
-          setInnerStep={setInnerStep}
-          setStep={setStep}
-          step={step}
-        />
+        <Preview innerStep={innerStep} setInnerStep={setInnerStep} setStep={setStep} step={step} />
       )}
 
       {innerStep !== 3 && (
@@ -102,10 +92,10 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
             companyFields?.isLoading ? (
               <ScaleLoader height={20} color="#fff" />
             ) : (
-              "Submit"
+              'Submit'
             )
           ) : (
-            "Next"
+            'Next'
           )}
         </Button>
       )}
