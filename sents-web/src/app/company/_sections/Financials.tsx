@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import html2canvas from "html2canvas";
+import { useTheme } from "next-themes";
+import React, { useState, useEffect, useRef } from "react";
+import { IoChevronBackOutline } from "react-icons/io5";
+import { PiMicrosoftExcelLogoDuotone } from "react-icons/pi";
+import { TooltipProps } from "recharts";
 import {
   BarChart,
   Bar,
@@ -15,28 +12,32 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-} from 'recharts';
+} from "recharts";
+import { toast } from "sonner";
+import * as XLSX from "xlsx";
+
+import SubNav from "@/components/admin/Navs/SubNav";
+import Pagination from "@/components/pagination";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import { useTheme } from 'next-themes';
-import SubNav from '@/components/admin/Navs/SubNav';
-import { Button } from '@/components/ui/button';
-import { IoChevronBackOutline } from 'react-icons/io5';
-import html2canvas from 'html2canvas';
-import { TooltipProps } from 'recharts';
-import { PiMicrosoftExcelLogoDuotone } from 'react-icons/pi';
-import { toast } from 'sonner';
-import * as XLSX from 'xlsx';
-import Pagination from '@/components/pagination';
-import { formatData } from '@/hooks/tableFunctions';
-import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
-import getCurrencySymbol from '@/hooks/getCurrencySymbol';
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import getCurrencySymbol from "@/hooks/getCurrencySymbol";
+import { getYearRanges, getRangeYears } from "@/hooks/tableFunctions";
+import { formatData } from "@/hooks/tableFunctions";
 
 // Define types for better type checking
 type FormattedMetric = {
@@ -75,7 +76,7 @@ const CustomTooltip: React.FC<TooltipProps<any, any>> = ({
   if (active && payload && payload.length) {
     return (
       <div
-        className={`tooltip p-3 ${theme === 'dark' ? 'text-white bg-gray-800' : 'bg-white '}`}
+        className={`tooltip p-3 ${theme === "dark" ? "text-white bg-gray-800" : "bg-white "}`}
       >
         <p className="label">{`${label} : ${payload[0].value}`}</p>
       </div>
@@ -97,16 +98,16 @@ const Financials = ({
   const { theme } = useTheme();
   const chartRef = useRef(null);
   const [barWidth, setBarWidth] = useState(60);
-  const [selectedLink, setSelectedLink] = useState<string>('Financial Summary');
+  const [selectedLink, setSelectedLink] = useState<string>("Financial Summary");
   const [selectedMetric, setSelectedMetric] = useState<FormattedMetric | null>(
-    null
+    null,
   );
   const currentYear = new Date().getFullYear();
   const yearRanges = getYearRanges();
 
   const chartYears = Array.from(
     { length: 5 },
-    (_, i) => `${currentYear - i - 1}`
+    (_, i) => `${currentYear - i - 1}`,
   ).reverse();
 
   const [yearRange, setYearRange] = useState(yearRanges[0]);
@@ -129,24 +130,24 @@ const Financials = ({
       setBarWidth(window.innerWidth < 768 ? 10 : 60);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Call the function initially
     handleResize();
 
     // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const TableData: TableData = {
-    'Financial Summary': formatData(financialData['Financial Summary' as any]),
-    'Profit & Loss': formatData(financialData['Profit & Loss' as any]),
-    'Balance Sheet': formatData(financialData['Balance Sheet' as any]),
-    'Cashflow Statement': formatData(
-      financialData['Cashflow Statement' as any]
+    "Financial Summary": formatData(financialData["Financial Summary" as any]),
+    "Profit & Loss": formatData(financialData["Profit & Loss" as any]),
+    "Balance Sheet": formatData(financialData["Balance Sheet" as any]),
+    "Cashflow Statement": formatData(
+      financialData["Cashflow Statement" as any],
     ),
-    'Financial Analysis': formatData(
-      financialData['Financial Analysis' as any]
+    "Financial Analysis": formatData(
+      financialData["Financial Analysis" as any],
     ),
   };
 
@@ -158,7 +159,7 @@ const Financials = ({
 
   const handleSelectMetric = (metricName: string) => {
     const selectedMetric = selectedData.find(
-      (item) => item.metrics === metricName
+      (item) => item.metrics === metricName,
     );
     if (selectedMetric) {
       setSelectedMetric(selectedMetric);
@@ -171,7 +172,7 @@ const Financials = ({
     ? newYears.map((year, index) => {
         const value = selectedMetric[year];
         // Check if the value is a percentage
-        if (typeof value === 'string' && value.endsWith('%')) {
+        if (typeof value === "string" && value.endsWith("%")) {
           // Remove the '%' sign and convert to a number
           return {
             name: chartYears[index],
@@ -186,38 +187,38 @@ const Financials = ({
   const exportChartAsImage = async () => {
     if (chartRef.current) {
       const canvas = await html2canvas(chartRef.current, { useCORS: true });
-      const imgData = canvas.toDataURL('image/png');
-      let link = document.createElement('a');
+      const imgData = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.href = imgData;
       link.download = `${data?.company_name && data.company_name}-${selectedLink}.png`;
       link.click();
 
       // Display a success message
-      toast.success('Chart exported successfully', {
-        position: 'top-right',
-        style: { background: 'green', color: 'white', border: 'none' },
+      toast.success("Chart exported successfully", {
+        position: "top-right",
+        style: { background: "green", color: "white", border: "none" },
         duration: 5000,
       });
     } else {
-      console.error('Chart not found');
+      console.error("Chart not found");
     }
   };
 
   const exportTableAsExcel = () => {
     // Check if data is available
     if (!selectedData || !data?.company_name) {
-      toast.error('No data available to export', {
-        position: 'top-right',
-        style: { background: 'red', color: 'white', border: 'none' },
+      toast.error("No data available to export", {
+        position: "top-right",
+        style: { background: "red", color: "white", border: "none" },
         duration: 5000,
       });
       return;
     }
 
     // Display a success message
-    toast.success('Data exported successfully', {
-      position: 'top-right',
-      style: { background: 'green', color: 'white', border: 'none' },
+    toast.success("Data exported successfully", {
+      position: "top-right",
+      style: { background: "green", color: "white", border: "none" },
       duration: 5000,
     });
 
@@ -226,7 +227,7 @@ const Financials = ({
     const ws = XLSX.utils.json_to_sheet(selectedData);
 
     // Append the worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
     // Generate the filename
     const filename = `${data.company_name}-${selectedLink}.xlsx`;
@@ -320,20 +321,20 @@ const Financials = ({
                       currentItems.map(
                         (
                           item: { [key: string]: string | number },
-                          index: number
+                          index: number,
                         ) => (
                           <TableRow
                             key={index}
                             className={`
-            ${index === currentItems.length - 1 ? 'rounded-b-xl' : ''}
+            ${index === currentItems.length - 1 ? "rounded-b-xl" : ""}
             hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
           `}
                           >
                             <TableCell
                               className="py-2"
                               style={{
-                                width: 'max-content',
-                                minWidth: '180px',
+                                width: "max-content",
+                                minWidth: "180px",
                               }}
                             >
                               {item.metrics}
@@ -342,28 +343,27 @@ const Financials = ({
                               <TableCell key={year} className="flex-grow py-2">
                                 {isNaN(Number(item[year])) ||
                                 Number(item[year]) === 0
-                                  ? '__'
-                                  : Number(item[year]).toLocaleString('en-US', {
-                                      style: 'currency',
+                                  ? "__"
+                                  : Number(item[year]).toLocaleString("en-US", {
+                                      style: "currency",
                                       currency: getCurrencySymbol(
-                                        data?.company_country
+                                        data?.company_country,
                                       ),
                                     })}
                               </TableCell>
                             ))}
                             <TableCell className="w-2/6 py-2">
-                              <a
-                                href="#"
+                              <button
                                 onClick={() =>
                                   handleViewChart(item as FormattedMetric)
                                 }
                                 className="text-[#148C59] z-50"
                               >
                                 view chart
-                              </a>
+                              </button>
                             </TableCell>
                           </TableRow>
-                        )
+                        ),
                       )
                     )}
                   </TableBody>
@@ -412,7 +412,7 @@ const Financials = ({
             </div>
             <div className="overflow-x-auto md:overflow-visible">
               <div
-                className={`py-2 w-auto ${theme === 'dark' ? 'bg-[#39463E] text-white' : ''}`}
+                className={`py-2 w-auto ${theme === "dark" ? "bg-[#39463E] text-white" : ""}`}
                 ref={chartRef}
               >
                 <div className="w-full px-3 md:px-6">
@@ -437,27 +437,27 @@ const Financials = ({
                       axisLine={false}
                       tickLine={false}
                       tick={{
-                        fill: theme === 'dark' ? 'white' : '#615E83',
+                        fill: theme === "dark" ? "white" : "#615E83",
                         dy: 10,
                       }}
                     />
                     <YAxis
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
+                      tick={{ fill: theme === "dark" ? "white" : "#615E83" }}
                       tickFormatter={(value) => {
                         if (value >= 1e18) {
-                          return Math.round(value / 1e18) + ' ' + 'Qi';
+                          return Math.round(value / 1e18) + " " + "Qi";
                         } else if (value >= 1e15) {
-                          return Math.round(value / 1e15) + ' ' + 'Qa';
+                          return Math.round(value / 1e15) + " " + "Qa";
                         } else if (value >= 1e12) {
-                          return Math.round(value / 1e12) + ' ' + 'T';
+                          return Math.round(value / 1e12) + " " + "T";
                         } else if (value >= 1e9) {
-                          return Math.round(value / 1e9) + ' ' + 'B';
+                          return Math.round(value / 1e9) + " " + "B";
                         } else if (value >= 1e6) {
-                          return Math.round(value / 1e6) + ' ' + 'M';
+                          return Math.round(value / 1e6) + " " + "M";
                         } else if (value >= 1e3) {
-                          return Math.round(value / 1e3) + ' ' + 'K';
+                          return Math.round(value / 1e3) + " " + "K";
                         } else {
                           return value;
                         }

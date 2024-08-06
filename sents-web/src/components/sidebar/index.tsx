@@ -61,19 +61,12 @@ const SideBar = () => {
                       } `}
                       disabled={link.disable}
                     >
-                      <Link
-                        href={link.path}
-                        className={`${isAdmin ? 'flex items-center' : ''}`}
-                      >
+                      <Link href={link.path} className={`${isAdmin ? 'flex items-center' : ''}`}>
                         <Icon
                           size={isAdmin ? 25 : 30}
-                          className={
-                            isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
-                          }
+                          className={isActiveLink ? 'text-[#148c59]' : 'text-gray-400'}
                         />
-                        <span className={`${isAdmin ? 'ml-2' : 'hidden'}`}>
-                          {link.name}
-                        </span>
+                        <span className={`${isAdmin ? 'ml-2' : 'hidden'}`}>{link.name}</span>
                       </Link>
                       {isActiveLink && (
                         <span className="absolute right-0 bg-[#148c59] rounded-l-md h-6 w-1"></span>
@@ -100,12 +93,7 @@ const SideBar = () => {
           <IoIosLogOut size={24} />
           <span>
             {loading ? (
-              <ScaleLoader
-                color="#a3a3a3"
-                loading={loading}
-                height={16}
-                className="mt-1"
-              />
+              <ScaleLoader color="#a3a3a3" loading={loading} height={16} className="mt-1" />
             ) : (
               'Logout'
             )}

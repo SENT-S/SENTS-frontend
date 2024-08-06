@@ -7,33 +7,21 @@ import {
 } from '@/services/apis/companies';
 
 // Async actions
-export const addMetric = createAsyncThunk(
-  'company/addMetric',
-  async (metricData: any) => {
-    return await addFinancialMetric(metricData);
-  }
-);
+export const addMetric = createAsyncThunk('company/addMetric', async (metricData: any) => {
+  return await addFinancialMetric(metricData);
+});
 
-export const addCategory = createAsyncThunk(
-  'company/addCategory',
-  async (categoryData: any) => {
-    return await addFinancialDataCategory(categoryData);
-  }
-);
+export const addCategory = createAsyncThunk('company/addCategory', async (categoryData: any) => {
+  return await addFinancialDataCategory(categoryData);
+});
 
-export const fetchMetrics = createAsyncThunk(
-  'company/fetchMetrics',
-  async () => {
-    return await getAllFinancialMetrics();
-  }
-);
+export const fetchMetrics = createAsyncThunk('company/fetchMetrics', async () => {
+  return await getAllFinancialMetrics();
+});
 
-export const fetchCategories = createAsyncThunk(
-  'company/fetchCategories',
-  async () => {
-    return await getAllFinancialDataCategories();
-  }
-);
+export const fetchCategories = createAsyncThunk('company/fetchCategories', async () => {
+  return await getAllFinancialDataCategories();
+});
 
 // Initial state
 const initialState = {
@@ -77,12 +65,9 @@ const companySlice = createSlice({
       .addCase(fetchMetrics.fulfilled, (state, action: PayloadAction<any>) => {
         state.metricList = action.payload;
       })
-      .addCase(
-        fetchCategories.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.categoryList = action.payload;
-        }
-      );
+      .addCase(fetchCategories.fulfilled, (state, action: PayloadAction<any>) => {
+        state.categoryList = action.payload;
+      });
   },
 });
 

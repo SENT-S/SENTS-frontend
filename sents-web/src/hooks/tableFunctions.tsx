@@ -42,21 +42,17 @@ export const getYearRanges = () => {
 
   for (let i = startYear; i >= endYear; i -= 5) {
     const rangeStart = Math.max(i - 4, endYear);
-    yearRanges.push(
-      `FY'${String(rangeStart).slice(-2)} - FY'${String(i).slice(-2)}`
-    );
+    yearRanges.push(`FY'${String(rangeStart).slice(-2)} - FY'${String(i).slice(-2)}`);
   }
 
   return yearRanges;
 };
 
 export const getRangeYears = (yearRange: string): string[] => {
-  const [start, end] = yearRange
-    .split(' - ')
-    .map((year) => Number('20' + year.slice(-2)));
+  const [start, end] = yearRange.split(' - ').map((year) => Number('20' + year.slice(-2)));
   const rangeYears = Array.from(
     { length: end - start + 1 },
-    (_, i) => `FY’${String(start + i).slice(-2)}`
+    (_, i) => `FY’${String(start + i).slice(-2)}`,
   );
 
   return rangeYears;

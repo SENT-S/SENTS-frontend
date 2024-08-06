@@ -48,9 +48,7 @@ const NewsItem = ({
             {label}
           </span>
           <h3 className="text-sm md:text-lg font-semibold mt-3">
-            {windowWidth < 768
-              ? `${newsItem?.headline.slice(0, 40)}...`
-              : newsItem?.headline}
+            {windowWidth < 768 ? `${newsItem?.headline.slice(0, 40)}...` : newsItem?.headline}
           </h3>
           <p className="text-sm text-gray-600 dark:text-white">
             {windowWidth < 768

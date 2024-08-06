@@ -1,9 +1,11 @@
-import '@/styles/styles.scss';
-import AuthProvider from '@/app/AuthProvider';
-import { Toaster } from '@/components/ui/sonner';
-import AppProvider from './AppProvider';
-import NextTopLoader from 'nextjs-toploader';
-import NetworkStatus from './NetworkStatus';
+import "@/styles/styles.scss";
+import NextTopLoader from "nextjs-toploader";
+
+import AppProvider from "./AppProvider";
+import NetworkStatus from "./NetworkStatus";
+
+import AuthProvider from "@/app/AuthProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
   title: "Sent's",
@@ -16,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const themeProps = {
-    attribute: 'class',
-    defaultTheme: 'light',
+    attribute: "class",
+    defaultTheme: "light",
     enableSystem: true,
     disableTransitionOnChange: true,
   };

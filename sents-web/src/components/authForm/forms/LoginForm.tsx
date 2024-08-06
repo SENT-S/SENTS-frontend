@@ -41,11 +41,7 @@ const LoginForm = () => {
             className="absolute right-2 text-[#148C59] text-xs font-semibold cursor-pointer dark:text-white"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? (
-              <FaRegEyeSlash size={16} />
-            ) : (
-              <FaRegEye size={16} />
-            )}
+            {showPassword ? <FaRegEyeSlash size={16} /> : <FaRegEye size={16} />}
           </button>
         </div>
       </div>

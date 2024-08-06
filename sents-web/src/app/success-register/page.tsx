@@ -1,13 +1,13 @@
-'use client';
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { LuCheckCircle } from 'react-icons/lu';
+"use client";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { LuCheckCircle } from "react-icons/lu";
 
 export default function Page() {
   const router = useRouter();
 
   const handleContinue = () => {
-    router.push('/login_register');
+    router.push("/login_register");
   };
 
   return (

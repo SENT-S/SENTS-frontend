@@ -1,5 +1,6 @@
-import React from 'react';
-import Section_1 from './Section_1';
+import React from "react";
+
+import Section_1 from "./Section_1";
 
 const index = ({ category, metrics }: any) => {
   return (

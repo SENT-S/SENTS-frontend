@@ -38,9 +38,7 @@ const Overview_section = ({ companyData, companyID, isLoading }: any) => {
     });
   }, [companyData, companyID]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormState({
       ...formState,
       [e.target.name]: e.target.value,

@@ -37,10 +37,7 @@ const companySlice = createSlice({
   name: 'company',
   initialState,
   reducers: {
-    updateCompanyField: (
-      state,
-      action: PayloadAction<{ field: keyof Company; value: any }>
-    ) => {
+    updateCompanyField: (state, action: PayloadAction<{ field: keyof Company; value: any }>) => {
       const { field, value } = action.payload;
       (state[field] as any) = value;
     },
@@ -51,20 +48,18 @@ const companySlice = createSlice({
   },
 });
 
-export const { updateCompanyField, resetCompanyFields, setLoading } =
-  companySlice.actions;
+export const { updateCompanyField, resetCompanyFields, setLoading } = companySlice.actions;
 
-export const createCompany =
-  (companyData: Company) => async (dispatch: any) => {
-    dispatch(setLoading(true));
-    try {
-      const response = await createCompanyAPI(companyData);
-      dispatch(updateCompanyField({ field: 'response', value: response }));
-    } catch (error) {
-      console.error('Failed to create company', error);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
+export const createCompany = (companyData: Company) => async (dispatch: any) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await createCompanyAPI(companyData);
+    dispatch(updateCompanyField({ field: 'response', value: response }));
+  } catch (error) {
+    console.error('Failed to create company', error);
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
 
 export default companySlice.reducer;

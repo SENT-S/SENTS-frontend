@@ -1,9 +1,9 @@
-import React from 'react';
-import { HiOutlineUser } from 'react-icons/hi2';
-import { HiOutlineUsers } from 'react-icons/hi2';
-import { MdOutlineDateRange } from 'react-icons/md';
-import { CgWebsite } from 'react-icons/cg';
-import Link from 'next/link';
+import Link from "next/link";
+import React from "react";
+import { CgWebsite } from "react-icons/cg";
+import { HiOutlineUser } from "react-icons/hi2";
+import { HiOutlineUsers } from "react-icons/hi2";
+import { MdOutlineDateRange } from "react-icons/md";
 
 interface AboutProps {
   data: any;

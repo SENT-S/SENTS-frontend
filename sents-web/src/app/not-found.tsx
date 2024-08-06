@@ -1,6 +1,7 @@
-import React from 'react';
-import Image from 'next/image';
-import NotFoundIllustration from '@/public/images/notfound.png';
+import Image from "next/image";
+import React from "react";
+
+import NotFoundIllustration from "@/public/images/notfound.png";
 
 const NotFound = () => {
   return (

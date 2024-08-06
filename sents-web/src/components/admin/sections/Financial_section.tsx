@@ -32,10 +32,7 @@ import FStatements from '@/components/admin/FStatements';
 import ModalForms from '@/components/admin/modal';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
-import {
-  addCompanyFinancialData,
-  updateCompanyFinancialData,
-} from '@/services/apis/companies';
+import { addCompanyFinancialData, updateCompanyFinancialData } from '@/services/apis/companies';
 import getCurrencySymbol from '@/hooks/getCurrencySymbol';
 import { MdCancel } from 'react-icons/md';
 
@@ -89,11 +86,7 @@ const Financial_section = ({
   }, [yearRange]);
 
   const TableData: any = categoryList.reduce((acc: any, category: any) => {
-    if (
-      FinancialData &&
-      FinancialData.data &&
-      category.label in FinancialData.data
-    ) {
+    if (FinancialData && FinancialData.data && category.label in FinancialData.data) {
       acc[category.label] = formatData(FinancialData.data[category.label]);
     }
     return acc;
@@ -150,11 +143,7 @@ const Financial_section = ({
     });
   };
 
-  const handleSelectChange = (
-    selectedOptions: any,
-    rowIndex: number,
-    column: string
-  ) => {
+  const handleSelectChange = (selectedOptions: any, rowIndex: number, column: string) => {
     const value =
       column === 'category'
         ? selectedOptions?.map((option: any) => option.value) || []
@@ -163,7 +152,7 @@ const Financial_section = ({
     if (column === 'metrics') {
       // Check if the selected metric already exists in the rows above
       const isMetricAlreadySelected = rows.some(
-        (row, index) => row.metrics === value && index < rowIndex
+        (row, index) => row.metrics === value && index < rowIndex,
       );
 
       if (isMetricAlreadySelected) {
@@ -181,7 +170,7 @@ const Financial_section = ({
           return { ...row, [column]: value };
         }
         return row;
-      })
+      }),
     );
   };
 
@@ -204,19 +193,14 @@ const Financial_section = ({
       rows.forEach((row) => {
         const { id, metrics, category, ...years } = row;
         const metricId = metricsList.find(
-          (item: any) =>
-            item.label === metrics || item.value === Number(metrics)
+          (item: any) => item.label === metrics || item.value === Number(metrics),
         )?.value;
 
         const selectedCategoryId = category
           ? category.map((item: any) => item.value || item)
-          : findCommonCategories(FinancialData.data, metrics).map(
-              (item: any) => item.value
-            );
+          : findCommonCategories(FinancialData.data, metrics).map((item: any) => item.value);
 
-        const initialRow = TableData[selectedLink]?.find(
-          (r: Row) => r.metrics === metrics
-        );
+        const initialRow = TableData[selectedLink]?.find((r: Row) => r.metrics === metrics);
 
         Object.entries(years).forEach(([year, value]) => {
           const initialValue = initialRow ? initialRow[year] : undefined;
@@ -285,7 +269,7 @@ const Financial_section = ({
       }
     }
     return commonCategories.map((commonCategory) =>
-      categoryList.find((item: any) => item.label === commonCategory)
+      categoryList.find((item: any) => item.label === commonCategory),
     );
   }
 
@@ -386,24 +370,14 @@ const Financial_section = ({
               {/* table header */}
               <TableHeader className="bg-[#1EF1A5]">
                 <TableRow className="text-black text-lg font-bold">
-                  <TableHead className="w-1/6 py-2 text-center">
-                    Metrics
-                  </TableHead>
+                  <TableHead className="w-1/6 py-2 text-center">Metrics</TableHead>
                   {newYears.map((year) => (
                     <TableHead key={year} className="w-[13%] py-2 text-center">
                       {year}
                     </TableHead>
                   ))}
-                  {showEdit && (
-                    <TableHead className="w-1/6 py-2 text-center">
-                      Category
-                    </TableHead>
-                  )}
-                  {showEdit && (
-                    <TableHead className="w-1/6 py-2 text-center">
-                      Clear
-                    </TableHead>
-                  )}
+                  {showEdit && <TableHead className="w-1/6 py-2 text-center">Category</TableHead>}
+                  {showEdit && <TableHead className="w-1/6 py-2 text-center">Clear</TableHead>}
                 </TableRow>
               </TableHeader>
 
@@ -411,10 +385,7 @@ const Financial_section = ({
               <TableBody className="bg-white dark:bg-[#39463E]">
                 {currentItems.length === 0 && !showEdit ? (
                   <TableRow>
-                    <TableCell
-                      className="text-center"
-                      colSpan={newYears.length + 3}
-                    >
+                    <TableCell className="text-center" colSpan={newYears.length + 3}>
                       No Financial Data Available
                     </TableCell>
                   </TableRow>
@@ -440,23 +411,17 @@ const Financial_section = ({
                               placeholder="Metrics"
                               defaultValue={metricsList.find(
                                 (item: any) =>
-                                  item.label === row.metrics ||
-                                  item.value === Number(row.metrics)
+                                  item.label === row.metrics || item.value === Number(row.metrics),
                               )}
                               onChange={(selectedOption: any) =>
-                                handleSelectChange(
-                                  selectedOption.value,
-                                  rowIndex,
-                                  'metrics'
-                                )
+                                handleSelectChange(selectedOption.value, rowIndex, 'metrics')
                               }
                             />
                           </div>
                         ) : (
                           metricsList.find(
                             (item: any) =>
-                              item.label === row.metrics ||
-                              item.value === Number(row.metrics)
+                              item.label === row.metrics || item.value === Number(row.metrics),
                           )?.label || '__'
                         )}
                       </TableCell>
@@ -468,12 +433,9 @@ const Financial_section = ({
                               type="text"
                               value={row[year]}
                               className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
-                              onChange={(e) =>
-                                handleInputChange(e, rowIndex, year)
-                              }
+                              onChange={(e) => handleInputChange(e, rowIndex, year)}
                             />
-                          ) : isNaN(Number(row[year])) ||
-                            Number(row[year]) === 0 ? (
+                          ) : isNaN(Number(row[year])) || Number(row[year]) === 0 ? (
                             '__'
                           ) : (
                             Number(row[year]).toLocaleString('en-US', {
@@ -499,21 +461,12 @@ const Financial_section = ({
                               defaultValue={
                                 row?.category?.map((item: any) =>
                                   categoryList.find(
-                                    (category: any) =>
-                                      category.label === item.label
-                                  )
-                                ) ||
-                                findCommonCategories(
-                                  FinancialData.data,
-                                  row.metrics
-                                )
+                                    (category: any) => category.label === item.label,
+                                  ),
+                                ) || findCommonCategories(FinancialData.data, row.metrics)
                               }
                               onChange={(selectedOptions: any) =>
-                                handleSelectChange(
-                                  selectedOptions,
-                                  rowIndex,
-                                  'category'
-                                )
+                                handleSelectChange(selectedOptions, rowIndex, 'category')
                               }
                             />
                           </div>
@@ -528,10 +481,7 @@ const Financial_section = ({
                             disabled
                             Icon={
                               <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-[#F96868] cursor-not-allowed">
-                                <GrSubtractCircle
-                                  className="text-[#EA0000]"
-                                  size={20}
-                                />
+                                <GrSubtractCircle className="text-[#EA0000]" size={20} />
                               </div>
                             }
                             onSubmit={() => handleDelete(rowIndex, 'delete')}
@@ -552,10 +502,7 @@ const Financial_section = ({
       />
 
       {/* Statements */}
-      <FStatements
-        financialStatements={financialStatements}
-        companyID={companyID}
-      />
+      <FStatements financialStatements={financialStatements} companyID={companyID} />
     </div>
   );
 };

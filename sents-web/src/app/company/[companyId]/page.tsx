@@ -1,28 +1,30 @@
-'use client';
-import React, { useState, useEffect, useCallback } from 'react';
-import dynamic from 'next/dynamic';
+"use client";
+import dynamic from "next/dynamic";
+import React, { useState, useEffect, useCallback } from "react";
+
+import Financial from "../_sections/Financials";
+import News from "../_sections/News";
+import Overview from "../_sections/Overview";
+import F_Right_Panel from "../_sections/panels/F_Right_Panel";
+import N_Right_Panel from "../_sections/panels/N_Right_Panel";
+import O_Right_Panel from "../_sections/panels/O_Right_Panel";
+
+import { Skeleton } from "@/components/ui/skeleton";
+import MainLayout from "@/layouts";
 import {
   getCompany,
   getCompanyNews,
   getCompanyFinancials,
   getAllFinancialDataCategories,
-} from '@/services/apis/companies';
-import { Skeleton } from '@/components/ui/skeleton';
-import MainLayout from '@/layouts';
-import Overview from '../_sections/Overview';
-import Financial from '../_sections/Financials';
-import News from '../_sections/News';
-import O_Right_Panel from '../_sections/panels/O_Right_Panel';
-import F_Right_Panel from '../_sections/panels/F_Right_Panel';
-import N_Right_Panel from '../_sections/panels/N_Right_Panel';
+} from "@/services/apis/companies";
 
-const SubNav = dynamic(() => import('@/components/admin/Navs/SubNav'));
+const SubNav = dynamic(() => import("@/components/admin/Navs/SubNav"));
 
 interface CompanyDetailsProps {
   params: { companyId: string };
 }
 
-const links = ['Overview', 'Financials', 'News'];
+const links = ["Overview", "Financials", "News"];
 
 const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
   ({ params }) => {
@@ -51,7 +53,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
         setIsLoading(false);
         setCategory(categoryResponse.data);
       } else {
-        console.error('Failed to fetch company', response);
+        console.error("Failed to fetch company", response);
       }
     }, [params.companyId]);
 
@@ -63,9 +65,9 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
 
     const renderSection = () => {
       switch (selectedLink) {
-        case 'Overview':
+        case "Overview":
           return <Overview data />;
-        case 'Financials':
+        case "Financials":
           return (
             <Financial
               data={companyDetails}
@@ -73,7 +75,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
               category={category}
             />
           );
-        case 'News':
+        case "News":
           return <News data={newsData} />;
         default:
           return null;
@@ -98,20 +100,20 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(
             </div>
             <div className="col-span-1 w-auto">
               <div className="w-full flex justify-center">
-                {selectedLink === 'Overview' && (
+                {selectedLink === "Overview" && (
                   <O_Right_Panel data={companyDetails} />
                 )}
-                {selectedLink === 'Financials' && (
+                {selectedLink === "Financials" && (
                   <F_Right_Panel data={companyData} />
                 )}
-                {selectedLink === 'News' && <N_Right_Panel />}
+                {selectedLink === "News" && <N_Right_Panel />}
               </div>
             </div>
           </div>
         )}
       </MainLayout>
     );
-  }
+  },
 );
 
 const SkeletonLayout = () => (
@@ -129,6 +131,6 @@ const SkeletonLayout = () => (
   </div>
 );
 
-CompanyDetails.displayName = 'CompanyDetails';
+CompanyDetails.displayName = "CompanyDetails";
 
 export default CompanyDetails;

@@ -1,26 +1,27 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { IoImageOutline } from 'react-icons/io5';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import MainLayout from '@/layouts';
-import { useRouter } from 'next/navigation';
+"use client";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { IoImageOutline } from "react-icons/io5";
+import { ScaleLoader } from "react-spinners";
+import { toast } from "sonner";
+
+import BackButton from "@/components/backButton";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import BackButton from '@/components/backButton';
-import { addFinancialNews, getCompanies } from '@/services/apis/companies';
-import { CompanyType } from '@/utils/types';
-import { newsCategoryList } from '@/services/mockData/mock';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ScaleLoader } from 'react-spinners';
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
+import MainLayout from "@/layouts";
+import { addFinancialNews, getCompanies } from "@/services/apis/companies";
+import { newsCategoryList } from "@/services/mockData/mock";
+import { CompanyType } from "@/utils/types";
 
 const Page = () => {
   const router = useRouter();
@@ -34,9 +35,9 @@ const Page = () => {
   const [companyList, setCompanyList] = useState<
     { label: string; value: any }[]
   >([]);
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedCompany, setSelectedCompany] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -46,10 +47,10 @@ const Page = () => {
           setCompanies(response.data);
           setIsLoading(false);
         } else {
-          console.error('Failed to fetch companies', response);
+          console.error("Failed to fetch companies", response);
         }
       } catch (error) {
-        console.error('Error fetching companies:', error);
+        console.error("Error fetching companies:", error);
       }
     };
 
@@ -70,14 +71,14 @@ const Page = () => {
 
   useEffect(() => {
     const filteredCompanies = companies.filter(
-      (company) => company.company_country === selectedCountry
+      (company) => company.company_country === selectedCountry,
     )[0];
     if (filteredCompanies) {
       const companiesList = filteredCompanies.list_of_companies.map(
         (company) => ({
           label: company.company_name,
           value: company.id,
-        })
+        }),
       );
       setCompanyList(companiesList);
     }
@@ -96,10 +97,10 @@ const Page = () => {
     const data = Object.fromEntries(formData.entries());
 
     const selectedCompanyID = companyList.find(
-      (company) => company.label === selectedCompany
+      (company) => company.label === selectedCompany,
     )?.value;
 
-    data.company = selectedCompanyID || '';
+    data.company = selectedCompanyID || "";
 
     setLoading(true);
 
@@ -110,20 +111,20 @@ const Page = () => {
         form.reset();
         setNewsImage(null);
 
-        toast.success('News added successfully', {
+        toast.success("News added successfully", {
           style: {
-            background: 'green',
-            color: 'white',
-            border: 'none',
+            background: "green",
+            color: "white",
+            border: "none",
           },
-          position: 'top-center',
+          position: "top-center",
           duration: 5000,
         });
       } else {
         const errors = response.error;
-        let errorMessage = '';
+        let errorMessage = "";
         for (const key in errors) {
-          if (errors.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(errors, key)) {
             errors[key].forEach((error: string) => {
               errorMessage += `${key}: ${error}\n`;
             });
@@ -132,10 +133,10 @@ const Page = () => {
         throw new Error(errorMessage);
       }
     } catch (error: any) {
-      toast.error(error.message || 'An error occurred', {
-        style: { background: 'red', color: 'white', border: 'none' },
+      toast.error(error.message || "An error occurred", {
+        style: { background: "red", color: "white", border: "none" },
         duration: 5000,
-        position: 'top-center',
+        position: "top-center",
       });
     } finally {
       setLoading(false);
@@ -275,7 +276,7 @@ const Page = () => {
               htmlFor="fileUpload"
               className="w-full flex justify-center items-center border-none cursor-pointer"
             >
-              {news_image ? news_image.name : 'Upload Image'}
+              {news_image ? news_image.name : "Upload Image"}
               <IoImageOutline className="ml-2" size={18} />
             </Label>
           </div>
@@ -284,7 +285,7 @@ const Page = () => {
             className="bg-[#148C59] text-white w-full px-3 py-7 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
             disabled={loading}
           >
-            {loading ? <ScaleLoader height={20} color="#fff" /> : 'Submit'}
+            {loading ? <ScaleLoader height={20} color="#fff" /> : "Submit"}
           </Button>
         </form>
       )}

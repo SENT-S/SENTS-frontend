@@ -1,11 +1,12 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useSession, signOut } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
-import { CustomSession } from '@/utils/types';
-import { toast } from 'sonner';
 import { redirect, usePathname } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
+import { CustomSession } from '@/utils/types';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -40,6 +41,7 @@ const AppProvider = ({ children, themeProps }: ProviderProps) => {
         const currentTime = Date.now() / 1000;
         return decoded.exp < currentTime;
       } catch (error) {
+        console.error('Error decoding token', error);
         return true;
       }
     };

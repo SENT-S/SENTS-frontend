@@ -61,9 +61,7 @@ const FStatements = ({
 
   return (
     <div>
-      <h2 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
-        Financial Statements
-      </h2>
+      <h2 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">Financial Statements</h2>
       {/* List statements */}
       <ul className="list-none items-center">
         {financialStatements.length > 0 ? (

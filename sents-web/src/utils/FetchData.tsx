@@ -12,7 +12,7 @@ const FetchData = async (
   endpoint: string,
   method: string = 'get',
   body?: any,
-  isFormData: boolean = false
+  isFormData: boolean = false,
 ) => {
   try {
     const session = await getSession();
@@ -30,11 +30,9 @@ const FetchData = async (
 
     // Set the correct Content-Type for FormData
     if (isFormData) {
-      axiosInstance.defaults.headers.common['Content-Type'] =
-        'multipart/form-data';
+      axiosInstance.defaults.headers.common['Content-Type'] = 'multipart/form-data';
     } else {
-      axiosInstance.defaults.headers.common['Content-Type'] =
-        'application/json';
+      axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
     }
 
     let res;
@@ -63,10 +61,7 @@ const FetchData = async (
 
     return res.data;
   } catch (error) {
-    console.error(
-      `Error ${method.toUpperCase()} data from ${endpoint}: `,
-      error
-    );
+    console.error(`Error ${method.toUpperCase()} data from ${endpoint}: `, error);
     throw error;
   }
 };

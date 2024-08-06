@@ -44,25 +44,12 @@ const initialData = [] as Company[];
 
 // Options for Fuse.js
 const options = {
-  keys: [
-    'company_country',
-    'company_name',
-    'stock_symbol',
-    'sector_or_industry',
-  ],
+  keys: ['company_country', 'company_name', 'stock_symbol', 'sector_or_industry'],
   includeScore: true,
 };
 
-const SkeletonComponent = ({
-  height,
-  width,
-}: {
-  height: string;
-  width: string;
-}) => (
-  <Skeleton
-    className={`h-${height} w-${width} rounded-full bg-gray-200 dark:bg-[#0e120f]`}
-  />
+const SkeletonComponent = ({ height, width }: { height: string; width: string }) => (
+  <Skeleton className={`h-${height} w-${width} rounded-full bg-gray-200 dark:bg-[#0e120f]`} />
 );
 
 const Header = () => {
@@ -110,9 +97,7 @@ const Header = () => {
       const response = await getCompanies();
       if (response.status === 200) {
         // Flatten the data into a single array of companies
-        const flattenedData = response.data.flatMap(
-          (data: any) => data.list_of_companies
-        );
+        const flattenedData = response.data.flatMap((data: any) => data.list_of_companies);
         setSearchData(flattenedData);
         // Update the fuse instance with the new data
         setFuse(new Fuse(flattenedData, options));
@@ -238,9 +223,7 @@ const Header = () => {
                 <DrawerHeader className="mx-auto w-full space-y-4 max-w-sm">
                   <div className="flex justify-between items-center">
                     <Link href="/dashboard">
-                      <h1 className="text-2xl Unigoe-font text-[#0D4222] font-bold">
-                        SENTS.
-                      </h1>
+                      <h1 className="text-2xl Unigoe-font text-[#0D4222] font-bold">SENTS.</h1>
                     </Link>
                     <DrawerClose>
                       <IoClose size={20} />
@@ -262,9 +245,7 @@ const Header = () => {
                       </Avatar>
                       <div className="mt-3 text-start">
                         <p className="font-bold">{session?.user?.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {session?.user?.email}
-                        </p>
+                        <p className="text-sm text-gray-500">{session?.user?.email}</p>
                       </div>
                     </div>
                   )}
@@ -274,10 +255,7 @@ const Header = () => {
                       className="p-2 bg-gray-100 rounded-full text-black dark:text-white dark:bg-[#39463E80]"
                       onClick={toggleTheme}
                     >
-                      <MdOutlineLightMode
-                        size={20}
-                        className="hidden dark:block"
-                      />
+                      <MdOutlineLightMode size={20} className="hidden dark:block" />
                       <BsFillMoonStarsFill size={20} className="dark:hidden" />
                     </Button>
                   </div>
@@ -290,9 +268,7 @@ const Header = () => {
                           type="button"
                           key={index}
                           className={`flex w-full  justify-center items-center rounded-md space-x-2 px-4 py-2 relative ${
-                            isActiveLink
-                              ? 'bg-[#39463E] text-white hover:bg-[#39463edc]'
-                              : ''
+                            isActiveLink ? 'bg-[#39463E] text-white hover:bg-[#39463edc]' : ''
                           }`}
                           disabled={link.disable}
                         >

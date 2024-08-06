@@ -1,6 +1,5 @@
-'use client';
-import { useNetwork } from '@/hooks/useNetwork';
-import { useEffect } from 'react';
+"use client";
+import { useNetwork } from "@/hooks/useNetwork";
 
 interface NetworkStatusProps {
   children: React.ReactNode;

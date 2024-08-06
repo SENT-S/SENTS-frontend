@@ -1,7 +1,8 @@
 'use client';
-import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import React, { useEffect } from 'react';
+
 import ErrorBoundaryImage from '@/public/images/ErrorBoundary.png';
 
 interface ErrorProps {
@@ -28,9 +29,7 @@ const Error: React.FC<ErrorProps> = ({ error }) => {
           />
         </div>
         <div className="space-y-8">
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Oops! Something went wrong
-          </h2>
+          <h2 className="text-2xl font-semibold text-gray-900">Oops! Something went wrong</h2>
           <p className="text-lg text-gray-500 max-w-lg">
             {`We're sorry for the inconvenience. Our team has been notified and
             we're working on a fix. Please try again later.`}

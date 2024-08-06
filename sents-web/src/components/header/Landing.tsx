@@ -8,25 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const SkeletonComponent = ({
-  height,
-  width,
-}: {
-  height: string;
-  width: string;
-}) => (
-  <Skeleton
-    className={`h-${height} w-${width} rounded-full bg-gray-200 dark:bg-[#0e120f]`}
-  />
+const SkeletonComponent = ({ height, width }: { height: string; width: string }) => (
+  <Skeleton className={`h-${height} w-${width} rounded-full bg-gray-200 dark:bg-[#0e120f]`} />
 );
 
-export default function Landing({
-  session,
-  status,
-}: {
-  session: any;
-  status: string;
-}) {
+export default function Landing({ session, status }: { session: any; status: string }) {
   const { image = '', name, email } = session?.user || {};
   const { theme, setTheme } = useTheme();
 

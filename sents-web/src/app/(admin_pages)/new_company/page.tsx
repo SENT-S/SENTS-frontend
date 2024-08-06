@@ -1,34 +1,36 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import MainLayout from '@/layouts';
-import Stepper from '@/components/ui/Stepper';
+"use client";
+import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+
+import Step_1 from "./_steps/step_1";
+import Step_2 from "./_steps/step_2";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+} from "@/components/ui/breadcrumb";
+import Stepper from "@/components/ui/Stepper";
+import MainLayout from "@/layouts";
 import {
   fetchMetrics,
   fetchCategories,
-} from '@/lib/ReduxSlices/metric_category';
-import { useSelector, useDispatch } from '@/lib/utils';
-import Step_1 from './_steps/step_1';
-import Step_2 from './_steps/step_2';
-import { useRouter } from 'next/navigation';
+} from "@/lib/ReduxSlices/metric_category";
+import { useSelector, useDispatch } from "@/lib/utils";
 
-const steps = ['Step 1', 'Step 2'];
+const steps = ["Step 1", "Step 2"];
 
 const AddCompanyPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [step, setStep] = useState(1);
   const financialMetrics = useSelector<any>(
-    (state) => state.metricCategory.metricList
+    (state) => state.metricCategory.metricList,
   );
   const financialDataCategories = useSelector<any>(
-    (state) => state.metricCategory.categoryList
+    (state) => state.metricCategory.categoryList,
   );
 
   useEffect(() => {
@@ -43,8 +45,15 @@ const AddCompanyPage = () => {
           <BreadcrumbList>
             <BreadcrumbItem>
               <div
+                role="button"
+                tabIndex={0}
                 className="text-green-600 cursor-pointer"
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push("/dashboard")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    router.push("/dashboard");
+                  }
+                }}
               >
                 Dashboard
               </div>

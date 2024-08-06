@@ -23,23 +23,13 @@ interface TableProps {
   columns: TableColumn[];
   rows: { [key: string]: any }[];
   onRowClick?: (row: { [key: string]: any }) => void;
-  renderCell?: (
-    row: { [key: string]: any },
-    column: TableColumn
-  ) => JSX.Element;
+  renderCell?: (row: { [key: string]: any }, column: TableColumn) => JSX.Element;
 }
 
-const TableComponent: React.FC<TableProps> = ({
-  columns,
-  rows,
-  onRowClick,
-  renderCell,
-}) => {
+const TableComponent: React.FC<TableProps> = ({ columns, rows, onRowClick, renderCell }) => {
   const router = useRouter();
   const { data: session } = useSession() as { data: CustomSession };
-  const [editableRows, setEditableRows] = useState<{ [key: string]: any }[]>(
-    []
-  );
+  const [editableRows, setEditableRows] = useState<{ [key: string]: any }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [rowIdToDelete, setRowIdToDelete] = useState<string | null>(null);
@@ -90,7 +80,7 @@ const TableComponent: React.FC<TableProps> = ({
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     rowIndex: number,
-    column: TableColumn
+    column: TableColumn,
   ) => {
     const updatedRows = [...editableRows];
     updatedRows[rowIndex] = {
@@ -220,9 +210,7 @@ const TableComponent: React.FC<TableProps> = ({
                             <Input
                               value={row[column.field]}
                               className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
-                              onChange={(e) =>
-                                handleInputChange(e, rowIndex, column)
-                              }
+                              onChange={(e) => handleInputChange(e, rowIndex, column)}
                             />
                           ) : renderCell ? (
                             renderCell(row, column)
@@ -252,9 +240,7 @@ const TableComponent: React.FC<TableProps> = ({
                     </div>
                   ))
                 ) : (
-                  <div className="flex items-center justify-center py-2">
-                    No data available
-                  </div>
+                  <div className="flex items-center justify-center py-2">No data available</div>
                 )}
               </div>
             </div>

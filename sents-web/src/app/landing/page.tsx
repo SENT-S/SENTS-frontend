@@ -1,18 +1,19 @@
-'use client';
-import Image from 'next/image';
-import { GoArrowRight } from 'react-icons/go';
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { CustomSession } from '@/utils/types';
-import LandingHeader from '@/components/header/Landing';
-import landingIllustration from '@/public/images/landingIllustration.png';
-import landingImage from '@/public/images/landingImage.png';
-import landingImage2 from '@/public/images/landingImage2.png';
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { GoArrowRight } from "react-icons/go";
+
+import LandingHeader from "@/components/header/Landing";
+import landingIllustration from "@/public/images/landingIllustration.png";
+import landingImage from "@/public/images/landingImage.png";
+import landingImage2 from "@/public/images/landingImage2.png";
+import { CustomSession } from "@/utils/types";
 
 export default function LandingPage() {
   const { data: session, status } = useSession() as {
     data: CustomSession;
-    status: 'loading' | 'authenticated' | 'unauthenticated';
+    status: "loading" | "authenticated" | "unauthenticated";
   };
 
   return (
@@ -34,7 +35,7 @@ export default function LandingPage() {
                 zIndex: 1000,
               }}
             >
-              {session ? 'Go to Dashboard' : 'Get Started'}
+              {session ? "Go to Dashboard" : "Get Started"}
               <GoArrowRight
                 className="ml-2 text-[#E6F6F0] bg-[#0D4222] p-1 md:p-2 rounded-lg"
                 size={32}

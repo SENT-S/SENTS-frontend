@@ -1,17 +1,18 @@
-'use client';
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useRouter } from 'next/navigation';
-import BackButton from '@/components/backButton';
-import LoginForm from '@/components/authForm/forms/LoginForm';
-import RegisterForm from '@/components/authForm/forms/RegisterForm';
+"use client";
+import { useRouter } from "next/navigation";
+import React from "react";
+
+import LoginForm from "@/components/authForm/forms/LoginForm";
+import RegisterForm from "@/components/authForm/forms/RegisterForm";
+import BackButton from "@/components/backButton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Auth = () => {
   const router = useRouter();
   return (
     <div className="w-full h-full overflow-y-auto flex justify-center items-center relative">
       <BackButton
-        onClick={() => router.push('/landing')}
+        onClick={() => router.push("/landing")}
         customClass="absolute top-4 left-4"
       />
       <Tabs

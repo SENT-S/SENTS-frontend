@@ -15,13 +15,7 @@ interface SubNavProps {
   setSelectedLink: (link: string) => void;
 }
 
-const SubNav = ({
-  links,
-  selectedLink,
-  setSelectedLink,
-  bgColor,
-  addCat,
-}: SubNavProps) => {
+const SubNav = ({ links, selectedLink, setSelectedLink, bgColor, addCat }: SubNavProps) => {
   const [visibleLinks, setVisibleLinks] = useState(links);
   const [dropdownLinks, setDropdownLinks] = useState<string[]>([]);
   const { data: session } = useSession() as {
@@ -81,11 +75,7 @@ const SubNav = ({
   return (
     <div className={containerClasses} ref={containerRef}>
       {visibleLinks.map((link: any, index: any) => (
-        <div
-          key={index + 1}
-          className={linkClasses(link)}
-          onClick={() => setSelectedLink(link)}
-        >
+        <div key={index + 1} className={linkClasses(link)} onClick={() => setSelectedLink(link)}>
           {link}
         </div>
       ))}

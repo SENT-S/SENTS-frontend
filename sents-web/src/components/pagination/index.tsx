@@ -38,10 +38,7 @@ const Pagination = ({ items = [], itemsPerPage, render }: PaginationProps) => {
         />
         {[...Array(totalPages)].map((_, i) => (
           <PaginationItem key={i} className="list-none cursor-pointer">
-            <PaginationLink
-              onClick={() => handlePageClick(i + 1)}
-              isActive={i + 1 === currentPage}
-            >
+            <PaginationLink onClick={() => handlePageClick(i + 1)} isActive={i + 1 === currentPage}>
               {i + 1}
             </PaginationLink>
           </PaginationItem>

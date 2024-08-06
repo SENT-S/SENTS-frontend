@@ -1,13 +1,14 @@
-import React from 'react';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { HiOutlineUsers } from 'react-icons/hi2';
-import { HiOutlineUser } from 'react-icons/hi2';
-import { MdOutlineDateRange } from 'react-icons/md';
-import { MdOutlineWebAsset } from 'react-icons/md';
-import { updateCompanyField } from '@/lib/ReduxSlices/create_company';
-import { useDispatch, useSelector } from '@/lib/utils';
+import React from "react";
+import { HiOutlineUsers } from "react-icons/hi2";
+import { HiOutlineUser } from "react-icons/hi2";
+import { MdOutlineDateRange } from "react-icons/md";
+import { MdOutlineWebAsset } from "react-icons/md";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { updateCompanyField } from "@/lib/ReduxSlices/create_company";
+import { useDispatch, useSelector } from "@/lib/utils";
 
 const Section_2 = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const Section_2 = () => {
           </div>
           <Textarea
             value={companyFields.about_company}
-            onChange={(e) => handleInputChange('about_company', e.target.value)}
+            onChange={(e) => handleInputChange("about_company", e.target.value)}
             placeholder="About"
             className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
           />
@@ -43,7 +44,7 @@ const Section_2 = () => {
             <Textarea
               value={companyFields.mission_statement}
               onChange={(e) =>
-                handleInputChange('mission_statement', e.target.value)
+                handleInputChange("mission_statement", e.target.value)
               }
               placeholder="Mission Statement"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
@@ -56,7 +57,7 @@ const Section_2 = () => {
             <Textarea
               value={companyFields.vision_statement}
               onChange={(e) =>
-                handleInputChange('vision_statement', e.target.value)
+                handleInputChange("vision_statement", e.target.value)
               }
               placeholder="Vision Statement"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
@@ -71,7 +72,7 @@ const Section_2 = () => {
             </div>
             <Input
               value={companyFields.ceo}
-              onChange={(e) => handleInputChange('ceo', e.target.value)}
+              onChange={(e) => handleInputChange("ceo", e.target.value)}
               placeholder="Enter CEO Name"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />
@@ -85,7 +86,7 @@ const Section_2 = () => {
               type="number"
               value={companyFields.number_of_employees}
               onChange={(e) =>
-                handleInputChange('number_of_employees', e.target.value)
+                handleInputChange("number_of_employees", e.target.value)
               }
               placeholder="Enter Number of Employees"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
@@ -102,7 +103,7 @@ const Section_2 = () => {
               type="number"
               value={companyFields.year_founded}
               onChange={(e) =>
-                handleInputChange('year_founded', e.target.value)
+                handleInputChange("year_founded", e.target.value)
               }
               placeholder="Enter Founded Year"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
@@ -116,7 +117,7 @@ const Section_2 = () => {
             <Input
               type="url"
               value={companyFields.website_url}
-              onChange={(e) => handleInputChange('website_url', e.target.value)}
+              onChange={(e) => handleInputChange("website_url", e.target.value)}
               placeholder="Enter Website"
               className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
             />

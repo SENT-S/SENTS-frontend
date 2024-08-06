@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
-import NewsItem from '@/components/NewsItem/NewsItem';
-import { defaultImageUrl } from '@/services/mockData/mock';
+import React, { useState, useEffect } from "react";
+
+import NewsItem from "@/components/NewsItem/NewsItem";
+import { defaultImageUrl } from "@/services/mockData/mock";
 
 export default function Teams({
   data,
@@ -12,15 +13,15 @@ export default function Teams({
   data: any[];
   showCheckbox: boolean;
   onCheckboxChange: (id: string, checked: boolean) => void;
-  selectedIDs: Number[];
+  selectedIDs: number[];
 }) {
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize();
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   if (!data || data.length === 0) {

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Pagination from '@/components/pagination';
-import NewsItem from '@/components/NewsItem/NewsItem';
-import { defaultImageUrl } from '@/services/mockData/mock';
+import React, { useState, useEffect } from "react";
+
+import NewsItem from "@/components/NewsItem/NewsItem";
+import Pagination from "@/components/pagination";
+import { defaultImageUrl } from "@/services/mockData/mock";
 
 interface NewsProps {
   data: any;

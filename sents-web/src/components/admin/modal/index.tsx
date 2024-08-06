@@ -1,11 +1,6 @@
 'use client';
 import React, { useRef } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import useOutsideClick from '@/hooks/useOutsideClick';
 import { ScaleLoader } from 'react-spinners';
 import { Button } from '@/components/ui/button';
@@ -46,10 +41,7 @@ const FormModal = (props: Props) => {
   };
 
   return (
-    <Dialog
-      open={props.openDialog}
-      onOpenChange={(open) => props.setDialog?.(open)}
-    >
+    <Dialog open={props.openDialog} onOpenChange={(open) => props.setDialog?.(open)}>
       <DialogTrigger
         disabled={props.disabled}
         onClick={() => props.setDialog?.(true)}
@@ -68,9 +60,7 @@ const FormModal = (props: Props) => {
         <div>
           <form
             onSubmit={handleSubmit}
-            encType={
-              props.formProps?.encType || 'application/x-www-form-urlencoded'
-            }
+            encType={props.formProps?.encType || 'application/x-www-form-urlencoded'}
             {...props.formProps}
           >
             {props.children}

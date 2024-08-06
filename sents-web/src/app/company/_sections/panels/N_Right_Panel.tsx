@@ -1,8 +1,6 @@
-import React from 'react';
-import Image from 'next/image';
-import Expert1 from '@/public/images/expert1.png';
-import Expert2 from '@/public/images/expert2.png';
-import { Button } from '@/components/ui/button';
+import Image from "next/image";
+import React from "react";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +11,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import Expert1 from "@/public/images/expert1.png";
+import Expert2 from "@/public/images/expert2.png";
 
 const N_Right_Panel = () => {
   return (
@@ -58,10 +59,19 @@ const N_Right_Panel = () => {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <div
+                role="button"
+                tabIndex={0}
                 onClick={() => {
                   setTimeout(() => {
-                    alert('You have successfully subscribed!');
+                    alert("You have successfully subscribed!");
                   }, 1000);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    setTimeout(() => {
+                      alert("You have successfully subscribed!");
+                    }, 1000);
+                  }
                 }}
               >
                 <AlertDialogAction className="bg-green-600 text-white hover:bg-green-800">

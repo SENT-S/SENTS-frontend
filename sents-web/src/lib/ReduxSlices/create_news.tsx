@@ -28,7 +28,7 @@ const newsFormSlice = createSlice({
   reducers: {
     updateNewsField: (
       state,
-      action: PayloadAction<{ field: keyof FormDataState; value: string }>
+      action: PayloadAction<{ field: keyof FormDataState; value: string }>,
     ) => {
       const { field, value } = action.payload;
       if (field === 'image') {

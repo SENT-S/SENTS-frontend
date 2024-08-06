@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
-import Image from 'next/image';
-import OveriewImage from '@/public/images/overview.png';
+import Image from "next/image";
+import React from "react";
+
+import OveriewImage from "@/public/images/overview.png";
 
 interface OverviewProps {
   data: any;

@@ -83,10 +83,7 @@ const AddNewStatement = ({ companyID }: { companyID: number }) => {
             className="w-full border-none hidden"
             onChange={handleFileChange}
           />
-          <Label
-            htmlFor="fileUpload"
-            className="w-full border-none cursor-pointer"
-          >
+          <Label htmlFor="fileUpload" className="w-full border-none cursor-pointer">
             {document ? document.name : 'Upload Document'}
           </Label>
           <MdOutlineCloudUpload className="ml-0" size={18} />

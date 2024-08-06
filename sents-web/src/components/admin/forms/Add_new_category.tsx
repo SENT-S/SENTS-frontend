@@ -13,11 +13,7 @@ type Add_new_categoryProps = {
   ButtonStyle?: string;
 };
 
-const Add_new_category = ({
-  ButtonText,
-  Icon,
-  ButtonStyle,
-}: Add_new_categoryProps) => {
+const Add_new_category = ({ ButtonText, Icon, ButtonStyle }: Add_new_categoryProps) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
