@@ -1,9 +1,9 @@
-import Link from "next/link";
-import React from "react";
-import { CgWebsite } from "react-icons/cg";
-import { HiOutlineUser } from "react-icons/hi2";
-import { HiOutlineUsers } from "react-icons/hi2";
-import { MdOutlineDateRange } from "react-icons/md";
+import Link from 'next/link';
+import React from 'react';
+import { CgWebsite } from 'react-icons/cg';
+import { HiOutlineUser } from 'react-icons/hi2';
+import { HiOutlineUsers } from 'react-icons/hi2';
+import { MdOutlineDateRange } from 'react-icons/md';
 
 interface AboutProps {
   data: any;
@@ -25,9 +25,7 @@ const O_Right_Panel = ({ data }: AboutProps) => {
     <div className="w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
       <h1 className="text-2xl font-bold">About</h1>
       <div>
-        <p className="text-justify">
-          {data?.about_company && data.about_company}
-        </p>
+        <p className="text-justify">{data?.about_company && data.about_company}</p>
       </div>
       <div className="space-y-10">
         <div className="flex items-center justify-between">

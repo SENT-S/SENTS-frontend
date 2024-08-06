@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 import {
   Pagination as PaginationContainer,
@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from '@/components/ui/pagination';
 
 interface PaginationProps {
   items: any[];
@@ -14,11 +14,7 @@ interface PaginationProps {
   render: (items: any[]) => JSX.Element;
 }
 
-const CustomPagination = ({
-  items = [],
-  itemsPerPage,
-  render,
-}: PaginationProps) => {
+const CustomPagination = ({ items = [], itemsPerPage, render }: PaginationProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
@@ -41,10 +37,7 @@ const CustomPagination = ({
         />
         {[...Array(totalPages)].map((_, i) => (
           <PaginationItem key={i} className="list-none cursor-pointer">
-            <PaginationLink
-              onClick={() => handlePageClick(i + 1)}
-              isActive={i + 1 === currentPage}
-            >
+            <PaginationLink onClick={() => handlePageClick(i + 1)} isActive={i + 1 === currentPage}>
               {i + 1}
             </PaginationLink>
           </PaginationItem>

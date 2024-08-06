@@ -1,11 +1,11 @@
-import React from "react";
-import { FaArrowRightLong } from "react-icons/fa6";
-import { RxPlus } from "react-icons/rx";
+import React from 'react';
+import { FaArrowRightLong } from 'react-icons/fa6';
+import { RxPlus } from 'react-icons/rx';
 
-import CompanyCard from "@/components/admin/companyCard";
-import { Button } from "@/components/ui/button";
-import { resetCompanyFields } from "@/lib/ReduxSlices/create_company";
-import { useSelector, useDispatch } from "@/lib/utils";
+import CompanyCard from '@/components/admin/companyCard';
+import { Button } from '@/components/ui/button';
+import { resetCompanyFields } from '@/lib/ReduxSlices/create_company';
+import { useSelector, useDispatch } from '@/lib/utils';
 
 const Preview = ({
   innerStep,

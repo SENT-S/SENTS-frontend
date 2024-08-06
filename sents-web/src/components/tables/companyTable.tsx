@@ -141,7 +141,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
           {showEdit ? (
             <div className="flex flex-wrap gap-2">
               <Button
-                className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#148C59ed9] hover:text-white"
+                className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl hover:bg-[#148C59ed9] hover:text-white"
                 onClick={handleEditCompany}
               >
                 {loading ? (
@@ -154,7 +154,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
               </Button>
               <Button
                 type="button"
-                className="bg-[#EA0000] text-white p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#EA0000ed9] hover:text-white"
+                className="bg-[#EA0000] text-white p-2 md:p-7 rounded-2xl hover:bg-[#EA0000ed9] hover:text-white"
                 onClick={() => {
                   setShowEdit(false);
                   setEditableRows(rows);
@@ -165,7 +165,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
             </div>
           ) : (
             <Button
-              className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+              className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl hover:bg-[#e4f2eb] hover:text-[39463E]"
               onClick={() => setShowEdit(!showEdit)}
             >
               Edit Company <FiEdit className="ml-3" size={18} />

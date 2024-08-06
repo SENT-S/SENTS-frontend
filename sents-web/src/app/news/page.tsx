@@ -1,36 +1,36 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import React, { useState, useEffect, useMemo } from "react";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { RxPlus } from "react-icons/rx";
-import { toast } from "sonner";
+'use client';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { RxPlus } from 'react-icons/rx';
+import { toast } from 'sonner';
 
-import Events from "./_sections/Events";
-import News from "./_sections/News";
-import Resources from "./_sections/Resources";
-import Teams from "./_sections/Teams";
-import TopNews from "./_sections/TopNews";
+import Events from './_sections/Events';
+import News from './_sections/News';
+import Resources from './_sections/Resources';
+import Teams from './_sections/Teams';
+import TopNews from './_sections/TopNews';
 
-import ModalForms from "@/components/admin/modal";
-import SubNav from "@/components/admin/Navs/SubNav";
-import { Button } from "@/components/ui/button";
-import CustomPagination from "@/components/ui/customPagination";
+import ModalForms from '@/components/admin/modal';
+import SubNav from '@/components/admin/Navs/SubNav';
+import { Button } from '@/components/ui/button';
+import CustomPagination from '@/components/ui/customPagination';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import MainLayout from "@/layouts";
-import { getAllCompanyNews, getCompanies } from "@/services/apis/companies";
-import { deleteCompanyFNews } from "@/services/apis/companies";
-import { CustomSession } from "@/utils/types";
-import { CompanyType } from "@/utils/types";
+} from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import MainLayout from '@/layouts';
+import { getAllCompanyNews, getCompanies } from '@/services/apis/companies';
+import { deleteCompanyFNews } from '@/services/apis/companies';
+import { CustomSession } from '@/utils/types';
+import { CompanyType } from '@/utils/types';
 
-const Categories = ["Top News", "News", "Events", "Resources", "Teams"];
+const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
 const NewsPage = () => {
   const router = useRouter();
@@ -38,16 +38,12 @@ const NewsPage = () => {
   const [newsData, setNewsData] = useState<any[]>([]);
   const [selectedLink, setSelectedLink] = useState<any>(Categories[0]);
   const [isLoading, setIsLoading] = useState(true);
-  const isAdmin = session?.user?.role === "ADMIN";
+  const isAdmin = session?.user?.role === 'ADMIN';
   const [companies, setCompanies] = useState<CompanyType[]>([]);
-  const [countryList, setCountryList] = useState<
-    { label: string; value: string }[]
-  >([]);
-  const [companyList, setCompanyList] = useState<
-    { label: string; value: string }[]
-  >([]);
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState("");
+  const [countryList, setCountryList] = useState<{ label: string; value: string }[]>([]);
+  const [companyList, setCompanyList] = useState<{ label: string; value: string }[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState('');
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
@@ -64,16 +60,16 @@ const NewsPage = () => {
         if (newsResponse.status === 200) {
           setNewsData(newsResponse.data);
         } else {
-          console.error("Failed to fetch news", newsResponse);
+          console.error('Failed to fetch news', newsResponse);
         }
 
         if (companiesResponse.status === 200) {
           setCompanies(companiesResponse.data);
         } else {
-          console.error("Failed to fetch companies", companiesResponse);
+          console.error('Failed to fetch companies', companiesResponse);
         }
       } catch (error) {
-        console.error("An error occurred while fetching data:", error);
+        console.error('An error occurred while fetching data:', error);
       }
 
       setIsLoading(false);
@@ -99,12 +95,10 @@ const NewsPage = () => {
       (company) => company.company_country === selectedCountry,
     );
     if (filteredCompanies) {
-      const companiesList = filteredCompanies.list_of_companies.map(
-        (company: any) => ({
-          label: company.company_name,
-          value: company.id,
-        }),
-      );
+      const companiesList = filteredCompanies.list_of_companies.map((company: any) => ({
+        label: company.company_name,
+        value: company.id,
+      }));
       setCompanyList(companiesList);
     }
   }, [selectedCountry, companies]);
@@ -113,9 +107,7 @@ const NewsPage = () => {
     const newsByLink = newsData[selectedLink] || [];
 
     if (selectedCompany) {
-      return newsByLink.filter(
-        (news: any) => news.company_name === selectedCompany,
-      );
+      return newsByLink.filter((news: any) => news.company_name === selectedCompany);
     } else {
       return newsByLink;
     }
@@ -138,19 +130,19 @@ const NewsPage = () => {
     try {
       const response = await deleteCompanyFNews(data);
       if (response.status === 200 || response.status === 204) {
-        toast.success("News deleted successfully", {
-          style: { background: "green", color: "white", border: "none" },
+        toast.success('News deleted successfully', {
+          style: { background: 'green', color: 'white', border: 'none' },
           duration: 5000,
-          position: "top-center",
+          position: 'top-center',
         });
       } else {
-        throw new Error("Failed to delete news");
+        throw new Error('Failed to delete news');
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred, please try again", {
-        style: { background: "red", color: "white", border: "none" },
+      toast.error(error.message || 'An error occurred, please try again', {
+        style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
-        position: "top-center",
+        position: 'top-center',
       });
     }
   };
@@ -161,7 +153,7 @@ const NewsPage = () => {
   };
 
   const handleCreateNews = () => {
-    router.push("/create_news");
+    router.push('/create_news');
   };
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
@@ -182,11 +174,7 @@ const NewsPage = () => {
       ) : (
         <>
           {/* Admin features */}
-          {isAdmin && (
-            <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
-              News
-            </h1>
-          )}
+          {isAdmin && <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">News</h1>}
 
           {/* Admin features */}
           {isAdmin && (
@@ -230,7 +218,7 @@ const NewsPage = () => {
               <Button
                 type="button"
                 className="bg-[#39463E] text-white px-4 py-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
-                onClick={() => setSelectedCompany("")}
+                onClick={() => setSelectedCompany('')}
               >
                 All
               </Button>
@@ -240,10 +228,7 @@ const NewsPage = () => {
                 defaultValue={selectedCountry}
               >
                 <SelectTrigger className="md:w-[280px] rounded-2xl p-2 md:p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
-                  <SelectValue
-                    placeholder="Select Country"
-                    className="text-center w-full"
-                  >
+                  <SelectValue placeholder="Select Country" className="text-center w-full">
                     {selectedCountry}
                   </SelectValue>
                 </SelectTrigger>
@@ -261,10 +246,7 @@ const NewsPage = () => {
                 defaultValue={selectedCompany}
               >
                 <SelectTrigger className="md:w-[280px] rounded-2xl p-2 md:p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
-                  <SelectValue
-                    placeholder="Select Company"
-                    className="text-center w-full"
-                  >
+                  <SelectValue placeholder="Select Company" className="text-center w-full">
                     {selectedCompany}
                   </SelectValue>
                 </SelectTrigger>
@@ -293,7 +275,7 @@ const NewsPage = () => {
             itemsPerPage={4}
             render={(currentItems) => (
               <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
-                {selectedLink === "Top News" && (
+                {selectedLink === 'Top News' && (
                   <TopNews
                     data={currentItems}
                     showCheckbox={showCheckbox}
@@ -301,7 +283,7 @@ const NewsPage = () => {
                     onCheckboxChange={handleCheckboxChange}
                   />
                 )}
-                {selectedLink === "News" && (
+                {selectedLink === 'News' && (
                   <News
                     data={currentItems}
                     showCheckbox={showCheckbox}
@@ -309,7 +291,7 @@ const NewsPage = () => {
                     onCheckboxChange={handleCheckboxChange}
                   />
                 )}
-                {selectedLink === "Events" && (
+                {selectedLink === 'Events' && (
                   <Events
                     data={currentItems}
                     showCheckbox={showCheckbox}
@@ -317,7 +299,7 @@ const NewsPage = () => {
                     onCheckboxChange={handleCheckboxChange}
                   />
                 )}
-                {selectedLink === "Resources" && (
+                {selectedLink === 'Resources' && (
                   <Resources
                     data={currentItems || []}
                     showCheckbox={showCheckbox}
@@ -325,7 +307,7 @@ const NewsPage = () => {
                     onCheckboxChange={handleCheckboxChange}
                   />
                 )}
-                {selectedLink === "Teams" && (
+                {selectedLink === 'Teams' && (
                   <Teams
                     data={currentItems}
                     showCheckbox={showCheckbox}

@@ -1,5 +1,5 @@
-import Image from "next/image";
-import React from "react";
+import Image from 'next/image';
+import React from 'react';
 
 import {
   AlertDialog,
@@ -11,10 +11,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import Expert1 from "@/public/images/expert1.png";
-import Expert2 from "@/public/images/expert2.png";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import Expert1 from '@/public/images/expert1.png';
+import Expert2 from '@/public/images/expert2.png';
 
 const N_Right_Panel = () => {
   return (
@@ -38,9 +38,7 @@ const N_Right_Panel = () => {
       </div>
 
       <div className="space-y-4 rounded-2xl bg-white relative dark:text-white dark:bg-[#39463E80] px-8 py-4">
-        <h1 className="text-4xl text-center font-normal mb-3">
-          Subscribe to our Newsletter
-        </h1>
+        <h1 className="text-4xl text-center font-normal mb-3">Subscribe to our Newsletter</h1>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button className="absolute left-1/2 z-50 transform -translate-x-1/2 px-8 py-2 hover:bg-green-800 bg-[#148C59] text-white rounded-full text-2xl">
@@ -51,9 +49,8 @@ const N_Right_Panel = () => {
             <AlertDialogHeader>
               <AlertDialogTitle>Subscription Confirmation</AlertDialogTitle>
               <AlertDialogDescription>
-                You are about to subscribe to our service. This will enable you
-                to receive regular updates and exclusive content. Are you sure
-                you want to proceed?
+                You are about to subscribe to our service. This will enable you to receive regular
+                updates and exclusive content. Are you sure you want to proceed?
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -63,13 +60,13 @@ const N_Right_Panel = () => {
                 tabIndex={0}
                 onClick={() => {
                   setTimeout(() => {
-                    alert("You have successfully subscribed!");
+                    alert('You have successfully subscribed!');
                   }, 1000);
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (e.key === 'Enter' || e.key === ' ') {
                     setTimeout(() => {
-                      alert("You have successfully subscribed!");
+                      alert('You have successfully subscribed!');
                     }, 1000);
                   }
                 }}

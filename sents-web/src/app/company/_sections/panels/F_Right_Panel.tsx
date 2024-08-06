@@ -1,9 +1,9 @@
-import { useRouter } from "next/navigation";
-import React from "react";
-import { RiArrowRightSLine } from "react-icons/ri";
-import { TfiDownload } from "react-icons/tfi";
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { RiArrowRightSLine } from 'react-icons/ri';
+import { TfiDownload } from 'react-icons/tfi';
 
-import { mockdata } from "@/services/mockData/mock";
+import { mockdata } from '@/services/mockData/mock';
 
 interface FinancialProps {
   data: any;
@@ -22,7 +22,7 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
         const url = new URL(document.docurl);
         return {
           url: document.docurl,
-          hostname: url.pathname.split("/").pop(),
+          hostname: url.pathname.split('/').pop(),
         };
       } catch (error) {
         console.error(`Invalid URL: ${document.docurl}`, error);
@@ -40,9 +40,7 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
             companyDocuments?.map((doc: any, index: number) => (
               <li key={index} className="flex items-center justify-between p-3">
                 <span className="min-w-[200px]">
-                  {doc.hostname.length > 25
-                    ? doc.hostname.slice(0, 25) + "..."
-                    : doc.hostname}
+                  {doc.hostname.length > 25 ? doc.hostname.slice(0, 25) + '...' : doc.hostname}
                 </span>
                 <a href={doc.url} download target="_blank" rel="noreferrer">
                   <TfiDownload
@@ -71,7 +69,7 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
                   className="flex justify-between items-left w-full cursor-pointer"
                   onClick={() => handleStockClick(stock.id)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
+                    if (e.key === 'Enter' || e.key === ' ') {
                       handleStockClick(stock.id);
                     }
                   }}
@@ -80,10 +78,7 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
                     <p className="font-medium">{stock.name}</p>
                     <p className="text-gray-500">{stock.symbol}</p>
                   </div>
-                  <RiArrowRightSLine
-                    size={24}
-                    className="text-green-600 dark:text-[#8D9D93]"
-                  />
+                  <RiArrowRightSLine size={24} className="text-green-600 dark:text-[#8D9D93]" />
                 </button>
               </li>
             ))

@@ -1,25 +1,21 @@
-import "@/styles/styles.scss";
-import NextTopLoader from "nextjs-toploader";
+import '@/styles/styles.scss';
+import NextTopLoader from 'nextjs-toploader';
 
-import AppProvider from "./AppProvider";
-import NetworkStatus from "./NetworkStatus";
+import AppProvider from './AppProvider';
+import NetworkStatus from './NetworkStatus';
 
-import AuthProvider from "@/app/AuthProvider";
-import { Toaster } from "@/components/ui/sonner";
+import AuthProvider from '@/app/AuthProvider';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata = {
   title: "Sent's",
   description: "Sent's is a platform that helps unlock Financial insights",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const themeProps = {
-    attribute: "class",
-    defaultTheme: "light",
+    attribute: 'class',
+    defaultTheme: 'light',
     enableSystem: true,
     disableTransitionOnChange: true,
   };

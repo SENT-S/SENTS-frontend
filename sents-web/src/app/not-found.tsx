@@ -1,7 +1,7 @@
-import Image from "next/image";
-import React from "react";
+import Image from 'next/image';
+import React from 'react';
 
-import NotFoundIllustration from "@/public/images/notfound.png";
+import NotFoundIllustration from '@/public/images/notfound.png';
 
 const NotFound = () => {
   return (
@@ -16,8 +16,8 @@ const NotFound = () => {
       </div>
       <p className="text-2xl mb-4">Page Not Found</p>
       <p className="mt-4 text-center text-gray-700 mb-8">
-        The page you are looking for might have been removed, had its name
-        changed, or is temporarily unavailable.
+        The page you are looking for might have been removed, had its name changed, or is
+        temporarily unavailable.
       </p>
       <a href="/dashboard" className="mt-8 text-blue-500 hover:underline">
         Go to Homepage
