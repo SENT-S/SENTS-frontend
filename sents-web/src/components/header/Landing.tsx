@@ -46,13 +46,13 @@ export default function Landing({ session, status }: { session: any; status: str
               </Link>
             </li>
             <li>
-              <Button type="button" className="mt-1 p-0" onClick={toggleTheme}>
+              <Button type="button" className="mt-1 px-2" onClick={toggleTheme}>
                 <MdOutlineLightMode size={20} className="hidden dark:block" />
                 <BsFillMoonStarsFill size={20} className="dark:hidden" />
               </Button>
             </li>
             <li>
-              <Button type="button" className="flex items-center mt-1 p-0">
+              <Button type="button" className="flex items-center mt-1 px-2">
                 <TfiWorld className="text-[#0D4222] dark:text-white" />
                 <MdOutlineKeyboardArrowDown className="text-[#0D4222] dark:text-white" />
               </Button>

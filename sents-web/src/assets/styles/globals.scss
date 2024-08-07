@@ -29,6 +29,18 @@ html {
   overflow: hidden;
 }
 
+.container {
+  max-width: 1630px;
+  padding-right: 16px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 8px 0 8px;
+  }
+}
+
 .Unigoe-font {
   font-family: 'Unigeo64';
 }

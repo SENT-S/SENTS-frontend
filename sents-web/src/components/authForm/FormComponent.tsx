@@ -1,19 +1,20 @@
 'use client';
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { StaticImageData } from 'next/image';
-import Link from 'next/link';
 import Image from 'next/image';
-import { Separator } from '@/components/ui/separator';
-import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { registerUser } from '@/services/apis/registerUser';
-import { toast } from 'sonner';
+import { signIn } from 'next-auth/react';
+import React, { useState } from 'react';
 import { ScaleLoader } from 'react-spinners';
+import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import Apple from '@/public/icons/apple.png';
 import Google from '@/public/icons/google.png';
 import Microsoft from '@/public/icons/micro.png';
+import { registerUser } from '@/services/apis/registerUser';
 
 interface FormComponent {
   title: string;

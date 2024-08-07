@@ -1,9 +1,10 @@
 'use client';
 import React, { useRef } from 'react';
+import { ScaleLoader } from 'react-spinners';
+
+import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import useOutsideClick from '@/hooks/useOutsideClick';
-import { ScaleLoader } from 'react-spinners';
-import { Button } from '@/components/ui/button';
 
 interface Props {
   ButtonText?: string;

@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
+import { MdOutlineCloudUpload } from 'react-icons/md';
+import { toast } from 'sonner';
+
+import FormModal from '../modal';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MdOutlineCloudUpload } from 'react-icons/md';
-import FormModal from '../modal';
 import { addCompanyDocuments } from '@/services/apis/companies';
-import { toast } from 'sonner';
 
 const AddNewStatement = ({ companyID }: { companyID: number }) => {
   const [document, setDocument] = useState<File | null>(null);

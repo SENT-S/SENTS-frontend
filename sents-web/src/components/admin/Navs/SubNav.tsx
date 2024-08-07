@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
+import { useSession } from 'next-auth/react';
 import React, { useState, useEffect, useRef } from 'react';
-import { GoPlusCircle } from 'react-icons/go';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { GoPlusCircle } from 'react-icons/go';
+
 import Add_new_category from '@/components/admin/forms/Add_new_category';
 import useOutsideClick from '@/hooks/useOutsideClick';
-import { useSession } from 'next-auth/react';
 import { CustomSession } from '@/utils/types';
 
 interface SubNavProps {
@@ -75,7 +76,18 @@ const SubNav = ({ links, selectedLink, setSelectedLink, bgColor, addCat }: SubNa
   return (
     <div className={containerClasses} ref={containerRef}>
       {visibleLinks.map((link: any, index: any) => (
-        <div key={index + 1} className={linkClasses(link)} onClick={() => setSelectedLink(link)}>
+        <div
+          key={index + 1}
+          className={linkClasses(link)}
+          onClick={() => setSelectedLink(link)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setSelectedLink(link);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+        >
           {link}
         </div>
       ))}
@@ -101,6 +113,13 @@ const SubNav = ({ links, selectedLink, setSelectedLink, bgColor, addCat }: SubNa
                   key={link}
                   className={dropdownLinkClasses}
                   onClick={() => setSelectedLink(link)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSelectedLink(link);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
                 >
                   {link}
                 </div>

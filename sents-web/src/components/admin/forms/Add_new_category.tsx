@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import FormModal from '../modal';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { addFinancialDataCategory } from '@/services/apis/companies';
+
+import FormModal from '../modal';
+
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { fetchCategories } from '@/lib/ReduxSlices/metric_category';
 import { useDispatch } from '@/lib/utils';
+import { addFinancialDataCategory } from '@/services/apis/companies';
 
 type Add_new_categoryProps = {
   ButtonText?: string;

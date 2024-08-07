@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import FormModal from '../modal';
-import { Textarea } from '@/components/ui/textarea';
-import { addFinancialMetric } from '@/services/apis/companies';
 import { toast } from 'sonner';
+
+import FormModal from '../modal';
+
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { fetchMetrics } from '@/lib/ReduxSlices/metric_category';
 import { useDispatch } from '@/lib/utils';
+import { addFinancialMetric } from '@/services/apis/companies';
 
 const Add_new_metric = () => {
   const dispatch = useDispatch();

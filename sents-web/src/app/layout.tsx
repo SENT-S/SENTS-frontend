@@ -1,4 +1,4 @@
-import '@/styles/styles.scss';
+import '@/styles/globals.scss';
 import NextTopLoader from 'nextjs-toploader';
 
 import AppProvider from './AppProvider';
