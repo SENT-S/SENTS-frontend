@@ -3,6 +3,16 @@ import { FaUserShield } from 'react-icons/fa6';
 import { HiOutlineNewspaper } from 'react-icons/hi2';
 import { LuLayoutDashboard } from 'react-icons/lu';
 
+import Apple from '@/public/icons/apple.png';
+import Google from '@/public/icons/google.png';
+import Microsoft from '@/public/icons/micro.png';
+
+export const defaultSocialButtons = [
+  { id: 'apple', icon: Apple, name: 'Apple' },
+  { id: 'google', icon: Google, name: 'Google' },
+  { id: 'microsoft', icon: Microsoft, name: 'Microsoft' },
+];
+
 export const UserLinks = [
   {
     name: 'Dashboard',

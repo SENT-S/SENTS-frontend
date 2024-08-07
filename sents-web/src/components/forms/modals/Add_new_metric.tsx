@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 
-import FormModal from '../modal';
+import CustomModalField from '../../ui/customModalField';
+import ModalTemplate from '../ModalTemplate';
 
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { fetchMetrics } from '@/lib/ReduxSlices/metric_category';
 import { useDispatch } from '@/lib/utils';
 import { addFinancialMetric } from '@/services/apis/companies';
+import { fieldOptions } from '@/utils/validations';
+import { metricSchema } from '@/utils/validations';
 
 const Add_new_metric = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-
+  const handleSubmit = async (data: any) => {
     // Set loading to true before starting the async operation
     setLoading(true);
 
@@ -25,9 +22,6 @@ const Add_new_metric = () => {
       const res = await addFinancialMetric(data);
 
       if (res.status === 201) {
-        // If successful, clear the form
-        e.target.reset();
-
         dispatch(fetchMetrics());
 
         // Display a success message
@@ -66,27 +60,24 @@ const Add_new_metric = () => {
     }
   };
   return (
-    <FormModal
+    <ModalTemplate
       ButtonText="Add Metric"
       FormTitle="Add a New Metric"
       onSubmit={handleSubmit}
       ButtonStyle="bg-[#E6EEEA] text-[#39463E] p-2 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
       loading={loading}
+      formSchema={metricSchema}
+      defaultValues={{ metric_name: '', metric_description: '' }}
     >
       <div className="space-y-3">
-        <Input
-          type="text"
-          name="metric_name"
-          placeholder="Enter Metric Name"
-          className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-        />
-        <Textarea
+        <CustomModalField name="metric_name" placeholder="Enter Metric Name" />
+        <CustomModalField
           name="metric_description"
           placeholder="Enter Metric Description"
-          className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] max-h-[150px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
+          fieldType={fieldOptions.TEXTAREA}
         />
       </div>
-    </FormModal>
+    </ModalTemplate>
   );
 };
 

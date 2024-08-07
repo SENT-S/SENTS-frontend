@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 
-import FormModal from '../modal';
+import CustomModalField from '../../ui/customModalField';
+import ModalTemplate from '../ModalTemplate';
 
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { fetchCategories } from '@/lib/ReduxSlices/metric_category';
 import { useDispatch } from '@/lib/utils';
 import { addFinancialDataCategory } from '@/services/apis/companies';
+import { categorySchema } from '@/utils/validations';
+import { fieldOptions } from '@/utils/validations';
 
 type Add_new_categoryProps = {
   ButtonText?: string;
@@ -19,11 +20,7 @@ const Add_new_category = ({ ButtonText, Icon, ButtonStyle }: Add_new_categoryPro
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-
+  const handleSubmit = async (data: any) => {
     // Set loading to true before starting the async operation
     setLoading(true);
 
@@ -32,9 +29,6 @@ const Add_new_category = ({ ButtonText, Icon, ButtonStyle }: Add_new_categoryPro
       const res = await addFinancialDataCategory(data);
 
       if (res.status === 201) {
-        // If successful, clear the form
-        e.target.reset();
-
         dispatch(fetchCategories());
 
         // Display a success message
@@ -61,8 +55,11 @@ const Add_new_category = ({ ButtonText, Icon, ButtonStyle }: Add_new_categoryPro
         }
       }
     } catch (error: any) {
+      // Extract the error message
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
+
       // Log any errors that occur
-      toast.error(error, {
+      toast.error(errorMessage, {
         style: { background: 'red', color: 'white', border: 'none' },
         position: 'top-center',
         duration: 5000,
@@ -74,7 +71,7 @@ const Add_new_category = ({ ButtonText, Icon, ButtonStyle }: Add_new_categoryPro
   };
 
   return (
-    <FormModal
+    <ModalTemplate
       ButtonText={ButtonText}
       FormTitle="Add a New Category"
       onSubmit={handleSubmit}
@@ -84,21 +81,19 @@ const Add_new_category = ({ ButtonText, Icon, ButtonStyle }: Add_new_categoryPro
         'bg-[#E6EEEA] text-[#39463E] p-2 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]'
       }
       loading={loading}
+      formSchema={categorySchema}
+      defaultValues={{ category_name: '', category_description: '' }}
     >
       <div className="space-y-3">
-        <Input
-          type="text"
-          name="category_name"
-          placeholder="Enter Category Name"
-          className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-        />
-        <Textarea
+        <CustomModalField name="category_name" placeholder="Enter Category Name" />
+
+        <CustomModalField
           name="category_description"
           placeholder="Enter Category Description"
-          className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] max-h-[150px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
+          fieldType={fieldOptions.TEXTAREA}
         />
       </div>
-    </FormModal>
+    </ModalTemplate>
   );
 };
 

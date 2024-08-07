@@ -1,9 +1,13 @@
 'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useRef } from 'react';
+import { useForm } from 'react-hook-form';
 import { ScaleLoader } from 'react-spinners';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
 import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
@@ -26,9 +30,11 @@ interface Props {
   // eslint-disable-next-line no-unused-vars
   setDialog?: (value: boolean) => void;
   formProps?: React.FormHTMLAttributes<HTMLFormElement>;
+  formSchema?: z.ZodSchema<any> | any;
+  defaultValues?: any;
 }
 
-const FormModal = (props: Props) => {
+const ModalTemplate = (props: Props) => {
   const ref = useRef(null);
   useOutsideClick(ref, () => {
     if (props.onCancel) {
@@ -36,10 +42,15 @@ const FormModal = (props: Props) => {
     }
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    props.onSubmit(e);
-  };
+  const form = useForm({
+    resolver: zodResolver(props.formSchema),
+    defaultValues: props.defaultValues,
+  });
+
+  async function onSubmit(values: React.FormEvent<HTMLFormElement>) {
+    props.onSubmit(values);
+    form.reset();
+  }
 
   return (
     <Dialog open={props.openDialog} onOpenChange={(open) => props.setDialog?.(open)}>
@@ -58,9 +69,9 @@ const FormModal = (props: Props) => {
         <DialogTitle className="text-center text-[#39463E] dark:text-gray-300">
           {props.FormTitle}
         </DialogTitle>
-        <div>
+        <Form {...form}>
           <form
-            onSubmit={handleSubmit}
+            onSubmit={form.handleSubmit(onSubmit)}
             encType={props.formProps?.encType || 'application/x-www-form-urlencoded'}
             {...props.formProps}
           >
@@ -88,10 +99,10 @@ const FormModal = (props: Props) => {
               )}
             </footer>
           </form>
-        </div>
+        </Form>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default FormModal;
+export default ModalTemplate;

@@ -17,6 +17,7 @@ body,
 html {
   height: 100dvh;
   height: -webkit-fill-available;
+  min-height: 100vh;
   width: 100%;
   font-family: 'Urbanist', sans-serif;
   font-size: 16px;

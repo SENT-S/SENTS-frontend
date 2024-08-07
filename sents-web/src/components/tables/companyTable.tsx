@@ -7,7 +7,7 @@ import { RiArrowRightSLine, RiDeleteBinLine } from 'react-icons/ri';
 import { RxPlus } from 'react-icons/rx';
 import { toast } from 'sonner';
 
-import ModalForms from '@/components/admin/modal';
+import ModalTemplate from '@/components/forms/ModalTemplate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { updateCompanyDetails, deleteCompany } from '@/services/apis/companies';
@@ -260,7 +260,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
           </div>
         </div>
       </div>
-      <ModalForms
+      <ModalTemplate
         FormTitle="Are you sure you want to delete Company?"
         ButtonStyle="p-0 m-0"
         disabled={loading}

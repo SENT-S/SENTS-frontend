@@ -2,8 +2,8 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import LoginForm from '@/components/authForm/forms/LoginForm';
-import RegisterForm from '@/components/authForm/forms/RegisterForm';
+import LoginForm from '@/components/forms/auth/LoginForm';
+import RegisterForm from '@/components/forms/auth/RegisterForm';
 import CustomBackButton from '@/components/ui/customBackButton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 

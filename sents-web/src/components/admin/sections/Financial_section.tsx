@@ -10,10 +10,10 @@ import ReactSelect from 'react-select';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
-import Add_new_metric from '@/components/admin/forms/Add_new_metric';
 import FStatements from '@/components/admin/FStatements';
-import ModalForms from '@/components/admin/modal';
 import SubNav from '@/components/admin/Navs/SubNav';
+import Add_new_metric from '@/components/forms/modals/Add_new_metric';
+import ModalTemplate from '@/components/forms/ModalTemplate';
 import { Button } from '@/components/ui/button';
 import CustomPagination from '@/components/ui/customPagination';
 import { Input } from '@/components/ui/input';
@@ -477,7 +477,7 @@ const Financial_section = ({
 
                       {showEdit && (
                         <TableCell className="flex justify-center">
-                          <ModalForms
+                          <ModalTemplate
                             FormTitle="Are you sure you want to delete?"
                             ButtonStyle="p-0 m-0"
                             disabled

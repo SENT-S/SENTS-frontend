@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import ModalForms from '@/components/admin/modal';
-import AddNewStatementContent from '@/components/admin/forms/Add_new_statement';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { deleteCompanyDocument } from '@/services/apis/companies';
 import { toast } from 'sonner';
+
+import AddNewStatementContent from '@/components/forms/modals/Add_new_statement';
+import ModalTemplate from '@/components/forms/ModalTemplate';
+import { deleteCompanyDocument } from '@/services/apis/companies';
 
 const FStatements = ({
   financialStatements,
@@ -71,7 +72,7 @@ const FStatements = ({
               className={`flex items-center justify-between p-2 ${index !== financialStatements.length - 1 ? 'border-b border-[#E6EEEA] dark:border-[#39463E]' : ''}`}
             >
               <span>{getFileNameFromUrl(statement.docurl)}</span>
-              <ModalForms
+              <ModalTemplate
                 FormTitle="Are you sure you want to delete document"
                 ButtonStyle="p-0 m-0"
                 openDialog={open[index] || false}

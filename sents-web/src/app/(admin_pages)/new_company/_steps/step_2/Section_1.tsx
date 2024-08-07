@@ -5,8 +5,8 @@ import ReactSelect from 'react-select';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
-import Add_new_category from '@/components/admin/forms/Add_new_category';
-import Add_new_metric from '@/components/admin/forms/Add_new_metric';
+import Add_new_category from '@/components/forms/modals/Add_new_category';
+import Add_new_metric from '@/components/forms/modals/Add_new_metric';
 import FStatements from '@/components/admin/FStatements';
 import { Button } from '@/components/ui/button';
 import CustomPagination from '@/components/ui/customPagination';

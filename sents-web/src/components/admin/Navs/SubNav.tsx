@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { GoPlusCircle } from 'react-icons/go';
 
-import Add_new_category from '@/components/admin/forms/Add_new_category';
+import Add_new_category from '@/components/forms/modals/Add_new_category';
 import useOutsideClick from '@/hooks/useOutsideClick';
 import { CustomSession } from '@/utils/types';
 

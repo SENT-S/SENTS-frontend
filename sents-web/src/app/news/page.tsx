@@ -12,8 +12,8 @@ import Resources from './_sections/Resources';
 import Teams from './_sections/Teams';
 import TopNews from './_sections/TopNews';
 
-import ModalForms from '@/components/admin/modal';
 import SubNav from '@/components/admin/Navs/SubNav';
+import ModalTemplate from '@/components/forms/ModalTemplate';
 import { Button } from '@/components/ui/button';
 import CustomPagination from '@/components/ui/customPagination';
 import {
@@ -188,7 +188,7 @@ const NewsPage = () => {
               </Button>
 
               {showCheckbox ? (
-                <ModalForms
+                <ModalTemplate
                   ButtonText="Delete News"
                   FormTitle="Are you sure you want to delete the selected news?"
                   ButtonStyle="bg-[#EA0000] text-white hover:bg-[#EA0000]"
