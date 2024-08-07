@@ -12,7 +12,7 @@ const NetworkStatus: React.FC<NetworkStatusProps> = ({ children }) => {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">No internet connection</h1>
+          <h1 className="text-4xl text-green-700 font-bold">No internet connection</h1>
           <p className="text-lg mt-4">Please check your connection and try again</p>
         </div>
       </div>

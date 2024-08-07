@@ -35,7 +35,7 @@ export async function middleware(req: any) {
   }
 
   // Redirect them to login page if they are not authenticated or the token has expired
-  if (!token && pathname !== '/landing') {
-    return NextResponse.redirect(new URL('/landing', req.url));
+  if (!token && pathname !== '/login_register') {
+    return NextResponse.redirect(new URL('/login_register', req.url));
   }
 }
