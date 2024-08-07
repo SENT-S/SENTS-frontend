@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import NewsItem from '@/components/NewsItem/NewsItem';
-import Pagination from '@/components/pagination';
+import CustomNewsCard from '@/components/ui/customNewsCard';
+import CustomPagination from '@/components/ui/customPagination';
 import { defaultImageUrl } from '@/services/mockData/mock';
 
 interface NewsProps {
@@ -25,14 +25,14 @@ const News = ({ data }: NewsProps) => {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <Pagination
+      <CustomPagination
         items={data}
         itemsPerPage={4}
         render={(currentItems: any) => {
           return (
             <div className="grid grid-cols-1 gap-4">
               {currentItems.map((newsItem: any) => (
-                <NewsItem
+                <CustomNewsCard
                   key={newsItem.id}
                   label={newsItem.news_category}
                   imgURL={defaultImageUrl}

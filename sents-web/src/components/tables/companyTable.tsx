@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
+'use client';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import React, { useState, useEffect } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { MdDone, MdCancel } from 'react-icons/md';
@@ -12,7 +11,6 @@ import ModalForms from '@/components/admin/modal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { updateCompanyDetails, deleteCompany } from '@/services/apis/companies';
-import { CustomSession } from '@/utils/types';
 
 interface TableColumn {
   field: string;
@@ -21,20 +19,19 @@ interface TableColumn {
 }
 
 interface TableProps {
+  isAdmin?: boolean;
   columns: TableColumn[];
   rows: { [key: string]: any }[];
   onRowClick?: (row: { [key: string]: any }) => void;
   renderCell?: (row: { [key: string]: any }, column: TableColumn) => JSX.Element;
 }
 
-const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderCell }) => {
+const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderCell, isAdmin }) => {
   const router = useRouter();
-  const { data: session } = useSession() as { data: CustomSession };
   const [editableRows, setEditableRows] = useState<{ [key: string]: any }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [rowIdToDelete, setRowIdToDelete] = useState<string | null>(null);
-  const isAdmin = session?.user?.role === 'ADMIN';
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

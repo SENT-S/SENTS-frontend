@@ -43,6 +43,16 @@ type Row = {
   [key: string]: string | string[];
 };
 
+interface FinancialSectionProps {
+  financialStatements: any[];
+  FinancialData: any;
+  companyID: any;
+  metrics: any;
+  category: any;
+  countryName: string;
+  setRefresh: (value: boolean) => void;
+}
+
 const Financial_section = ({
   financialStatements,
   FinancialData,
@@ -51,16 +61,7 @@ const Financial_section = ({
   category,
   countryName,
   setRefresh,
-}: {
-  financialStatements: any[];
-  FinancialData: any;
-  companyID: any;
-  metrics: any;
-  category: any;
-  countryName: string;
-  // eslint-disable-next-line no-unused-vars
-  setRefresh: (value: boolean) => void;
-}) => {
+}: FinancialSectionProps) => {
   const [selectedLink, setSelectedLink] = useState('Financial Summary');
   const [showEdit, setShowEdit] = useState(false);
   const yearRanges = getYearRanges();
