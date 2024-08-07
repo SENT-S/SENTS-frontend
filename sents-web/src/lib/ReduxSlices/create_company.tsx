@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { createCompany as createCompanyAPI } from '@/services/apis/companies';
 
 interface Company {
