@@ -8,6 +8,13 @@ const nextConfig = {
       { protocol: 'https', hostname: 'unsplash.com' },
     ],
   },
+  reactStrictMode: true,
+  eslint: {
+    dirs: ['pages', 'components', 'lib', 'utils', 'hooks'],
+  },
+  experimental: {
+    forceSwcTransforms: true,
+  },
 };
 
 export default nextConfig;

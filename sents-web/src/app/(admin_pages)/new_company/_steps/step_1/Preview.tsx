@@ -1,10 +1,11 @@
 import React from 'react';
-import { RxPlus } from 'react-icons/rx';
 import { FaArrowRightLong } from 'react-icons/fa6';
-import { Button } from '@/components/ui/button';
+import { RxPlus } from 'react-icons/rx';
+
 import CompanyCard from '@/components/admin/companyCard';
-import { useSelector, useDispatch } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { resetCompanyFields } from '@/lib/ReduxSlices/create_company';
+import { useSelector, useDispatch } from '@/lib/utils';
 
 const Preview = ({
   innerStep,
@@ -18,7 +19,7 @@ const Preview = ({
   setInnerStep: any;
 }) => {
   const dispatch = useDispatch();
-  const companyFields = useSelector(state => state.company);
+  const companyFields = useSelector((state) => state.company);
   return (
     <div className="space-y-8">
       <CompanyCard

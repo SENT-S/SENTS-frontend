@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { IoArrowBack } from 'react-icons/io5';
-import Section_1 from './Section_1';
-import Section_2 from './Section_2';
-import Preview from './Preview';
-import { useDispatch, useSelector } from '@/lib/utils';
-import { createCompany } from '@/lib/ReduxSlices/create_company';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
-function index({ setStep, step }: { setStep: any; step: number }) {
+import Preview from './Preview';
+import Section_1 from './Section_1';
+import Section_2 from './Section_2';
+
+import { Button } from '@/components/ui/button';
+import CustomBackButton from '@/components/ui/customBackButton';
+import { createCompany } from '@/lib/ReduxSlices/create_company';
+import { useDispatch, useSelector } from '@/lib/utils';
+
+function Index({ setStep, step }: { setStep: any; step: number }) {
   const dispatch = useDispatch();
-  const companyFields = useSelector(state => state.company);
+  const companyFields = useSelector((state) => state.company);
   const [innerStep, setInnerStep] = useState(1);
 
   const handleFormSubmit = async () => {
     try {
       // Check if all fields are filled
-      const allFieldsFilled = Object.values(companyFields).every(
-        field => field !== '',
-      );
+      const allFieldsFilled = Object.values(companyFields).every((field) => field !== '');
 
       if (innerStep === 1) {
-        setInnerStep(prevStep => prevStep + 1);
+        setInnerStep((prevStep) => prevStep + 1);
       }
 
       if (innerStep === 2) {
@@ -48,7 +48,7 @@ function index({ setStep, step }: { setStep: any; step: number }) {
 
   useEffect(() => {
     if (companyFields.response && companyFields.response.status === 201) {
-      setInnerStep(prevStep => prevStep + 1);
+      setInnerStep((prevStep) => prevStep + 1);
       toast.success('Company created successfully', {
         style: {
           background: 'green',
@@ -58,10 +58,7 @@ function index({ setStep, step }: { setStep: any; step: number }) {
         position: 'top-center',
         duration: 5000,
       });
-    } else if (
-      companyFields.response &&
-      companyFields.response.status !== 201
-    ) {
+    } else if (companyFields.response && companyFields.response.status !== 201) {
       toast.error(companyFields.response.error, {
         style: { background: 'red', color: 'white', border: 'none' },
         duration: 5000,
@@ -76,25 +73,13 @@ function index({ setStep, step }: { setStep: any; step: number }) {
       {innerStep === 2 && (
         <>
           <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="icon"
-              className="ml-3"
-              onClick={() => setInnerStep(innerStep - 1)}
-            >
-              <IoArrowBack />
-            </Button>
+            <CustomBackButton onClick={() => setInnerStep(innerStep - 1)} />
           </div>
           <Section_2 />
         </>
       )}
       {innerStep === 3 && (
-        <Preview
-          innerStep={innerStep}
-          setInnerStep={setInnerStep}
-          setStep={setStep}
-          step={step}
-        />
+        <Preview innerStep={innerStep} setInnerStep={setInnerStep} setStep={setStep} step={step} />
       )}
 
       {innerStep !== 3 && (
@@ -118,4 +103,4 @@ function index({ setStep, step }: { setStep: any; step: number }) {
   );
 }
 
-export default index;
+export default Index;

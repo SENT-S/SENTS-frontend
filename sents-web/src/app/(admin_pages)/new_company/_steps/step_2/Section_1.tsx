@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
-import { Button } from '@/components/ui/button';
+import { GrSubtractCircle } from 'react-icons/gr';
 import ReactSelect from 'react-select';
+import { ScaleLoader } from 'react-spinners';
+import { toast } from 'sonner';
+
+import Add_new_category from '@/components/forms/modals/Add_new_category';
+import Add_new_metric from '@/components/forms/modals/Add_new_metric';
+import FStatements from '@/components/admin/FStatements';
+import { Button } from '@/components/ui/button';
+import CustomPagination from '@/components/ui/customPagination';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -10,26 +26,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import Pagination from '@/components/pagination';
-import { GrSubtractCircle } from 'react-icons/gr';
-import Add_new_category from '@/components/admin/forms/Add_new_category';
-import Add_new_metric from '@/components/admin/forms/Add_new_metric';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  MultiSelect,
-  MultiSelectItem,
-} from '@/components/ui/select';
-import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
-import FStatements from '@/components/admin/FStatements';
-import { createUpdateFinancialData } from '@/services/apis/companies';
-import { ScaleLoader } from 'react-spinners';
-import { toast } from 'sonner';
+import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
 import { useSelector } from '@/lib/utils';
+import { addCompanyFinancialData } from '@/services/apis/companies';
 
 type Row = {
   metrics: string;
@@ -37,22 +36,12 @@ type Row = {
   [key: string]: string | string[];
 };
 
-const Section_1 = ({
-  setStep,
-  step,
-  metrics,
-  category,
-}: {
-  setStep: any;
-  step: number;
-  metrics: any;
-  category: any;
-}) => {
+const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
   const yearRanges = getYearRanges();
   const [isLoading, setIsLoading] = useState(false);
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
-  const createdCompanyData = useSelector(state => state.company.response);
+  const createdCompanyData = useSelector((state) => state.company.response);
   const companyID = Number(createdCompanyData?.data?.id);
 
   // change the format of the data from categories and metric to react-select format
@@ -75,8 +64,8 @@ const Section_1 = ({
   const [rows, setRows] = useState<Row[]>([getEmptyRow(newYears)]);
 
   function getEmptyRow(years: string[]) {
-    let row: Row = { metrics: '', category: [] }; // Initialize category as an empty array
-    years.forEach(year => {
+    const row: Row = { metrics: '', category: [] }; // Initialize category as an empty array
+    years.forEach((year) => {
       const actualYear = '20' + year.slice(3);
       row[actualYear] = '';
     });
@@ -85,13 +74,13 @@ const Section_1 = ({
 
   // Function to handle adding a new row
   const addRow = () => {
-    setRows(prevRows => [...prevRows, getEmptyRow(newYears)]);
+    setRows((prevRows) => [...prevRows, getEmptyRow(newYears)]);
   };
 
   // Function to handle input change in the table
   const handleInputChange = (e: any, rowIndex: number, column: any) => {
     const value = e.target.value;
-    setRows(prevRows => {
+    setRows((prevRows) => {
       return prevRows.map((row, index) => {
         if (index === rowIndex) {
           // If the column is a fiscal year, save the actual year instead
@@ -110,14 +99,12 @@ const Section_1 = ({
 
   // Function to handle select change in the table
   const handleSelectChange = (value: any, rowIndex: number, column: string) => {
-    setRows(prevRows => {
+    setRows((prevRows) => {
       return prevRows.map((row, index) => {
         if (index === rowIndex) {
           if (column === 'category') {
             // For multi-select dropdown
-            const newValues = Array.isArray(value)
-              ? value.map((item: any) => item.value)
-              : [];
+            const newValues = Array.isArray(value) ? value.map((item: any) => item.value) : [];
             return { ...row, [column]: newValues };
           } else {
             // For single-select dropdown
@@ -132,14 +119,14 @@ const Section_1 = ({
 
   // Function to handle clearing a row
   const clearRow = (rowIndex: number) => {
-    setRows(prevRows => prevRows.filter((_, index) => index !== rowIndex));
+    setRows((prevRows) => prevRows.filter((_, index) => index !== rowIndex));
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: any) => {
     e.preventDefault();
     try {
       // Convert rows state to an array of objects where each object represents a row
-      const formData = rows.flatMap(row => {
+      const formData = rows.flatMap((row) => {
         // Extract metrics and category from the row
         const { metrics, category, ...years } = row;
 
@@ -160,7 +147,7 @@ const Section_1 = ({
       setIsLoading(true);
 
       // Call the API to create/update financial data
-      const response = await createUpdateFinancialData(formData);
+      const response = await addCompanyFinancialData(formData);
 
       // Check if the request was successful
       if (response.status !== 201 && response.status !== 200) {
@@ -194,23 +181,12 @@ const Section_1 = ({
   };
 
   return (
-    <form className="space-y-8" onSubmit={handleFormSubmit}>
-      <h2 className="text-[#0D4222] text-center dark:text-[#E6F6F0]">
-        Add Financials
-      </h2>
-      <div className="flex flex-wrap justify-end gap-4 items-center">
-        <Button
-          type="button"
-          className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
-          onClick={addRow}
-        >
-          Add row <GoPlusCircle className="ml-3" size={18} />
-        </Button>
-        <Add_new_category ButtonText="Add Category" />
-        <Add_new_metric />
+    <div className="space-y-8">
+      <h2 className="text-[#0D4222] text-center dark:text-[#E6F6F0]">Add Financials</h2>
+      <div className="flex flex-wrap justify-between gap-4 items-center">
         <div>
           <Select
-            onValueChange={value => setYearRange(value)}
+            onValueChange={(value) => setYearRange(value)}
             value={yearRange}
             defaultValue={yearRange}
           >
@@ -228,39 +204,44 @@ const Section_1 = ({
             </SelectContent>
           </Select>
         </div>
+        <div className="flex flex-wrap gap-4 items-center">
+          <Button
+            type="button"
+            className="bg-[#E6EEEA] text-[#39463E] p-2 md:p-7 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#e4f2eb] hover:text-[39463E]"
+            onClick={addRow}
+          >
+            Add row <GoPlusCircle className="ml-3" size={18} />
+          </Button>
+          <Add_new_category ButtonText="Add Category" />
+          <Add_new_metric />
+        </div>
       </div>
       {/* table */}
-      <Pagination
+      <CustomPagination
         items={rows}
         itemsPerPage={5}
-        render={currentItems => (
+        render={(currentItems: any) => (
           <div className="relative shadow-md rounded-2xl w-full h-auto">
             <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
               {/* table header */}
               <TableHeader>
                 <TableRow className="text-black text-lg font-bold">
-                  <TableHead className="w-1/6 py-2 text-center">
-                    Metrics
-                  </TableHead>
-                  {newYears.map(year => (
+                  <TableHead className="w-1/6 py-2 text-center">Metrics</TableHead>
+                  {newYears.map((year) => (
                     <TableHead key={year} className="w-[13%] py-2 text-center">
                       {year}
                     </TableHead>
                   ))}
-                  <TableHead className="w-1/6 py-2 text-center">
-                    Category
-                  </TableHead>
+                  <TableHead className="w-1/6 py-2 text-center">Category</TableHead>
                   {rows.length > 1 && (
-                    <TableHead className="w-1/6 py-2 text-center">
-                      Clear
-                    </TableHead>
+                    <TableHead className="w-1/6 py-2 text-center">Clear</TableHead>
                   )}
                 </TableRow>
               </TableHeader>
 
               {/* table body */}
               <TableBody className="bg-white dark:bg-[#39463E]">
-                {currentItems.map((row, rowIndex) => (
+                {currentItems.map((row: any, rowIndex: any) => (
                   <TableRow key={rowIndex}>
                     <TableCell className="text-center">
                       <div className="relative">
@@ -269,10 +250,8 @@ const Section_1 = ({
                           name="metrics"
                           options={metricsList}
                           isClearable={false}
-                          value={metricsList.find(
-                            (item: any) => item.value === row.metrics,
-                          )}
-                          className="react-select-container"
+                          value={metricsList.find((item: any) => item.value === row.metrics)}
+                          className="react-select-container dark:text-black"
                           classNamePrefix="react-select"
                           placeholder="Metrics"
                           onChange={(item: any) =>
@@ -281,15 +260,13 @@ const Section_1 = ({
                         />
                       </div>
                     </TableCell>
-                    {newYears.map((year, yearIndex) => (
+                    {newYears.map((year) => (
                       <TableCell key={year} className="text-center">
                         <Input
                           type="text"
                           value={row['20' + year.slice(3)] || ''}
                           className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
-                          onChange={e =>
-                            handleInputChange(e, rowIndex, '20' + year.slice(3))
-                          }
+                          onChange={(e) => handleInputChange(e, rowIndex, '20' + year.slice(3))}
                         />
                       </TableCell>
                     ))}
@@ -301,29 +278,19 @@ const Section_1 = ({
                           options={categoryList}
                           isClearable={false}
                           value={row.category.map((cat: any) =>
-                            categoryList.find(
-                              (item: any) => item.value === cat,
-                            ),
+                            categoryList.find((item: any) => item.value === cat),
                           )}
-                          className="react-select-container"
+                          className="react-select-container dark:text-black"
                           classNamePrefix="react-select"
                           placeholder="Category"
-                          onChange={(item: any) =>
-                            handleSelectChange(item, rowIndex, 'category')
-                          }
+                          onChange={(item: any) => handleSelectChange(item, rowIndex, 'category')}
                         />
                       </div>
                     </TableCell>
                     {rows.length > 1 && (
                       <TableCell className="text-center">
-                        <Button
-                          type="button"
-                          onClick={() => clearRow(rowIndex)}
-                        >
-                          <GrSubtractCircle
-                            className="text-[#EA0000]"
-                            size={20}
-                          />
+                        <Button type="button" onClick={() => clearRow(rowIndex)}>
+                          <GrSubtractCircle className="text-[#EA0000]" size={20} />
                         </Button>
                       </TableCell>
                     )}
@@ -336,16 +303,17 @@ const Section_1 = ({
       />
 
       {/* statements */}
-      <FStatements financialStatements={[]} />
+      <FStatements financialStatements={[]} companyID={companyID} />
 
       <Button
-        type="submit"
+        type="button"
+        onClick={handleFormSubmit}
         className="bg-[#148C59] text-white w-full px-3 py-7 rounded-2xl flex justify-center items-center hover:bg-[#148C59d9]"
         disabled={isLoading}
       >
         {isLoading ? <ScaleLoader height={20} color="#fff" /> : 'Complete'}
       </Button>
-    </form>
+    </div>
   );
 };
 

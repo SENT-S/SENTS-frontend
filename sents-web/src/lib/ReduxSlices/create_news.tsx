@@ -37,7 +37,7 @@ const newsFormSlice = createSlice({
         (state[field] as any) = value;
       }
     },
-    resetNewsFields: state => {
+    resetNewsFields: (state) => {
       Object.assign(state, initialState);
     },
   },

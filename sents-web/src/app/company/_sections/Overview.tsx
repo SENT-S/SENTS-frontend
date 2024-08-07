@@ -1,5 +1,7 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
 import Image from 'next/image';
+import React from 'react';
+
 import OveriewImage from '@/public/images/overview.png';
 
 interface OverviewProps {
@@ -14,12 +16,7 @@ const Overview = ({ data }: OverviewProps) => {
       </div>
       <div className="flex justify-end h-auto w-full">
         <section className="relative left-4 w-auto lg:h-auto">
-          <Image
-            src={OveriewImage}
-            alt="overview"
-            className="object-contain"
-            priority={true}
-          />
+          <Image src={OveriewImage} alt="overview" className="object-contain" priority={true} />
         </section>
       </div>
     </div>

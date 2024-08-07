@@ -1,15 +1,21 @@
 'use client';
-import React, { useState, useEffect, useMemo } from 'react';
-import dynamic from 'next/dynamic';
-import MainLayout from '@/layouts';
-import { Button } from '@/components/ui/button';
-import { getAllCompanyNews, getCompanies } from '@/services/apis/companies';
-import { useSession } from 'next-auth/react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { CustomSession } from '@/utils/types';
-import { RxPlus } from 'react-icons/rx';
-import { RiDeleteBin6Line } from 'react-icons/ri';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { RxPlus } from 'react-icons/rx';
+import { toast } from 'sonner';
+
+import Events from './_sections/Events';
+import News from './_sections/News';
+import Resources from './_sections/Resources';
+import Teams from './_sections/Teams';
+import TopNews from './_sections/TopNews';
+
+import SubNav from '@/components/admin/Navs/SubNav';
+import ModalTemplate from '@/components/forms/ModalTemplate';
+import { Button } from '@/components/ui/button';
+import CustomPagination from '@/components/ui/customPagination';
 import {
   Select,
   SelectContent,
@@ -17,39 +23,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import ModalForms from '@/components/admin/modal';
+import { Skeleton } from '@/components/ui/skeleton';
+import MainLayout from '@/layouts';
+import { getAllCompanyNews, getCompanies } from '@/services/apis/companies';
+import { deleteCompanyFNews } from '@/services/apis/companies';
+import { CustomSession } from '@/utils/types';
 import { CompanyType } from '@/utils/types';
-import Pagination from '@/components/pagination';
-
-const SubNav = dynamic(() => import('@/components/admin/Navs/SubNav'));
-const TopNews = dynamic(() => import('./_sections/TopNews'));
-const News = dynamic(() => import('./_sections/News'));
-const Events = dynamic(() => import('./_sections/Events'));
-const Resources = dynamic(() => import('./_sections/Resources'));
-const Teams = dynamic(() => import('./_sections/Teams'));
 
 const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
 const NewsPage = () => {
   const router = useRouter();
-  const { data: session } = useSession() as {
-    data: CustomSession;
-  };
+  const { data: session } = useSession() as { data: CustomSession };
   const [newsData, setNewsData] = useState<any[]>([]);
   const [selectedLink, setSelectedLink] = useState<any>(Categories[0]);
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'ADMIN';
   const [companies, setCompanies] = useState<CompanyType[]>([]);
-  const [countryList, setCountryList] = useState<
-    { label: string; value: string }[]
-  >([]);
-  const [companyList, setCompanyList] = useState<
-    { label: string; value: string }[]
-  >([]);
+  const [countryList, setCountryList] = useState<{ label: string; value: string }[]>([]);
+  const [companyList, setCompanyList] = useState<{ label: string; value: string }[]>([]);
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [showCheckbox, setShowCheckbox] = useState(false);
-  const [selectedIds, setSelectedIds] = useState([] as string[]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,51 +79,35 @@ const NewsPage = () => {
   }, []);
 
   useEffect(() => {
-    // Generate country list from companies
     const countries = companies.map((company: any) => ({
       label: company.company_country,
       value: company.company_country,
     }));
     setCountryList(countries);
 
-    // Set selected country to the first country in the list
     if (countries.length > 0) {
-      setSelectedCountry(prevCountry => prevCountry || countries[0].label);
+      setSelectedCountry((prevCountry) => prevCountry || countries[0].label);
     }
   }, [companies]);
 
   useEffect(() => {
-    // Filter companies by selected country
-    const filteredCompanies = companies.filter(
-      company => company.company_country === selectedCountry,
-    )[0];
+    const filteredCompanies = companies.find(
+      (company) => company.company_country === selectedCountry,
+    );
     if (filteredCompanies) {
-      const companiesList = filteredCompanies.list_of_companies.map(
-        (company: any) => ({
-          label: company.company_name,
-          value: company.id,
-        }),
-      );
+      const companiesList = filteredCompanies.list_of_companies.map((company: any) => ({
+        label: company.company_name,
+        value: company.id,
+      }));
       setCompanyList(companiesList);
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, companies]);
 
-  // Get the news data for the selected link
   const selectedNewsData = useMemo(() => {
-    // Get news data by selected link
-    const newsByLink = newsData[selectedLink];
+    const newsByLink = newsData[selectedLink] || [];
 
-    // Check if newsByLink is defined
-    if (!newsByLink) {
-      console.error('Invalid selected link:', selectedLink);
-      return [];
-    }
-
-    // Filter news data by selected company
     if (selectedCompany) {
-      return newsByLink.filter(
-        (news: any) => news.company_name === selectedCompany,
-      );
+      return newsByLink.filter((news: any) => news.company_name === selectedCompany);
     } else {
       return newsByLink;
     }
@@ -141,9 +121,30 @@ const NewsPage = () => {
     setSelectedCompany(value);
   };
 
-  const handleDeleteNews = () => {
+  const handleDeleteNews = async () => {
     setShowCheckbox(false);
-    setSelectedIds([]);
+    const data = {
+      news_ids: selectedIds,
+    };
+
+    try {
+      const response = await deleteCompanyFNews(data);
+      if (response.status === 200 || response.status === 204) {
+        toast.success('News deleted successfully', {
+          style: { background: 'green', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'top-center',
+        });
+      } else {
+        throw new Error('Failed to delete news');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred, please try again', {
+        style: { background: 'red', color: 'white', border: 'none' },
+        duration: 5000,
+        position: 'top-center',
+      });
+    }
   };
 
   const handleCancelDeleteNews = () => {
@@ -157,9 +158,9 @@ const NewsPage = () => {
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedIds([...selectedIds, id]);
+      setSelectedIds([...selectedIds, Number(id)]);
     } else {
-      setSelectedIds(selectedIds.filter(item => item !== id));
+      setSelectedIds(selectedIds.filter((newsId) => newsId !== Number(id)));
     }
   };
 
@@ -173,11 +174,7 @@ const NewsPage = () => {
       ) : (
         <>
           {/* Admin features */}
-          {isAdmin && (
-            <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">
-              News
-            </h1>
-          )}
+          {isAdmin && <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">News</h1>}
 
           {/* Admin features */}
           {isAdmin && (
@@ -191,7 +188,7 @@ const NewsPage = () => {
               </Button>
 
               {showCheckbox ? (
-                <ModalForms
+                <ModalTemplate
                   ButtonText="Delete News"
                   FormTitle="Are you sure you want to delete the selected news?"
                   ButtonStyle="bg-[#EA0000] text-white hover:bg-[#EA0000]"
@@ -200,13 +197,12 @@ const NewsPage = () => {
                   onCancel={handleCancelDeleteNews}
                   SubmitText="Yes"
                   CancelText="No"
-                  SubmitButtonStyle="bg-[#EA0000]"
+                  SubmitButtonStyle="bg-[#EA0000] text-white hover:bg-[#EA0000]"
                 />
               ) : (
                 <Button
                   className="bg-[#F5ECEC] text-[#EA0000] p-2 md:p-7 rounded-2xl hover:bg-[#f5e5e5] hover:text-[39463E]"
                   onClick={() => setShowCheckbox(true)}
-                  disabled={true}
                 >
                   Delete News
                   <RiDeleteBin6Line className="ml-3" size={18} />
@@ -232,10 +228,7 @@ const NewsPage = () => {
                 defaultValue={selectedCountry}
               >
                 <SelectTrigger className="md:w-[280px] rounded-2xl p-2 md:p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
-                  <SelectValue
-                    placeholder="Select Country"
-                    className="text-center w-full"
-                  >
+                  <SelectValue placeholder="Select Country" className="text-center w-full">
                     {selectedCountry}
                   </SelectValue>
                 </SelectTrigger>
@@ -253,10 +246,7 @@ const NewsPage = () => {
                 defaultValue={selectedCompany}
               >
                 <SelectTrigger className="md:w-[280px] rounded-2xl p-2 md:p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#8D9D93]">
-                  <SelectValue
-                    placeholder="Select Company"
-                    className="text-center w-full"
-                  >
+                  <SelectValue placeholder="Select Company" className="text-center w-full">
                     {selectedCompany}
                   </SelectValue>
                 </SelectTrigger>
@@ -280,10 +270,10 @@ const NewsPage = () => {
             />
           </div>
 
-          <Pagination
+          <CustomPagination
             items={selectedNewsData}
             itemsPerPage={4}
-            render={currentItems => (
+            render={(currentItems) => (
               <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
                 {selectedLink === 'Top News' && (
                   <TopNews

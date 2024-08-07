@@ -1,8 +1,9 @@
-import React from 'react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 import { RiArrowRightSLine } from 'react-icons/ri';
 import { TfiDownload } from 'react-icons/tfi';
-import { financialStatements, mockdata } from '@/services/mockData/mock';
+
+import { mockdata } from '@/services/mockData/mock';
 
 interface FinancialProps {
   data: any;
@@ -15,13 +16,20 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
     router.push(`/company/${id}`);
   };
 
-  const companyDocuments = data?.company_documents.map((urlString: string) => {
-    const url = new URL(urlString);
-    return {
-      url: urlString,
-      hostname: url.pathname.split('/').pop(),
-    };
-  });
+  const companyDocuments = data?.company_documents
+    .map((document: { docid: number; docurl: string }) => {
+      try {
+        const url = new URL(document.docurl);
+        return {
+          url: document.docurl,
+          hostname: url.pathname.split('/').pop(),
+        };
+      } catch (error) {
+        console.error(`Invalid URL: ${document.docurl}`, error);
+        return null;
+      }
+    })
+    .filter(Boolean); // Filter out any null values
 
   return (
     <div className="space-y-8 w-full">
@@ -32,9 +40,7 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
             companyDocuments?.map((doc: any, index: number) => (
               <li key={index} className="flex items-center justify-between p-3">
                 <span className="min-w-[200px]">
-                  {doc.hostname.length > 25
-                    ? doc.hostname.slice(0, 25) + '...'
-                    : doc.hostname}
+                  {doc.hostname.length > 25 ? doc.hostname.slice(0, 25) + '...' : doc.hostname}
                 </span>
                 <a href={doc.url} download target="_blank" rel="noreferrer">
                   <TfiDownload
@@ -56,20 +62,24 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
         <h1 className="text-2xl font-semibold">Related Stocks</h1>
         <ul className="list-none divide-y divide-[#E6EEEA] dark:divide-[#39463E]  space-y-3">
           {mockdata.length !== 0 ? (
-            mockdata.map(stock => (
-              <li
-                key={stock.id}
-                className="flex justify-between items-center py-2 cursor-pointer"
-                onClick={() => handleStockClick(stock.id)}
-              >
-                <div>
-                  <p className="font-medium">{stock.name}</p>
-                  <p className="text-gray-500">{stock.symbol}</p>
-                </div>
-                <RiArrowRightSLine
-                  size={24}
-                  className="text-green-600 dark:text-[#8D9D93]"
-                />
+            mockdata.map((stock) => (
+              <li key={stock.id} className="py-2">
+                <button
+                  type="button"
+                  className="flex justify-between items-left w-full cursor-pointer"
+                  onClick={() => handleStockClick(stock.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleStockClick(stock.id);
+                    }
+                  }}
+                >
+                  <div>
+                    <p className="font-medium">{stock.name}</p>
+                    <p className="text-gray-500">{stock.symbol}</p>
+                  </div>
+                  <RiArrowRightSLine size={24} className="text-green-600 dark:text-[#8D9D93]" />
+                </button>
               </li>
             ))
           ) : (

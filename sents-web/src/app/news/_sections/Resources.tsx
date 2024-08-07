@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import NewsItem from '@/components/NewsItem/NewsItem';
+
+import CustomNewsCard from '@/components/ui/customNewsCard';
 import { defaultImageUrl } from '@/services/mockData/mock';
 
 export default function Resources({
@@ -11,7 +13,7 @@ export default function Resources({
   data: any[];
   showCheckbox: boolean;
   onCheckboxChange: (id: string, checked: boolean) => void;
-  selectedIDs: string[];
+  selectedIDs: number[];
 }) {
   const [windowWidth, setWindowWidth] = useState(0);
 
@@ -32,8 +34,8 @@ export default function Resources({
 
   return (
     <div className="flex flex-col gap-4 w-full p-4">
-      {data?.map(newsItem => (
-        <NewsItem
+      {data?.map((newsItem) => (
+        <CustomNewsCard
           key={newsItem.id}
           newsItem={newsItem}
           label="Resources"

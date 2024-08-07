@@ -1,35 +1,48 @@
-import useFetchData from '@/utils/useFetchData';
+import FetchData from '@/utils/FetchData';
 
-export const getCompanies = () => useFetchData('/allcompanies/', 'get');
+export const getCompanies = () => FetchData('/allcompanies/', 'get');
 
-export const getCompany = (id: number) =>
-  useFetchData(`/acompany/${id}/`, 'get');
+export const getCompany = (id: number) => FetchData(`/acompany/${id}/`, 'get');
 
-export const getCompanyNews = (id: number) =>
-  useFetchData(`/newsbycompany/${id}/`, 'get');
+export const getCompanyNews = (id: number) => FetchData(`/newsbycompany/${id}/`, 'get');
 
-export const getAllCompanyNews = () => useFetchData('/allnews/', 'get');
+export const getAllCompanyNews = () => FetchData('/allnews/', 'get');
 
 export const getCompanyFinancials = (id: number) =>
-  useFetchData(`/companyfinancialdata/${id}/`, 'get');
+  FetchData(`/companyfinancialdata/${id}/`, 'get');
 
-export const createCompany = (data: any) =>
-  useFetchData('/create/company/', 'post', data);
+export const createCompany = (data: any) => FetchData('/create/company/', 'post', data);
 
 export const addFinancialMetric = (data: any) =>
-  useFetchData('/create/financialmetric/', 'post', data);
+  FetchData('/create/financialmetric/', 'post', data);
 
 export const addFinancialDataCategory = (data: any) =>
-  useFetchData('/create/financialdatacategory/', 'post', data);
+  FetchData('/create/financialdatacategory/', 'post', data);
 
-export const addFinancialNews = (data: any) =>
-  useFetchData('/create/financialnews/', 'post', data);
+export const addFinancialNews = (data: any) => FetchData('/create/financialnews/', 'post', data);
 
-export const createUpdateFinancialData = (data: any) =>
-  useFetchData('/createorupdate/financialdata/', 'post', data);
+export const addCompanyFinancialData = (data: any) =>
+  FetchData('/create/financialdata/', 'post', data);
 
-export const getAllFinancialMetrics = () =>
-  useFetchData('/allfinancialmetrics/', 'get');
+export const updateCompanyFinancialData = (data: any) =>
+  FetchData(`/update/financialdata/`, 'patch', data);
 
-export const getAllFinancialDataCategories = () =>
-  useFetchData('/allfinancialdatacategories/', 'get');
+export const getAllFinancialMetrics = () => FetchData('/allfinancialmetrics/', 'get');
+
+export const getAllFinancialDataCategories = () => FetchData('/allfinancialdatacategories/', 'get');
+
+export const updateCompanyDetails = (data: any) => FetchData(`/update/company(s)/`, 'patch', data);
+
+export const deleteCompany = (id: any) => FetchData(`/delete/company/${id}/`, 'delete');
+
+export const addCompanyDocuments = (data: FormData) =>
+  FetchData('/upload/companydocuments/', 'post', data, true);
+
+export const deleteCompanyDocument = (id: any) =>
+  FetchData(`/delete/companydocuments/${id}/`, 'delete');
+
+export const updateCompanyFNews = (data: any, id: any) =>
+  FetchData(`/update/financialnews/${id}/`, 'patch', data);
+
+export const deleteCompanyFNews = (data: any) =>
+  FetchData(`/delete/financialnews/`, 'delete2', data);

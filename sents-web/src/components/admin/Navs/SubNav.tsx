@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { GoPlusCircle } from 'react-icons/go';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import Add_new_category from '@/components/admin/forms/Add_new_category';
-import useOutsideClick from '@/utils/useOutsideClick';
+/* eslint-disable no-unused-vars */
 import { useSession } from 'next-auth/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { GoPlusCircle } from 'react-icons/go';
+
+import Add_new_category from '@/components/forms/modals/Add_new_category';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import { CustomSession } from '@/utils/types';
 
 interface SubNavProps {
@@ -14,13 +16,7 @@ interface SubNavProps {
   setSelectedLink: (link: string) => void;
 }
 
-const SubNav = ({
-  links,
-  selectedLink,
-  setSelectedLink,
-  bgColor,
-  addCat,
-}: SubNavProps) => {
+const SubNav = ({ links, selectedLink, setSelectedLink, bgColor, addCat }: SubNavProps) => {
   const [visibleLinks, setVisibleLinks] = useState(links);
   const [dropdownLinks, setDropdownLinks] = useState<string[]>([]);
   const { data: session } = useSession() as {
@@ -69,9 +65,9 @@ const SubNav = ({
       link === selectedLink
         ? `${bgColor ? 'bg-[#E6EEEA] dark:bg-[#39463E] dark:text-white' : 'bg-green-700 text-white hover:bg-green-800'} `
         : ''
-    } text-[39463E] dark:text-white hover:bg-[#E6EEEA]`;
+    } text-[39463E] dark:text-white hover:dark:text-black hover:bg-[#E6EEEA]`;
 
-  const dropdownLinkClasses = `text-sm md:text-md cursor-pointer px-2 md:px-6 py-2 dark:text-white hover:bg-[#E6EEEA] hover:bg-gray-300 `;
+  const dropdownLinkClasses = `text-sm md:text-md cursor-pointer px-2 md:px-6 py-2 dark:text-white hover:dark:text-black hover:bg-[#E6EEEA] hover:bg-gray-300 `;
 
   const containerClasses = `flex flex-wrap justify-around mx-10
    md:mx-0 items-center p-3 dark:bg-[#39463E80] ${bgColor ? `${addCat ? 'bg-white' : 'dark:bg-[#0E120F] bg-[#F8FAF9] dark:text-white'}` : 'bg-white'}
@@ -84,6 +80,13 @@ const SubNav = ({
           key={index + 1}
           className={linkClasses(link)}
           onClick={() => setSelectedLink(link)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setSelectedLink(link);
+            }
+          }}
+          role="button"
+          tabIndex={0}
         >
           {link}
         </div>
@@ -105,11 +108,18 @@ const SubNav = ({
               }}
               ref={dropRef}
             >
-              {dropdownLinks.map(link => (
+              {dropdownLinks.map((link) => (
                 <div
                   key={link}
                   className={dropdownLinkClasses}
                   onClick={() => setSelectedLink(link)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSelectedLink(link);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
                 >
                   {link}
                 </div>

@@ -1,22 +1,16 @@
+import html2canvas from 'html2canvas';
+import { useTheme } from 'next-themes';
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  Curve,
-} from 'recharts';
+import { IoChevronBackOutline } from 'react-icons/io5';
+import { PiMicrosoftExcelLogoDuotone } from 'react-icons/pi';
+import { TooltipProps } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { toast } from 'sonner';
+import * as XLSX from 'xlsx';
+
+import SubNav from '@/components/admin/Navs/SubNav';
+import { Button } from '@/components/ui/button';
+import CustomPagination from '@/components/ui/customPagination';
 import {
   Select,
   SelectContent,
@@ -25,19 +19,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { useTheme } from 'next-themes';
-import SubNav from '@/components/admin/Navs/SubNav';
-import { Button } from '@/components/ui/button';
-import { IoChevronBackOutline } from 'react-icons/io5';
-import html2canvas from 'html2canvas';
-import { TooltipProps } from 'recharts';
-import { PiMicrosoftExcelLogoDuotone } from 'react-icons/pi';
-import { toast } from 'sonner';
-import * as XLSX from 'xlsx';
-import Pagination from '@/components/pagination';
-import { formatData } from '@/utils/tableFunctions';
-import { getYearRanges, getRangeYears } from '@/utils/tableFunctions';
-import getCurrencySymbol from '@/utils/getCurrencySymbol';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import getCurrencySymbol from '@/hooks/getCurrencySymbol';
+import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
+import { formatData } from '@/hooks/tableFunctions';
 
 // Define types for better type checking
 type FormattedMetric = {
@@ -66,18 +58,12 @@ const CustomBar = (props: any) => {
   );
 };
 
-const CustomTooltip: React.FC<TooltipProps<any, any>> = ({
-  active,
-  payload,
-  label,
-}) => {
+const CustomTooltip: React.FC<TooltipProps<any, any>> = ({ active, payload, label }) => {
   const { theme } = useTheme(); // Assuming you're using a theme context
 
   if (active && payload && payload.length) {
     return (
-      <div
-        className={`tooltip p-3 ${theme === 'dark' ? 'text-white bg-gray-800' : 'bg-white '}`}
-      >
+      <div className={`tooltip p-3 ${theme === 'dark' ? 'text-white bg-gray-800' : 'bg-white '}`}>
         <p className="label">{`${label} : ${payload[0].value}`}</p>
       </div>
     );
@@ -97,27 +83,23 @@ const Financials = ({
 }) => {
   const { theme } = useTheme();
   const chartRef = useRef(null);
-  const [exported, setExported] = useState(false);
   const [barWidth, setBarWidth] = useState(60);
   const [selectedLink, setSelectedLink] = useState<string>('Financial Summary');
-  const [selectedMetric, setSelectedMetric] = useState<FormattedMetric | null>(
-    null,
-  );
+  const [selectedMetric, setSelectedMetric] = useState<FormattedMetric | null>(null);
   const currentYear = new Date().getFullYear();
   const yearRanges = getYearRanges();
 
-  const chartYears = Array.from(
-    { length: 5 },
-    (_, i) => `${currentYear - i - 1}`,
-  ).reverse();
+  const chartYears = Array.from({ length: 5 }, (_, i) => `${currentYear - i - 1}`).reverse();
 
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
 
-  const categoryList = category.map((item: any) => ({
-    value: item.id,
-    label: item.category_name,
-  }));
+  const categoryList = Array.isArray(category)
+    ? category.map((item: any) => ({
+        value: item.id,
+        label: item.category_name,
+      }))
+    : [];
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);
@@ -142,12 +124,8 @@ const Financials = ({
     'Financial Summary': formatData(financialData['Financial Summary' as any]),
     'Profit & Loss': formatData(financialData['Profit & Loss' as any]),
     'Balance Sheet': formatData(financialData['Balance Sheet' as any]),
-    'Cashflow Statement': formatData(
-      financialData['Cashflow Statement' as any],
-    ),
-    'Financial Analysis': formatData(
-      financialData['Financial Analysis' as any],
-    ),
+    'Cashflow Statement': formatData(financialData['Cashflow Statement' as any]),
+    'Financial Analysis': formatData(financialData['Financial Analysis' as any]),
   };
 
   const selectedData = TableData[selectedLink];
@@ -157,9 +135,7 @@ const Financials = ({
   };
 
   const handleSelectMetric = (metricName: string) => {
-    const selectedMetric = selectedData.find(
-      item => item.metrics === metricName,
-    );
+    const selectedMetric = selectedData.find((item) => item.metrics === metricName);
     if (selectedMetric) {
       setSelectedMetric(selectedMetric);
     } else {
@@ -187,7 +163,7 @@ const Financials = ({
     if (chartRef.current) {
       const canvas = await html2canvas(chartRef.current, { useCORS: true });
       const imgData = canvas.toDataURL('image/png');
-      let link = document.createElement('a');
+      const link = document.createElement('a');
       link.href = imgData;
       link.download = `${data?.company_name && data.company_name}-${selectedLink}.png`;
       link.click();
@@ -238,12 +214,8 @@ const Financials = ({
   return (
     <div className="space-y-8 w-full">
       <div>
-        <h1 className="text-2xl font-semibold">
-          {data?.company_name && data.company_name}
-        </h1>
-        <h2 className="text-xl font-thin mb-2">
-          {data?.stock_symbol && data.stock_symbol}
-        </h2>
+        <h1 className="text-2xl font-semibold">{data?.company_name && data.company_name}</h1>
+        <h2 className="text-xl font-thin mb-2">{data?.stock_symbol && data.stock_symbol}</h2>
         <span className="font-semibold text-lg">Yearly Financials</span>
       </div>
 
@@ -260,15 +232,9 @@ const Financials = ({
           {selectedData && selectedData.length > 0 && (
             <div className="flex justify-between gap-3 items-center">
               <div>
-                <Select
-                  onValueChange={value => setYearRange(value)}
-                  defaultValue={yearRanges[0]}
-                >
+                <Select onValueChange={(value) => setYearRange(value)} defaultValue={yearRanges[0]}>
                   <SelectTrigger className="rounded-2xl p-2 md:p-4 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
-                    <SelectValue
-                      placeholder="Range"
-                      className="text-center w-full"
-                    >
+                    <SelectValue placeholder="Range" className="text-center w-full">
                       {yearRange}
                     </SelectValue>
                   </SelectTrigger>
@@ -292,16 +258,16 @@ const Financials = ({
               </Button>
             </div>
           )}
-          <Pagination
+          <CustomPagination
             items={selectedData}
             itemsPerPage={10}
-            render={currentItems => (
+            render={(currentItems) => (
               <div className="relative shadow-md rounded-2xl w-full h-auto">
                 <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
                   <TableHeader>
                     <TableRow className="text-black font-semibold">
                       <TableHead className="w-1/6 py-2">Metrics</TableHead>
-                      {newYears.map(year => (
+                      {newYears.map((year) => (
                         <TableHead key={year} className="w-[13%] py-2">
                           {year}
                         </TableHead>
@@ -318,10 +284,7 @@ const Financials = ({
                       </TableRow>
                     ) : (
                       currentItems.map(
-                        (
-                          item: { [key: string]: string | number },
-                          index: number,
-                        ) => (
+                        (item: { [key: string]: string | number }, index: number) => (
                           <TableRow
                             key={index}
                             className={`
@@ -338,29 +301,23 @@ const Financials = ({
                             >
                               {item.metrics}
                             </TableCell>
-                            {newYears.map(year => (
+                            {newYears.map((year) => (
                               <TableCell key={year} className="flex-grow py-2">
-                                {isNaN(Number(item[year])) ||
-                                Number(item[year]) === 0
+                                {isNaN(Number(item[year])) || Number(item[year]) === 0
                                   ? '__'
                                   : Number(item[year]).toLocaleString('en-US', {
                                       style: 'currency',
-                                      currency: getCurrencySymbol(
-                                        data?.company_country,
-                                      ),
+                                      currency: getCurrencySymbol(data?.company_country),
                                     })}
                               </TableCell>
                             ))}
                             <TableCell className="w-2/6 py-2">
-                              <a
-                                href="#"
-                                onClick={() =>
-                                  handleViewChart(item as FormattedMetric)
-                                }
+                              <button
+                                onClick={() => handleViewChart(item as FormattedMetric)}
                                 className="text-[#148C59] z-50"
                               >
                                 view chart
-                              </a>
+                              </button>
                             </TableCell>
                           </TableRow>
                         ),
@@ -396,10 +353,7 @@ const Financials = ({
             <div className="flex justify-end">
               <Select onValueChange={handleSelectMetric}>
                 <SelectTrigger className="w-[180px] rounded-full flex justify-around border-none dark:text-white bg-[#E6F6F0] dark:bg-[#8D9D93]">
-                  <SelectValue
-                    placeholder="Select Metric"
-                    className="text-center w-full"
-                  />
+                  <SelectValue placeholder="Select Metric" className="text-center w-full" />
                 </SelectTrigger>
                 <SelectContent className="z-50 bg-[#E6F6F0] rounded-xl">
                   {selectedData.map((item, index) => (
@@ -417,12 +371,8 @@ const Financials = ({
               >
                 <div className="w-full px-3 md:px-6">
                   <div className="flex flex-col justify-start">
-                    <h2 className="text-[#9291A5] font-normal text-[18px]">
-                      Chart
-                    </h2>
-                    <h1 className="font-semibold text-[22px]">
-                      {selectedMetric?.metrics}
-                    </h1>
+                    <h2 className="text-[#9291A5] font-normal text-[18px]">Chart</h2>
+                    <h1 className="font-semibold text-[22px]">{selectedMetric?.metrics}</h1>
                   </div>
                   <div className="mb-8">
                     <Separator className="my-4 h-[1px] w-full dark:bg-[#E6EEEA]" />
@@ -445,7 +395,7 @@ const Financials = ({
                       axisLine={false}
                       tickLine={false}
                       tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
-                      tickFormatter={value => {
+                      tickFormatter={(value) => {
                         if (value >= 1e18) {
                           return Math.round(value / 1e18) + ' ' + 'Qi';
                         } else if (value >= 1e15) {
@@ -464,12 +414,7 @@ const Financials = ({
                       }}
                     />
                     <Tooltip content={<CustomTooltip />} />
-                    <Bar
-                      dataKey="value"
-                      fill="#148C59"
-                      barSize={barWidth}
-                      shape={<CustomBar />}
-                    />
+                    <Bar dataKey="value" fill="#148C59" barSize={barWidth} shape={<CustomBar />} />
                   </BarChart>
                 </ResponsiveContainer>
                 <div className="text-center mt-4 text-sm">

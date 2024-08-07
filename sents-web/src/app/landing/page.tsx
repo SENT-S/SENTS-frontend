@@ -1,16 +1,24 @@
 'use client';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { GoArrowRight } from 'react-icons/go';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { GoArrowRight } from 'react-icons/go';
 
-// Use dynamic import for components that are not immediately necessary
-const LandingHeader = dynamic(() => import('@/components/header/Landing'));
+import LandingHeader from '@/components/header/Landing';
+import landingIllustration from '@/public/images/landingIllustration.png';
+import landingImage from '@/public/images/landingImage.png';
+import landingImage2 from '@/public/images/landingImage2.png';
+import { CustomSession } from '@/utils/types';
 
 export default function LandingPage() {
+  const { data: session, status } = useSession() as {
+    data: CustomSession;
+    status: 'loading' | 'authenticated' | 'unauthenticated';
+  };
+
   return (
-    <div className="container relative mx-auto px-4 h-full flex flex-col">
-      <LandingHeader />
+    <div className="container relative mx-auto px-4 h-dvh flex flex-col">
+      <LandingHeader session={session} status={status} />
       <main className="flex flex-col container justify-center md:justify-around flex-grow text-center">
         <section className="flex flex-col justify-center items-center text-[#0D4222] dark:text-[#E6F6F0] py-4 md:py-12 z-50">
           <h2 className="text-3xl leading-[65px] md:text-[80px] py-3 md:py-6 Unigoe-font">
@@ -27,7 +35,7 @@ export default function LandingPage() {
                 zIndex: 1000,
               }}
             >
-              Get Started
+              {session ? 'Go to Dashboard' : 'Get Started'}
               <GoArrowRight
                 className="ml-2 text-[#E6F6F0] bg-[#0D4222] p-1 md:p-2 rounded-lg"
                 size={32}
@@ -36,33 +44,11 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="flex  justify-center items-center py-12 flex-grow">
-          <Image
-            src="/images/landingIllustration.png"
-            alt="Landing Illustration"
-            layout="fill"
-            objectFit="contain"
-            loading="lazy"
-          />
-          <section className="justify-center items-center py-12 flex-grow  md:flex">
-            <Image
-              src="/images/landingImage.png"
-              alt="Landing Image"
-              width={500}
-              height={300}
-              layout="responsive"
-              loading="lazy"
-              className="dark:hidden"
-            />
-            <Image
-              src="/images/landingImage2.png"
-              alt="Landing Image"
-              width={500}
-              height={300}
-              layout="responsive"
-              priority
-              className="hidden dark:block"
-            />
+        <section>
+          <Image src={landingIllustration} alt="Landing Illustration" loading="lazy" />
+          <section className="justify-center items-center flex-grow hidden md:flex">
+            <Image src={landingImage} alt="Landing Image" priority className="dark:hidden" />
+            <Image src={landingImage2} alt="Landing Image" priority className="hidden dark:block" />
           </section>
         </section>
       </main>
