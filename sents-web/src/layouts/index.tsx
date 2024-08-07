@@ -17,9 +17,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => (
         <div className="w-full z-50 top-0 sticky">
           <Header />
         </div>
-        <main className="flex-grow w-full pb-4 space-y-8 bg-transparent lg:pr-4 lg:pl-0 px-2">
-          {children}
-        </main>
+        <main className="flex-grow w-full pb-4 space-y-8 bg-transparent px-3">{children}</main>
       </div>
     </div>
     {/* trade mark */}

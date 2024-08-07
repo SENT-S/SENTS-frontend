@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { CustomSession } from '@/utils/types';
 import { getSession } from 'next-auth/react';
+
+import { CustomSession } from '@/utils/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 

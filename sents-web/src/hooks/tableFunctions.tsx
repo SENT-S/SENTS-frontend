@@ -35,8 +35,8 @@ export const formatData = (data: FinancialData): FormattedMetric[] => {
 
 export const getYearRanges = () => {
   const currentYear = new Date().getFullYear();
-  let startYear = currentYear - 1;
-  let endYear = 2000;
+  const startYear = currentYear - 1;
+  const endYear = 2000;
 
   const yearRanges = [];
 

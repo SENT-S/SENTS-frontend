@@ -1,7 +1,7 @@
-import { LuLayoutDashboard } from 'react-icons/lu';
-import { HiOutlineNewspaper } from 'react-icons/hi2';
-import { FaUserShield } from 'react-icons/fa6';
 import { CiSettings } from 'react-icons/ci';
+import { FaUserShield } from 'react-icons/fa6';
+import { HiOutlineNewspaper } from 'react-icons/hi2';
+import { LuLayoutDashboard } from 'react-icons/lu';
 
 export const UserLinks = [
   {
