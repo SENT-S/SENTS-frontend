@@ -1,8 +1,9 @@
 import '@/styles/globals.scss';
 import NextTopLoader from 'nextjs-toploader';
 
+import NetworkStatus from '../components/ui/NetworkStatus';
+
 import AppProvider from './AppProvider';
-import NetworkStatus from './NetworkStatus';
 
 import AuthProvider from '@/app/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
