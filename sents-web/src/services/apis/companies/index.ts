@@ -1,16 +1,5 @@
 import FetchData from '@/utils/FetchData';
 
-export const getCompanies = () => FetchData('/allcompanies/', 'get');
-
-export const getCompany = (id: number) => FetchData(`/acompany/${id}/`, 'get');
-
-export const getCompanyNews = (id: number) => FetchData(`/newsbycompany/${id}/`, 'get');
-
-export const getAllCompanyNews = () => FetchData('/allnews/', 'get');
-
-export const getCompanyFinancials = (id: number) =>
-  FetchData(`/companyfinancialdata/${id}/`, 'get');
-
 export const createCompany = (data: any) => FetchData('/create/company/', 'post', data);
 
 export const addFinancialMetric = (data: any) =>
@@ -26,10 +15,6 @@ export const addCompanyFinancialData = (data: any) =>
 
 export const updateCompanyFinancialData = (data: any) =>
   FetchData(`/update/financialdata/`, 'patch', data);
-
-export const getAllFinancialMetrics = () => FetchData('/allfinancialmetrics/', 'get');
-
-export const getAllFinancialDataCategories = () => FetchData('/allfinancialdatacategories/', 'get');
 
 export const updateCompanyDetails = (data: any) => FetchData(`/update/company(s)/`, 'patch', data);
 

@@ -47,8 +47,14 @@ export const metricSchema = z.object({
     .max(255, { message: 'Metric description must be at most 255 characters' }),
 });
 
+const isFile = (value: unknown): value is File => {
+  return typeof File !== 'undefined' && value instanceof File;
+};
+
 export const financialStatementSchema = z.object({
-  company_document: z.instanceof(File),
+  company_document: z.custom<File>(isFile, {
+    message: 'Invalid file',
+  }),
 });
 
 export const fieldOptions = {

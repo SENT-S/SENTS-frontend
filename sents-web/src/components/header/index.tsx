@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import useOutsideClick from '@/hooks/useOutsideClick';
-import { getCompanies } from '@/services/apis/companies';
+import { getAllCompanies } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 
 // Define the type for a company
@@ -84,15 +84,15 @@ const Header = () => {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response = await getCompanies();
-      if (response.status === 200) {
+      const response = await getAllCompanies();
+      if (response) {
         // Flatten the data into a single array of companies
-        const flattenedData = response.data.flatMap((data: any) => data.list_of_companies);
+        const flattenedData = response.flatMap((data: any) => data.list_of_companies);
         setSearchData(flattenedData);
         // Update the fuse instance with the new data
         setFuse(new Fuse(flattenedData, options));
       } else {
-        console.error('Failed to fetch companies', response);
+        console.error('Error: No data received');
       }
     };
 

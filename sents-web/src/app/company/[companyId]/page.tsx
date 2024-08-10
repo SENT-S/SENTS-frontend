@@ -16,7 +16,7 @@ import {
   getCompanyNews,
   getCompanyFinancials,
   getAllFinancialDataCategories,
-} from '@/services/apis/companies';
+} from '@/utils/apiClient';
 
 const SubNav = dynamic(() => import('@/components/admin/Navs/SubNav'));
 
@@ -40,20 +40,12 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = React.memo(({ params }) =>
     const newsResponse = await getCompanyNews(companyId);
     const financialResponse = await getCompanyFinancials(companyId);
     const categoryResponse = await getAllFinancialDataCategories();
-    if (
-      response.status === 200 &&
-      newsResponse.status === 200 &&
-      financialResponse.status === 200 &&
-      categoryResponse.status === 200
-    ) {
-      setCompanyData(response.data);
-      setNewsData(newsResponse.data);
-      setFinancialData(financialResponse.data);
-      setIsLoading(false);
-      setCategory(categoryResponse.data);
-    } else {
-      console.error('Failed to fetch company', response);
-    }
+
+    setCompanyData(response);
+    setNewsData(newsResponse);
+    setFinancialData(financialResponse);
+    setCategory(categoryResponse);
+    setIsLoading(false);
   }, [params.companyId]);
 
   useEffect(() => {

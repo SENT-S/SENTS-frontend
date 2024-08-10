@@ -25,8 +25,8 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/layouts';
-import { getAllCompanyNews, getCompanies } from '@/services/apis/companies';
 import { deleteCompanyFNews } from '@/services/apis/companies';
+import { getAllCompanyNews, getAllCompanies } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 import { CompanyType } from '@/utils/types';
 
@@ -54,20 +54,11 @@ const NewsPage = () => {
       try {
         const [newsResponse, companiesResponse] = await Promise.all([
           getAllCompanyNews(),
-          getCompanies(),
+          getAllCompanies(),
         ]);
 
-        if (newsResponse.status === 200) {
-          setNewsData(newsResponse.data);
-        } else {
-          console.error('Failed to fetch news', newsResponse);
-        }
-
-        if (companiesResponse.status === 200) {
-          setCompanies(companiesResponse.data);
-        } else {
-          console.error('Failed to fetch companies', companiesResponse);
-        }
+        setNewsData(newsResponse);
+        setCompanies(companiesResponse);
       } catch (error) {
         console.error('An error occurred while fetching data:', error);
       }

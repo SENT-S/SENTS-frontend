@@ -67,7 +67,7 @@ const AddCompanyPage = () => {
           <Step_2
             setStep={setStep}
             category={financialDataCategories?.data || financialDataCategories}
-            metrics={financialMetrics.data}
+            metrics={financialMetrics}
           />
         )}
       </div>

@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/layouts';
 import { fetchMetrics, fetchCategories } from '@/lib/ReduxSlices/metric_category';
 import { useSelector, useDispatch } from '@/lib/utils';
-import { getCompany, getCompanyNews, getCompanyFinancials } from '@/services/apis/companies';
+import { getCompany, getCompanyNews, getCompanyFinancials } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 
 interface CompanyDetailsProps {
@@ -43,19 +43,14 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
     setIsLoading(true);
 
     try {
+      const financials = await getCompanyFinancials(companyId);
       const companyData = await getCompany(companyId);
-      const newsData = await getCompanyNews(companyId);
-      const financialData = await getCompanyFinancials(companyId);
-
-      if (companyData.status !== 200 || newsData.status !== 200 || financialData.status !== 200) {
-        throw new Error('Failed to fetch data');
-      }
-
-      setCountryName(companyData.data.company_details.company_country);
-      setFinancialStatements(companyData.data.company_documents);
-      setCompanyData(companyData.data.company_details);
-
-      setFinancialData(financialData);
+      // TODO: NEWS SECTION DATA
+      // const newsData = await getCompanyNews(companyId);
+      setCountryName(companyData.company_details.company_country);
+      setFinancialStatements(companyData.company_documents);
+      setCompanyData(companyData.company_details);
+      setFinancialData(financials);
     } catch (error) {
       console.error('Failed to fetch company', error);
     } finally {
@@ -91,7 +86,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
             companyID={params.companyId}
             FinancialData={financialData}
             financialStatements={financialStatements}
-            metrics={financialMetrics.data}
+            metrics={financialMetrics}
             category={financialDataCategories?.data || financialDataCategories}
             countryName={countryName}
             setRefresh={setRefresh}

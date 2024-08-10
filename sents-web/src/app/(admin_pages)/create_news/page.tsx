@@ -19,8 +19,9 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import MainLayout from '@/layouts';
-import { addFinancialNews, getCompanies } from '@/services/apis/companies';
+import { addFinancialNews } from '@/services/apis/companies';
 import { newsCategoryList } from '@/services/mockData/mock';
+import { getAllCompanies } from '@/utils/apiClient';
 import { CompanyType } from '@/utils/types';
 
 const Page = () => {
@@ -38,15 +39,12 @@ const Page = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await getCompanies();
-        if (response.status === 200) {
-          setCompanies(response.data);
-          setIsLoading(false);
-        } else {
-          console.error('Failed to fetch companies', response);
-        }
+        const response = await getAllCompanies();
+        setCompanies(response);
       } catch (error) {
         console.error('Error fetching companies:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 

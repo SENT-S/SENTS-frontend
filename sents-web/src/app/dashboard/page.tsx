@@ -1,4 +1,5 @@
 'use client';
+import axios from 'axios';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import React, { useState, useEffect } from 'react';
@@ -7,7 +8,7 @@ import CompanyTable from '@/components/tables/companyTable';
 import CustomPagination from '@/components/ui/customPagination';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/layouts';
-import { getCompanies } from '@/services/apis/companies';
+import { getAllCompanies } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 
 interface Company {
@@ -35,12 +36,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response = await getCompanies();
-      if (response.status === 200) {
-        setCompanies(response.data);
+      try {
+        const response = await getAllCompanies();
+        setCompanies(response);
+      } catch (error) {
+        console.error('An error occurred while fetching data:', error);
+      } finally {
         setIsLoading(false);
-      } else {
-        console.error('Failed to fetch companies', response);
       }
     };
 

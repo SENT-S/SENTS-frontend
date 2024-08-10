@@ -88,8 +88,8 @@ const Financial_section = ({
   }, [yearRange]);
 
   const TableData: any = categoryList.reduce((acc: any, category: any) => {
-    if (FinancialData && FinancialData.data && category.label in FinancialData.data) {
-      acc[category.label] = formatData(FinancialData.data[category.label]);
+    if (FinancialData && category.label in FinancialData) {
+      acc[category.label] = formatData(FinancialData[category.label]);
     }
     return acc;
   }, {});

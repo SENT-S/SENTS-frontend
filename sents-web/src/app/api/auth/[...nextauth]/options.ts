@@ -1,7 +1,9 @@
-// options.ts
 import axios from 'axios';
+import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const providers = [
   CredentialsProvider({
@@ -16,7 +18,7 @@ export const providers = [
       const { email: username = '', password = '' } = credentials;
 
       try {
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/login/`;
+        const url = `${BASE_URL}/login/`;
         const { data: response } = await axios.post(url, {
           username,
           password,
@@ -72,4 +74,11 @@ export const callbacks = {
     session.token = token.token;
     return session;
   },
+};
+
+export const authOptions: NextAuthOptions = {
+  providers,
+  pages,
+  secret,
+  callbacks,
 };
