@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ScaleLoader } from 'react-spinners';
 import { z } from 'zod';
@@ -20,40 +20,42 @@ interface Props {
   FormTitle: string;
   Icon?: React.ReactNode;
   onCancel?: () => void;
-  // eslint-disable-next-line no-unused-vars
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (values: any) => void;
   className?: string;
   children?: React.ReactNode;
   loading?: boolean;
   disabled?: boolean;
   openDialog?: boolean;
-  // eslint-disable-next-line no-unused-vars
   setDialog?: (value: boolean) => void;
   formProps?: React.FormHTMLAttributes<HTMLFormElement>;
-  formSchema?: z.ZodSchema<any> | any;
+  formSchema?: z.ZodSchema;
   defaultValues?: any;
 }
 
 const ModalTemplate = (props: Props) => {
+  const [open, setOpen] = useState(false);
   const ref = useRef(null);
+
   useOutsideClick(ref, () => {
     if (props.onCancel) {
       props.onCancel();
     }
+    setOpen(false);
   });
 
   const form = useForm({
-    resolver: zodResolver(props.formSchema),
+    resolver: props.formSchema ? zodResolver(props.formSchema) : undefined,
     defaultValues: props.defaultValues,
   });
 
-  async function onSubmit(values: React.FormEvent<HTMLFormElement>) {
-    props.onSubmit(values);
+  const handleSubmit = async (values: any) => {
+    await props.onSubmit(values);
     form.reset();
-  }
+    setOpen(false);
+  };
 
   return (
-    <Dialog open={props.openDialog} onOpenChange={(open) => props.setDialog?.(open)}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         disabled={props.disabled}
         onClick={() => props.setDialog?.(true)}
@@ -71,7 +73,7 @@ const ModalTemplate = (props: Props) => {
         </DialogTitle>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(handleSubmit)}
             encType={props.formProps?.encType || 'application/x-www-form-urlencoded'}
             {...props.formProps}
           >
@@ -80,7 +82,7 @@ const ModalTemplate = (props: Props) => {
               <Button
                 type="submit"
                 className={`${props.SubmitButtonStyle || 'bg-[#148C59] hover:bg-[#148c5ad7]'} text-white w-full p-3 rounded-2xl flex justify-center items-center`}
-                disabled={props.loading}
+                disabled={props.loading || props.disabled}
               >
                 {props.loading ? (
                   <ScaleLoader height={20} color="#fff" />
@@ -92,7 +94,10 @@ const ModalTemplate = (props: Props) => {
                 <Button
                   className={`${props.CancelButtonStyle || 'bg-[#F5ECEC] hover:bg-[#f5ececd8] text-[#EA0000]'} w-full p-3 rounded-2xl flex justify-center items-center`}
                   type="button"
-                  onClick={props.onCancel}
+                  onClick={() => {
+                    if (props.onCancel) props.onCancel();
+                    setOpen(false);
+                  }}
                 >
                   {props.CancelText || 'Cancel'}
                 </Button>

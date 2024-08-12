@@ -18,14 +18,19 @@ export async function POST(req: NextRequest) {
   const { token } = session as CustomSession;
 
   const endpoint = req.nextUrl.searchParams.get('endpoint');
+  const body = await req.json();
+
   if (!endpoint) {
     return NextResponse.json({ data: 'Endpoint not specified' }, { status: 400 });
+  }
+
+  if (!body) {
+    return NextResponse.json({ data: 'Body not specified' }, { status: 400 });
   }
 
   const url = `${BASE_URL}/${endpoint}`;
 
   try {
-    const body = await req.json(); // Parse the request body
     const response = await axios.post(url, body, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -37,6 +42,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ data }, { status: 200 });
   } catch (error: any) {
+    console.info(error);
     return NextResponse.json({ data: 'Error posting data', error: error.message }, { status: 500 });
   }
 }

@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import ModalTemplate from '@/components/forms/ModalTemplate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useSocket } from '@/hooks/useSocket';
 import { updateCompanyDetails, deleteCompany } from '@/services/apis/companies';
 
 interface TableColumn {
@@ -33,6 +34,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
   const [showEdit, setShowEdit] = useState(false);
   const [rowIdToDelete, setRowIdToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { requestCompanyUpdate } = useSocket();
 
   useEffect(() => {
     setEditableRows(rows);
@@ -44,7 +46,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
     const updatedRows = editableRows.filter((r) => r.id !== rowIdToDelete);
     setEditableRows(updatedRows);
     setShowModal(false);
-    setRowIdToDelete(null);
 
     try {
       setLoading(true);
@@ -66,6 +67,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
         position: 'top-center',
       });
     } finally {
+      setRowIdToDelete(null);
       setLoading(false);
     }
   };
@@ -122,6 +124,8 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
     } finally {
       setLoading(false);
       setShowEdit(false);
+      // After successful update, request a refresh for all clients
+      requestCompanyUpdate();
     }
   };
 
@@ -234,7 +238,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
                       ))}
 
                       {showEdit && (
-                        <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-[#F96868]">
+                        <div className="w-8 h-8 block relative top-1 right-2 text-[#F96868]">
                           <RiDeleteBinLine
                             size={20}
                             onClick={(e) => {
@@ -270,7 +274,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
         SubmitText="Yes"
         CancelText="No"
         openDialog={showModal}
-        SubmitButtonStyle="bg-[#EA0000] text-white p-2 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#EA0000ed9] hover:text-white"
+        SubmitButtonStyle="bg-[#EA0000] text-white p-2 rounded-2xl hover:bg-[#EA0000ed9] hover:text-white"
       />
     </div>
   );

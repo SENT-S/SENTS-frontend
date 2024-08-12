@@ -1,13 +1,26 @@
+import path from 'path';
+
 import axios from 'axios';
+import { config } from 'dotenv';
+
+// Load environment variables from .env.local file
+config({ path: path.resolve(process.cwd(), '.env.local') });
+
+const BASE_URL = process.env.NEXT_PUBLIC_URL;
 
 const apiClient = axios.create({
-  baseURL: '/api',
+  baseURL: `${BASE_URL}/api`,
 });
 
-export const getAllCompanies = async () => {
+/**
+ * Fetch / Get Methods
+ */
+export const getAllCompanies = async (token?: string) => {
   try {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const response = await apiClient.get('/getData', {
       params: { endpoint: 'allcompanies' },
+      headers,
     });
     if (response.status === 200) {
       return response.data.data;
@@ -54,10 +67,12 @@ export const getAllFinancialDataCategories = async () => {
   }
 };
 
-export const getAllCompanyNews = async () => {
+export const getAllCompanyNews = async (token?: string) => {
   try {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const response = await apiClient.get('/getData', {
       params: { endpoint: 'allnews' },
+      headers,
     });
 
     if (response.status === 200) {
@@ -120,4 +135,14 @@ export const getCompanyNews = async (id: any) => {
     console.error('An error occurred while fetching data:', error);
     throw error;
   }
+};
+
+/**
+ * Post / Create Methods
+ */
+
+export const createCompany = (data: any) => {
+  return apiClient.post('/postData', data, {
+    params: { endpoint: 'create/company' },
+  });
 };

@@ -1,16 +1,17 @@
 'use client';
-import React, { useState } from 'react';
 import Link from 'next/link';
-import { IoIosLogOut } from 'react-icons/io';
-import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { CustomSession } from '@/utils/types';
-import { useSession } from 'next-auth/react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { UserLinks, AdminLinks } from '@/utils/Links';
-import { ScaleLoader } from 'react-spinners';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import React, { useState } from 'react';
+import { IoIosLogOut } from 'react-icons/io';
+import { ScaleLoader } from 'react-spinners';
+
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { UserLinks, AdminLinks } from '@/utils/Links';
+import { CustomSession } from '@/utils/types';
 
 const SideBar = () => {
   const router = useRouter();
@@ -22,7 +23,9 @@ const SideBar = () => {
   const pathname = usePathname();
   const isAdmin = session?.user?.role === 'ADMIN';
 
-  const isActive = (path: string) => pathname.includes(path);
+  const isActive = (path: string) => {
+    return (pathname === '/' && path === '/dashboard') || pathname.includes(path);
+  };
 
   const handleLogout = async () => {
     setLoading(true);
@@ -51,7 +54,7 @@ const SideBar = () => {
             {status !== 'loading'
               ? (isAdmin ? AdminLinks : UserLinks).map((link, index) => {
                   const Icon = link.icon;
-                  const isActiveLink = link.activePaths.some(isActive);
+                  const isActiveLink = link.activePaths.some((path) => isActive(path));
                   return (
                     <Button
                       key={index}

@@ -8,7 +8,7 @@ import Section_2 from './Section_2';
 
 import { Button } from '@/components/ui/button';
 import CustomBackButton from '@/components/ui/customBackButton';
-import { createCompany } from '@/lib/ReduxSlices/create_company';
+import { createCompanyAPI } from '@/lib/ReduxSlices/create_company';
 import { useDispatch, useSelector } from '@/lib/utils';
 
 function Index({ setStep, step }: { setStep: any; step: number }) {
@@ -20,6 +20,19 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
     try {
       // Check if all fields are filled
       const allFieldsFilled = Object.values(companyFields).every((field) => field !== '');
+      const formatedData = {
+        company_name: companyFields.company_name,
+        stock_symbol: companyFields.stock_symbol,
+        company_country: companyFields.company_country,
+        sector_or_industry: companyFields.sector_or_industry,
+        about_company: companyFields.about_company,
+        mission_statement: companyFields.mission_statement,
+        vision_statement: companyFields.vision_statement,
+        ceo: companyFields.ceo,
+        number_of_employees: companyFields.number_of_employees,
+        year_founded: companyFields.year_founded,
+        website_url: companyFields.website_url,
+      };
 
       if (innerStep === 1) {
         setInnerStep((prevStep) => prevStep + 1);
@@ -34,7 +47,7 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
           });
           return;
         }
-        return await dispatch(createCompany(companyFields));
+        return await dispatch(createCompanyAPI(formatedData));
       }
     } catch (error) {
       console.error('Failed to create company', error);

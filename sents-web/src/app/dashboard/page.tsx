@@ -1,5 +1,4 @@
 'use client';
-import axios from 'axios';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import React, { useState, useEffect } from 'react';
@@ -7,8 +6,8 @@ import React, { useState, useEffect } from 'react';
 import CompanyTable from '@/components/tables/companyTable';
 import CustomPagination from '@/components/ui/customPagination';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useSocket } from '@/hooks/useSocket';
 import MainLayout from '@/layouts';
-import { getAllCompanies } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 
 interface Company {
@@ -34,20 +33,22 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'ADMIN';
 
+  const { socket } = useSocket();
+
   useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        const response = await getAllCompanies();
-        setCompanies(response);
-      } catch (error) {
-        console.error('An error occurred while fetching data:', error);
-      } finally {
+    if (socket) {
+      socket.on('companiesUpdate', (updatedCompanies: any) => {
+        setCompanies(updatedCompanies);
         setIsLoading(false);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off('companiesUpdate');
       }
     };
-
-    fetchCompanies();
-  }, []);
+  }, [socket]);
 
   const companyCountries = companies.map((item: Company) => ({
     country: item?.company_country,

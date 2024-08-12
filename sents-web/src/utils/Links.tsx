@@ -18,7 +18,7 @@ export const UserLinks = [
     name: 'Dashboard',
     icon: LuLayoutDashboard,
     path: '/dashboard',
-    activePaths: ['/dashboard', '/company'],
+    activePaths: ['./', '/dashboard', '/company'],
     disable: false,
   },
   {

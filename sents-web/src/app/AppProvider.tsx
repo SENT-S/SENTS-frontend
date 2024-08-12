@@ -49,7 +49,7 @@ const AppProvider = ({ children, themeProps }: ProviderProps) => {
     if (isTokenExpiredOrSessionUndefined() && session) {
       signOut();
       localStorage.clear();
-      redirect('/landing');
+      redirect('/login_register');
     } else if (session && !toastShown && pathname === '/') {
       toast.success(`Welcome, back ${session.user?.first_name}!`, {
         style: {

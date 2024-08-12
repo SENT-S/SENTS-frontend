@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useSocket } from '@/hooks/useSocket';
 import MainLayout from '@/layouts';
 import { deleteCompanyFNews } from '@/services/apis/companies';
 import { getAllCompanyNews, getAllCompanies } from '@/utils/apiClient';
@@ -46,28 +47,32 @@ const NewsPage = () => {
   const [selectedCompany, setSelectedCompany] = useState('');
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const { socket, requestNewsUpdate } = useSocket();
+
+  const data = {
+    news_ids: selectedIds,
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
+    if (socket) {
+      socket.on('companiesUpdate', (updatedCompanies: any) => {
+        setCompanies(updatedCompanies);
+        setIsLoading(false);
+      });
 
-      try {
-        const [newsResponse, companiesResponse] = await Promise.all([
-          getAllCompanyNews(),
-          getAllCompanies(),
-        ]);
+      socket.on('newsUpdate', (updatedNews: any) => {
+        setNewsData(updatedNews);
+        setIsLoading(false);
+      });
+    }
 
-        setNewsData(newsResponse);
-        setCompanies(companiesResponse);
-      } catch (error) {
-        console.error('An error occurred while fetching data:', error);
+    return () => {
+      if (socket) {
+        socket.off('companiesUpdate');
+        socket.off('newsUpdate');
       }
-
-      setIsLoading(false);
     };
-
-    fetchData();
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     const countries = companies.map((company: any) => ({
@@ -113,11 +118,6 @@ const NewsPage = () => {
   };
 
   const handleDeleteNews = async () => {
-    setShowCheckbox(false);
-    const data = {
-      news_ids: selectedIds,
-    };
-
     try {
       const response = await deleteCompanyFNews(data);
       if (response.status === 200 || response.status === 204) {
@@ -135,6 +135,10 @@ const NewsPage = () => {
         duration: 5000,
         position: 'top-center',
       });
+    } finally {
+      setShowCheckbox(false);
+      setSelectedIds([]);
+      requestNewsUpdate();
     }
   };
 

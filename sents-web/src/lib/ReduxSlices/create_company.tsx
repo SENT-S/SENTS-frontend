@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { createCompany as createCompanyAPI } from '@/services/apis/companies';
+import { createCompany } from '@/services/apis/companies';
 
 interface Company {
   company_name: string;
@@ -51,10 +51,10 @@ const companySlice = createSlice({
 
 export const { updateCompanyField, resetCompanyFields, setLoading } = companySlice.actions;
 
-export const createCompany = (companyData: Company) => async (dispatch: any) => {
+export const createCompanyAPI = (companyData: any) => async (dispatch: any) => {
   dispatch(setLoading(true));
   try {
-    const response = await createCompanyAPI(companyData);
+    const response = await createCompany(companyData);
     dispatch(updateCompanyField({ field: 'response', value: response }));
   } catch (error) {
     console.error('Failed to create company', error);

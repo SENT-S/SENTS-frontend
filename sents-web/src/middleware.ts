@@ -9,6 +9,7 @@ interface Token {
 
 export const config = {
   matcher: [
+    '/',
     '/dashboard',
     '/company/:path*',
     '/edit_company/:path*',
