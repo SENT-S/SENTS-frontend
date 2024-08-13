@@ -23,19 +23,16 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const cache = new NodeCache({ stdTTL: 5 });
+// Implement a more efficient cache with a max size
+const cache = new NodeCache({ stdTTL: 300, maxKeys: 1000 });
 
 async function getDataWithCache(token: string, dataType: 'companies' | 'news') {
   const cacheKey = `${dataType}_${token}`;
   const cachedData = cache.get(cacheKey);
   if (cachedData) return cachedData;
 
-  let data;
-  if (dataType === 'companies') {
-    data = await getAllCompanies(token);
-  } else {
-    data = await getAllCompanyNews(token);
-  }
+  const getData = dataType === 'companies' ? getAllCompanies : getAllCompanyNews;
+  const data = await getData(token);
 
   cache.set(cacheKey, data);
   return data;
@@ -61,13 +58,23 @@ app.prepare().then(() => {
   const io = new Server(server, {
     pingTimeout: 60000,
     pingInterval: 25000,
+    // Implement connection limits
+    maxHttpBufferSize: 1e6, // 1 MB
+    connectTimeout: 45000, // 45 seconds
   });
+
+  // Implement a connection limit
+  const MAX_CONNECTIONS = 1000;
+  let connectionCount = 0;
 
   io.use((socket: AuthenticatedSocket, next) => {
     const token = socket.handshake.auth.token;
-    if (token) {
+    if (token && connectionCount < MAX_CONNECTIONS) {
       socket.token = token;
+      connectionCount++;
       next();
+    } else if (connectionCount >= MAX_CONNECTIONS) {
+      next(new Error('Server is at maximum capacity'));
     } else {
       next(new Error('Unauthorized connection'));
     }
@@ -86,30 +93,53 @@ app.prepare().then(() => {
     updateDataForSocket(socket, 'companies');
     updateDataForSocket(socket, 'news');
 
+    // Implement rate limiting
+    const updateLimit = 5;
+    let updateCount = 0;
+    let lastUpdateTime = Date.now();
+
+    const checkRateLimit = () => {
+      const now = Date.now();
+      if (now - lastUpdateTime > 60000) {
+        // Reset after 1 minute
+        updateCount = 0;
+        lastUpdateTime = now;
+      }
+      if (updateCount >= updateLimit) {
+        throw new Error('Rate limit exceeded');
+      }
+      updateCount++;
+    };
+
     // Listen for company update requests
     socket.on('requestCompanyUpdate', async () => {
       try {
+        checkRateLimit();
         if (!socket.token) return;
         const companies = await getDataWithCache(socket.token, 'companies');
-        io.emit('companiesUpdate', companies);
-      } catch (error) {
+        socket.emit('companiesUpdate', companies);
+      } catch (error: any) {
         console.error('Error fetching company data:', error);
+        socket.emit('error', { message: error.message });
       }
     });
 
     // Listen for news update requests
     socket.on('requestNewsUpdate', async () => {
       try {
+        checkRateLimit();
         if (!socket.token) return;
         const news = await getDataWithCache(socket.token, 'news');
-        io.emit('newsUpdate', news);
-      } catch (error) {
+        socket.emit('newsUpdate', news);
+      } catch (error: any) {
         console.error('Error fetching news data:', error);
+        socket.emit('error', { message: error.message });
       }
     });
 
     socket.on('disconnect', () => {
       console.log('A client disconnected');
+      connectionCount--;
     });
   });
 
