@@ -25,10 +25,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const companyId = parseInt(params.companyId);
-  const { status } = useSession() as {
-    data: CustomSession;
-    status: string;
-  };
+  const { data: session, status } = useSession() as { data: CustomSession; status: string };
   const [selectedLink, setSelectedLink] = useState(links[0]);
   const [companyData, setCompanyData] = useState<any>({});
   const [financialData, setFinancialData] = useState<any>([]);
@@ -70,7 +67,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
     fetchCompanies();
   }, [fetchCompanies]);
 
-  const renderSection = () => {
+  const renderSection = useCallback(() => {
     switch (selectedLink) {
       case 'Overview':
         return (
@@ -97,7 +94,18 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       default:
         return null;
     }
-  };
+  }, [
+    selectedLink,
+    isLoading,
+    companyData,
+    params.companyId,
+    financialData,
+    financialStatements,
+    financialMetrics,
+    financialDataCategories,
+    countryName,
+    setRefresh,
+  ]);
 
   return (
     <MainLayout>

@@ -29,7 +29,7 @@ export default function LandingPage() {
           </p>
           <div>
             <Link
-              href="/dashboard"
+              href={session ? '/dashboard' : '/login_register'}
               className="bg-[#1EF1A5] cursor-pointer text-[#0D4222] p-2 md:px-5 md:py-3 rounded-full text-[16px] md:text-[26px] font-light inline-flex items-center justify-center"
               style={{
                 zIndex: 1000,

@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import Step_1 from './_steps/step_1';
 import Step_2 from './_steps/step_2';
@@ -26,10 +26,14 @@ const AddCompanyPage = () => {
   const financialMetrics = useSelector<any>((state) => state.metricCategory.metricList);
   const financialDataCategories = useSelector<any>((state) => state.metricCategory.categoryList);
 
-  useEffect(() => {
+  const fetchMetricsAndCategories = useCallback(() => {
     dispatch(fetchMetrics());
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    fetchMetricsAndCategories();
+  }, [fetchMetricsAndCategories]);
 
   return (
     <MainLayout>

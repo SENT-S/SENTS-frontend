@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { BsFillMoonStarsFill } from 'react-icons/bs';
 import { CiSearch } from 'react-icons/ci';
 import { IoMdClose } from 'react-icons/io';
@@ -56,23 +56,23 @@ const Header = () => {
   const { image = '', name, email } = session?.user || {};
 
   // for search
-  const [searchData, setSearchData] = useState(initialData);
+  const [searchData, setSearchData] = useState<Company[]>(initialData);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Company[]>([]);
-  const [fuse, setFuse] = useState(new Fuse(searchData, options));
+  const fuse = useMemo(() => new Fuse(searchData, options), [searchData, options]);
   const searchRef = useRef(null);
 
   useOutsideClick(searchRef, () => {
     setResults([]);
   });
 
-  const isActive = (path: string) => pathname.startsWith(path);
+  const isActive = useCallback((path: string) => pathname.startsWith(path), [pathname]);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
+  }, [theme, setTheme]);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     setLoading(true);
     await signOut({
       redirect: true,
@@ -80,7 +80,7 @@ const Header = () => {
     });
     setLoading(false);
     localStorage.clear();
-  };
+  }, []);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -89,25 +89,27 @@ const Header = () => {
         // Flatten the data into a single array of companies
         const flattenedData = response.flatMap((data: any) => data.list_of_companies);
         setSearchData(flattenedData);
-        // Update the fuse instance with the new data
-        setFuse(new Fuse(flattenedData, options));
       } else {
         console.error('Error: No data received');
       }
+      setLoading(false);
     };
 
     fetchCompanies();
   }, []);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    if (e.target.value.trim() !== '') {
-      const result = fuse.search(e.target.value);
-      setResults(result.map((res) => res.item));
-    } else {
-      setResults([]);
-    }
-  };
+  const handleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(e.target.value);
+      if (e.target.value.trim() !== '') {
+        const result = fuse.search(e.target.value);
+        setResults(result.map((res) => res.item));
+      } else {
+        setResults([]);
+      }
+    },
+    [fuse],
+  );
 
   return (
     <>

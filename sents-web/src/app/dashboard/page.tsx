@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import CompanyTable from '@/components/tables/companyTable';
 import CustomPagination from '@/components/ui/customPagination';
@@ -24,42 +24,49 @@ interface Company {
 }
 
 const Dashboard = () => {
-  const { data: session } = useSession() as {
-    data: CustomSession;
-  };
+  const { data: session } = useSession() as { data: CustomSession };
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
-
-  const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'ADMIN';
-
   const { socket } = useSocket();
+
+  const handleCompaniesUpdate = useCallback((updatedCompanies: any) => {
+    setCompanies((prevCompanies) => {
+      if (JSON.stringify(prevCompanies) !== JSON.stringify(updatedCompanies)) {
+        return updatedCompanies;
+      }
+      return prevCompanies;
+    });
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     if (socket) {
-      socket.on('companiesUpdate', (updatedCompanies: any) => {
-        setCompanies(updatedCompanies);
-        setIsLoading(false);
-      });
+      socket.on('companiesUpdate', handleCompaniesUpdate);
     }
 
     return () => {
       if (socket) {
-        socket.off('companiesUpdate');
+        socket.off('companiesUpdate', handleCompaniesUpdate);
       }
     };
-  }, [socket]);
+  }, [socket, handleCompaniesUpdate]);
 
-  const companyCountries = companies.map((item: Company) => ({
-    country: item?.company_country,
-    total: item?.num_of_companies,
-    flag: `https://flagsapi.com/${item?.company_country_code}/flat/64.png`,
-  }));
+  const companyCountries = useMemo(() => {
+    return companies.map((item) => ({
+      country: item?.company_country,
+      total: item?.num_of_companies,
+      flag: `https://flagsapi.com/${item?.company_country_code}/flat/64.png`,
+    }));
+  }, [companies]);
 
-  const filteredCompanies = companies
-    .filter((item: Company) => item.company_country === selectedCountry)
-    .map((item: Company) => item.list_of_companies)
-    .flat();
+  const filteredCompanies = useMemo(() => {
+    return companies
+      .filter((item) => item.company_country === selectedCountry)
+      .map((item) => item.list_of_companies)
+      .flat();
+  }, [companies, selectedCountry]);
 
   return (
     <MainLayout>

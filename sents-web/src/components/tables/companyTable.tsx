@@ -57,6 +57,9 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
           duration: 5000,
           position: 'top-center',
         });
+
+        // After successful update, request a refresh for all clients
+        requestCompanyUpdate();
       } else {
         throw new Error('Failed to delete company');
       }
@@ -70,8 +73,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
       setShowEdit(false);
       setRowIdToDelete(null);
       setLoading(false);
-      // After successful update, request a refresh for all clients
-      requestCompanyUpdate();
     }
   };
 
@@ -114,6 +115,9 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
             duration: 5000,
             position: 'top-center',
           });
+
+          // After successful update, request a refresh for all clients
+          requestCompanyUpdate();
         } else {
           throw new Error('Failed to update company details');
         }
@@ -127,8 +131,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
     } finally {
       setLoading(false);
       setShowEdit(false);
-      // After successful update, request a refresh for all clients
-      requestCompanyUpdate();
     }
   };
 

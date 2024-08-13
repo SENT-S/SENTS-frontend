@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { GrSubtractCircle } from 'react-icons/gr';
 import ReactSelect from 'react-select';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
+import FStatements from '@/components/admin/FStatements';
 import Add_new_category from '@/components/forms/modals/Add_new_category';
 import Add_new_metric from '@/components/forms/modals/Add_new_metric';
-import FStatements from '@/components/admin/FStatements';
 import { Button } from '@/components/ui/button';
 import CustomPagination from '@/components/ui/customPagination';
 import { Input } from '@/components/ui/input';
@@ -37,68 +37,79 @@ type Row = {
 };
 
 const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
-  const yearRanges = getYearRanges();
+  const yearRanges = useMemo(() => getYearRanges(), []);
   const [isLoading, setIsLoading] = useState(false);
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
   const createdCompanyData = useSelector((state) => state.company.response);
-  const companyID = Number(createdCompanyData?.data?.id);
+  const companyID = useMemo(() => Number(createdCompanyData?.data?.id), [createdCompanyData]);
 
-  // change the format of the data from categories and metric to react-select format
-  const categoryList = category.map((item: any) => ({
-    value: item.id,
-    label: item.category_name,
-  }));
+  // Change the format of the data from categories and metric to react-select format
+  const categoryList = useMemo(
+    () =>
+      category.map((item: any) => ({
+        value: item.id,
+        label: item.category_name,
+      })),
+    [category],
+  );
 
-  const metricsList = metrics.map((item: any) => ({
-    value: item.id,
-    label: item.metric_name,
-  }));
+  const metricsList = useMemo(
+    () =>
+      metrics.map((item: any) => ({
+        value: item.id,
+        label: item.metric_name,
+      })),
+    [metrics],
+  );
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);
     setNewYears(rangeYears);
   }, [yearRange]);
 
-  // Initialize rows state with one empty row
-  const [rows, setRows] = useState<Row[]>([getEmptyRow(newYears)]);
-
-  function getEmptyRow(years: string[]) {
+  const getEmptyRow = useCallback((years: string[]): Row => {
     const row: Row = { metrics: '', category: [] }; // Initialize category as an empty array
     years.forEach((year) => {
       const actualYear = '20' + year.slice(3);
       row[actualYear] = '';
     });
     return row;
-  }
+  }, []);
+
+  // Initialize rows state with one empty row
+  const [rows, setRows] = useState<Row[]>([getEmptyRow(newYears)]);
 
   // Function to handle adding a new row
-  const addRow = () => {
+  const addRow = useCallback(() => {
     setRows((prevRows) => [...prevRows, getEmptyRow(newYears)]);
-  };
+  }, [getEmptyRow, newYears]);
 
   // Function to handle input change in the table
-  const handleInputChange = (e: any, rowIndex: number, column: any) => {
-    const value = e.target.value;
-    setRows((prevRows) => {
-      return prevRows.map((row, index) => {
-        if (index === rowIndex) {
-          // If the column is a fiscal year, save the actual year instead
-          if (column.startsWith('FY’')) {
-            const actualYear = '20' + column.slice(3);
-            return { ...row, [actualYear]: value };
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, rowIndex: number, column: string) => {
+      const value = e.target.value;
+      setRows((prevRows) => {
+        return prevRows.map((row, index) => {
+          if (index === rowIndex) {
+            // If the column is a fiscal year, save the actual year instead
+            if (column.startsWith('FY’')) {
+              const actualYear = '20' + column.slice(3);
+              return { ...row, [actualYear]: value };
+            } else {
+              return { ...row, [column]: value };
+            }
           } else {
-            return { ...row, [column]: value };
+            return row;
           }
-        } else {
-          return row;
-        }
+        });
       });
-    });
-  };
+    },
+    [],
+  );
 
   // Function to handle select change in the table
-  const handleSelectChange = (value: any, rowIndex: number, column: string) => {
+  const handleSelectChange = useCallback((value: any, rowIndex: number, column: string) => {
     setRows((prevRows) => {
       return prevRows.map((row, index) => {
         if (index === rowIndex) {
@@ -115,70 +126,73 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
         }
       });
     });
-  };
+  }, []);
 
   // Function to handle clearing a row
-  const clearRow = (rowIndex: number) => {
+  const clearRow = useCallback((rowIndex: number) => {
     setRows((prevRows) => prevRows.filter((_, index) => index !== rowIndex));
-  };
+  }, []);
 
-  const handleFormSubmit = async (e: any) => {
-    e.preventDefault();
-    try {
-      // Convert rows state to an array of objects where each object represents a row
-      const formData = rows.flatMap((row) => {
-        // Extract metrics and category from the row
-        const { metrics, category, ...years } = row;
+  const handleFormSubmit = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      try {
+        // Convert rows state to an array of objects where each object represents a row
+        const formData = rows.flatMap((row) => {
+          // Extract metrics and category from the row
+          const { metrics, category, ...years } = row;
 
-        // Convert metrics and category to numbers
-        const metricId = Number(metrics);
-        const categoryIds = category.map(Number);
+          // Convert metrics and category to numbers
+          const metricId = Number(metrics);
+          const categoryIds = category.map(Number);
 
-        // Map over the years in the row to create an object for each year
-        return Object.entries(years).map(([year, value]) => ({
-          company: companyID,
-          category: categoryIds,
-          metric: metricId,
-          year: Number(year),
-          value: String(value),
-        }));
-      });
+          // Map over the years in the row to create an object for each year
+          return Object.entries(years).map(([year, value]) => ({
+            company: companyID,
+            category: categoryIds,
+            metric: metricId,
+            year: Number(year),
+            value: String(value),
+          }));
+        });
 
-      setIsLoading(true);
+        setIsLoading(true);
 
-      // Call the API to create/update financial data
-      const response = await addCompanyFinancialData(formData);
+        // Call the API to create/update financial data
+        const response = await addCompanyFinancialData(formData);
 
-      // Check if the request was successful
-      if (response.status !== 201 && response.status !== 200) {
-        throw new Error(response.detail || 'Failed to add financial data');
+        // Check if the request was successful
+        if (response.status !== 201 && response.status !== 200) {
+          throw new Error(response.detail || 'Failed to add financial data');
+        }
+
+        // Show success message
+        toast.success(response.message, {
+          style: {
+            background: 'green',
+            color: 'white',
+            border: 'none',
+          },
+          position: 'top-center',
+          duration: 5000,
+        });
+
+        // Reset rows state to initial state after form submission
+        setRows([getEmptyRow(newYears)]);
+        // reload the page
+        window.location.reload();
+      } catch (error: any) {
+        toast.error(error.message || 'An error occurred, please try again', {
+          style: { background: 'red', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'top-center',
+        });
+      } finally {
+        setIsLoading(false);
       }
-
-      // Show success message
-      toast.success(response.message, {
-        style: {
-          background: 'green',
-          color: 'white',
-          border: 'none',
-        },
-        position: 'top-center',
-        duration: 5000,
-      });
-
-      // Reset rows state to initial state after form submission
-      setRows([getEmptyRow(newYears)]);
-      // reload the page
-      window.location.reload();
-    } catch (error: any) {
-      toast.error(error, {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
-        position: 'top-center',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [rows, companyID, newYears, getEmptyRow],
+  );
 
   return (
     <div className="space-y-8">

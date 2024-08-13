@@ -13,13 +13,13 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => (
       <div className="w-auto">
         <SideBar />
       </div>
-      <div className="flex flex-col w-full h-[calc(100vh-40px)] space-y-8 overflow-y-auto">
+      <div className="flex flex-col w-full h-[calc(100vh-40px)] space-y-8 mb-2 overflow-y-auto">
         <div className="w-full z-50 top-0 sticky">
           <Header />
         </div>
         <main className="container flex-grow w-full space-y-8 bg-transparent">{children}</main>
         {/* trade mark */}
-        <div className="w-full mt-4 mb-4 flex justify-center items-center">
+        <div className="w-full flex justify-center items-center">
           <span className="text-sm text-gray-500">
             © {new Date().getFullYear()} Sents. All rights reserved.
           </span>

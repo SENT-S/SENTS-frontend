@@ -116,8 +116,10 @@ app.prepare().then(() => {
       try {
         checkRateLimit();
         if (!socket.token) return;
-        const companies = await getDataWithCache(socket.token, 'companies');
-        socket.emit('companiesUpdate', companies);
+        const companies = await getAllCompanies(socket.token);
+        cache.set(`companies_${socket.token}`, companies); // Update cache
+        // broadcast to all clients
+        io.emit('companiesUpdate', companies);
       } catch (error: any) {
         console.error('Error fetching company data:', error);
         socket.emit('error', { message: error.message });
@@ -129,8 +131,10 @@ app.prepare().then(() => {
       try {
         checkRateLimit();
         if (!socket.token) return;
-        const news = await getDataWithCache(socket.token, 'news');
-        socket.emit('newsUpdate', news);
+        const news = await getAllCompanyNews(socket.token);
+        cache.set(`news_${socket.token}`, news); // Update cache
+        // broadcast to all clients
+        io.emit('newsUpdate', news);
       } catch (error: any) {
         console.error('Error fetching news data:', error);
         socket.emit('error', { message: error.message });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { HiOutlineUsers } from 'react-icons/hi2';
 import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
@@ -14,9 +14,12 @@ const Section_2 = () => {
   const dispatch = useDispatch();
   const companyFields = useSelector((state) => state.company);
 
-  const handleInputChange = (field: any, value: any) => {
-    dispatch(updateCompanyField({ field, value }));
-  };
+  const handleInputChange = useCallback(
+    (field: any, value: any) => {
+      dispatch(updateCompanyField({ field, value }));
+    },
+    [dispatch],
+  );
 
   return (
     <div>

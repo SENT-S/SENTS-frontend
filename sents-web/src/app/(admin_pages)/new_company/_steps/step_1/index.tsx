@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
@@ -8,6 +8,7 @@ import Section_2 from './Section_2';
 
 import { Button } from '@/components/ui/button';
 import CustomBackButton from '@/components/ui/customBackButton';
+import { useSocket } from '@/hooks/useSocket';
 import { createCompanyAPI } from '@/lib/ReduxSlices/create_company';
 import { useDispatch, useSelector } from '@/lib/utils';
 
@@ -15,12 +16,13 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
   const dispatch = useDispatch();
   const companyFields = useSelector((state) => state.company);
   const [innerStep, setInnerStep] = useState(1);
+  const { requestCompanyUpdate } = useSocket();
 
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = useCallback(async () => {
     try {
       // Check if all fields are filled
       const allFieldsFilled = Object.values(companyFields).every((field) => field !== '');
-      const formatedData = {
+      const formattedData = {
         company_name: companyFields.company_name,
         stock_symbol: companyFields.stock_symbol,
         company_country: companyFields.company_country,
@@ -47,7 +49,8 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
           });
           return;
         }
-        return await dispatch(createCompanyAPI(formatedData));
+        await dispatch(createCompanyAPI(formattedData));
+        requestCompanyUpdate();
       }
     } catch (error) {
       console.error('Failed to create company', error);
@@ -57,7 +60,7 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
         position: 'top-center',
       });
     }
-  };
+  }, [companyFields, innerStep, dispatch, requestCompanyUpdate]);
 
   useEffect(() => {
     if (companyFields.response && companyFields.response.status === 201) {

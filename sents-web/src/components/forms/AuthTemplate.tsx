@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
@@ -44,56 +44,59 @@ const AuthTemplate = ({
     defaultValues,
   });
 
-  async function onSubmit(values: any) {
-    setLoading(true);
-    try {
-      if (title === 'Sign In') {
-        const res = await signIn('credentials', {
-          ...values,
-          redirect: false,
+  const onSubmit = useCallback(
+    async (values: Record<string, any>) => {
+      setLoading(true);
+      try {
+        if (title === 'Sign In') {
+          const res = await signIn('credentials', {
+            ...values,
+            redirect: false,
+          });
+
+          if (res?.ok) {
+            toast.success('Sign in successful, redirecting...', {
+              style: { background: 'green', color: 'white', border: 'none' },
+              duration: 5000,
+              position: 'top-center',
+            });
+            form.reset();
+            router.push('/dashboard');
+          } else {
+            throw new Error(
+              `${res?.error}` || 'An error occurred during the process, please try again',
+            );
+          }
+        } else {
+          const response = await registerUser(values);
+
+          if (response?.status === 201) {
+            toast.success('Registration successful, redirecting...', {
+              style: { background: 'green', color: 'white', border: 'none' },
+              duration: 5000,
+              position: 'top-center',
+            });
+            form.reset();
+
+            setTimeout(() => {
+              router.push('/success-register');
+            }, 500);
+          } else {
+            throw new Error(`${response?.message}` || 'An error occurred during the process');
+          }
+        }
+      } catch (error: any) {
+        toast.error(`${error.message}` || 'An error occurred during the process', {
+          style: { background: 'red', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'top-center',
         });
-
-        if (res?.ok) {
-          toast.success('Sign in successful, redirecting...', {
-            style: { background: 'green', color: 'white', border: 'none' },
-            duration: 5000,
-            position: 'top-center',
-          });
-          form.reset();
-          router.push('/dashboard');
-        } else {
-          throw new Error(
-            `${res?.error}` || 'An error occurred during the process, please try again',
-          );
-        }
-      } else {
-        const response = await registerUser(values);
-
-        if (response?.status === 201) {
-          toast.success('Registration successful, redirecting...', {
-            style: { background: 'green', color: 'white', border: 'none' },
-            duration: 5000,
-            position: 'top-center',
-          });
-          form.reset();
-
-          setTimeout(() => {
-            router.push('/success-register');
-          }, 500);
-        } else {
-          throw new Error(`${response?.message}` || 'An error occurred during the process');
-        }
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      toast.error(`${error.message}` || 'An error occurred during the process', {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
-        position: 'top-center',
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
+    },
+    [title, form, router, signIn, registerUser],
+  );
 
   return (
     <Card className="relative border-none shadow-none space-y-4 text-[#9C9AA5]">

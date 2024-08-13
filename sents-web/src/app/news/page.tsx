@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { RxPlus } from 'react-icons/rx';
 import { toast } from 'sonner';
@@ -53,26 +53,39 @@ const NewsPage = () => {
     news_ids: selectedIds,
   };
 
+  const handleCompaniesUpdate = useCallback((updatedCompanies: any) => {
+    setCompanies((prevCompanies) => {
+      if (JSON.stringify(prevCompanies) !== JSON.stringify(updatedCompanies)) {
+        return updatedCompanies;
+      }
+      return prevCompanies;
+    });
+    setIsLoading(false);
+  }, []);
+
+  const handleNewsUpdate = useCallback((updatedNews: any) => {
+    setNewsData((prevNewsData) => {
+      if (JSON.stringify(prevNewsData) !== JSON.stringify(updatedNews)) {
+        return updatedNews;
+      }
+      return prevNewsData;
+    });
+    setIsLoading(false);
+  }, []);
+
   useEffect(() => {
     if (socket) {
-      socket.on('companiesUpdate', (updatedCompanies: any) => {
-        setCompanies(updatedCompanies);
-        setIsLoading(false);
-      });
-
-      socket.on('newsUpdate', (updatedNews: any) => {
-        setNewsData(updatedNews);
-        setIsLoading(false);
-      });
+      socket.on('companiesUpdate', handleCompaniesUpdate);
+      socket.on('newsUpdate', handleNewsUpdate);
     }
 
     return () => {
       if (socket) {
-        socket.off('companiesUpdate');
-        socket.off('newsUpdate');
+        socket.off('companiesUpdate', handleCompaniesUpdate);
+        socket.off('newsUpdate', handleNewsUpdate);
       }
     };
-  }, [socket]);
+  }, [socket, handleCompaniesUpdate, handleNewsUpdate]);
 
   useEffect(() => {
     const countries = companies.map((company: any) => ({
@@ -153,9 +166,11 @@ const NewsPage = () => {
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedIds([...selectedIds, Number(id)]);
+      setSelectedIds((prevSelectedIds) => [...prevSelectedIds, Number(id)]);
     } else {
-      setSelectedIds(selectedIds.filter((newsId) => newsId !== Number(id)));
+      setSelectedIds((prevSelectedIds) =>
+        prevSelectedIds.filter((newsId) => newsId !== Number(id)),
+      );
     }
   };
 

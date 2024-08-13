@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -14,9 +16,12 @@ const Section_1 = () => {
   const dispatch = useDispatch();
   const companyFields = useSelector((state) => state.company);
 
-  const handleInputChange = (field: any, value: any) => {
-    dispatch(updateCompanyField({ field, value }));
-  };
+  const handleInputChange = useCallback(
+    (field: any, value: any) => {
+      dispatch(updateCompanyField({ field, value }));
+    },
+    [dispatch],
+  );
 
   return (
     <div className="space-y-8">

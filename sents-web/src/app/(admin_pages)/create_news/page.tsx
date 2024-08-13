@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { IoImageOutline } from 'react-icons/io5';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
@@ -18,10 +18,10 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
+import { useSocket } from '@/hooks/useSocket';
 import MainLayout from '@/layouts';
-import { addFinancialNews } from '@/utils/apiClient';
 import { newsCategoryList } from '@/services/mockData/mock';
-import { getAllCompanies } from '@/utils/apiClient';
+import { addFinancialNews } from '@/utils/apiClient';
 import { CompanyType } from '@/utils/types';
 
 const Page = () => {
@@ -29,27 +29,35 @@ const Page = () => {
   const [companies, setCompanies] = useState<CompanyType[]>([]);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [news_image, setNewsImage] = useState<File | null>(null);
+  const [newsImage, setNewsImage] = useState<File | null>(null);
   const [countryList, setCountryList] = useState<{ label: string; value: any }[]>([]);
   const [companyList, setCompanyList] = useState<{ label: string; value: any }[]>([]);
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const { requestNewsUpdate, socket } = useSocket();
+
+  const handleCompaniesUpdate = useCallback((updatedCompanies: any) => {
+    setCompanies((prevCompanies) => {
+      if (JSON.stringify(prevCompanies) !== JSON.stringify(updatedCompanies)) {
+        return updatedCompanies;
+      }
+      return prevCompanies;
+    });
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        const response = await getAllCompanies();
-        setCompanies(response);
-      } catch (error) {
-        console.error('Error fetching companies:', error);
-      } finally {
-        setIsLoading(false);
+    if (socket) {
+      socket.on('companiesUpdate', handleCompaniesUpdate);
+    }
+
+    return () => {
+      if (socket) {
+        socket.off('companiesUpdate', handleCompaniesUpdate);
       }
     };
-
-    fetchCompanies();
-  }, []);
+  }, [socket, handleCompaniesUpdate]);
 
   useEffect(() => {
     const countries = companies.map((company) => ({
@@ -64,9 +72,9 @@ const Page = () => {
   }, [companies]);
 
   useEffect(() => {
-    const filteredCompanies = companies.filter(
+    const filteredCompanies = companies.find(
       (company) => company.company_country === selectedCountry,
-    )[0];
+    );
     if (filteredCompanies) {
       const companiesList = filteredCompanies.list_of_companies.map((company) => ({
         label: company.company_name,
@@ -76,64 +84,69 @@ const Page = () => {
     }
   }, [selectedCountry, companies]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
     setNewsImage(file);
-  };
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
 
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
 
-    const selectedCompanyID = companyList.find(
-      (company) => company.label === selectedCompany,
-    )?.value;
+      const selectedCompanyID = companyList.find(
+        (company) => company.label === selectedCompany,
+      )?.value;
 
-    data.company = selectedCompanyID || '';
+      data.company = selectedCompanyID || '';
 
-    setLoading(true);
+      setLoading(true);
 
-    try {
-      const response = await addFinancialNews(data);
+      try {
+        const response = await addFinancialNews(data);
 
-      if (response.status === 201) {
-        form.reset();
-        setNewsImage(null);
+        if (response.status === 201) {
+          form.reset();
+          setNewsImage(null);
 
-        toast.success('News added successfully', {
-          style: {
-            background: 'green',
-            color: 'white',
-            border: 'none',
-          },
-          position: 'top-center',
-          duration: 5000,
-        });
-      } else {
-        const errors = response.error;
-        let errorMessage = '';
-        for (const key in errors) {
-          if (Object.prototype.hasOwnProperty.call(errors, key)) {
-            errors[key].forEach((error: string) => {
-              errorMessage += `${key}: ${error}\n`;
-            });
+          toast.success('News added successfully', {
+            style: {
+              background: 'green',
+              color: 'white',
+              border: 'none',
+            },
+            position: 'top-center',
+            duration: 5000,
+          });
+
+          requestNewsUpdate();
+        } else {
+          const errors = response.error;
+          let errorMessage = '';
+          for (const key in errors) {
+            if (Object.prototype.hasOwnProperty.call(errors, key)) {
+              errors[key].forEach((error: string) => {
+                errorMessage += `${key}: ${error}\n`;
+              });
+            }
           }
+          throw new Error(errorMessage);
         }
-        throw new Error(errorMessage);
+      } catch (error: any) {
+        toast.error(error.message || 'An error occurred', {
+          style: { background: 'red', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'top-center',
+        });
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred', {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
-        position: 'top-center',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [companyList, selectedCompany],
+  );
 
   return (
     <MainLayout>
@@ -246,7 +259,7 @@ const Page = () => {
               type="file"
               accept="image/*"
               id="fileUpload"
-              name="news_image"
+              name="newsImage"
               className="w-full border-none hidden"
               onChange={handleFileChange}
             />
@@ -254,7 +267,7 @@ const Page = () => {
               htmlFor="fileUpload"
               className="w-full flex justify-center items-center border-none cursor-pointer"
             >
-              {news_image ? news_image.name : 'Upload Image'}
+              {newsImage ? newsImage.name : 'Upload Image'}
               <IoImageOutline className="ml-2" size={18} />
             </Label>
           </div>
