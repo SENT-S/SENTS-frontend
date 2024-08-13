@@ -4,7 +4,7 @@ import path from 'path';
 import { config } from 'dotenv';
 import { getSession } from 'next-auth/react';
 import { useEffect, useState, useCallback } from 'react';
-import { io, Socket } from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 
 import { CustomSession } from '@/utils/types';
 

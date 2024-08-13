@@ -30,8 +30,8 @@ export async function middleware(req: any) {
     return NextResponse.next();
   }
 
-  if (!token && pathname !== '/login_register') {
-    return NextResponse.redirect(new URL('/login_register', req.url));
+  if (!token && pathname !== '/landing') {
+    return NextResponse.redirect(new URL('/landing', req.url));
   }
 
   return NextResponse.next();
