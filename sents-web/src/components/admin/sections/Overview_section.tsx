@@ -10,7 +10,7 @@ import { MdOutlineDateRange } from 'react-icons/md';
 import { MdOutlineWebAsset } from 'react-icons/md';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
-import { updateCompanyDetails } from '@/services/apis/companies';
+import { updateCompanyDetails } from '@/utils/apiClient';
 
 const Overview_section = ({ companyData, companyID, isLoading }: any) => {
   const [loading, setLoading] = useState(false);

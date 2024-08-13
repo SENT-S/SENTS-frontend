@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/table';
 import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
 import { useSelector } from '@/lib/utils';
-import { addCompanyFinancialData } from '@/services/apis/companies';
+import { addCompanyFinancialData } from '@/utils/apiClient';
 
 type Row = {
   metrics: string;

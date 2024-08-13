@@ -11,7 +11,7 @@ import ModalTemplate from '@/components/forms/ModalTemplate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSocket } from '@/hooks/useSocket';
-import { updateCompanyDetails, deleteCompany } from '@/services/apis/companies';
+import { updateCompanyDetails, deleteCompany } from '@/utils/apiClient';
 
 interface TableColumn {
   field: string;
@@ -67,8 +67,11 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
         position: 'top-center',
       });
     } finally {
+      setShowEdit(false);
       setRowIdToDelete(null);
       setLoading(false);
+      // After successful update, request a refresh for all clients
+      requestCompanyUpdate();
     }
   };
 
@@ -238,16 +241,26 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
                       ))}
 
                       {showEdit && (
-                        <div className="w-8 h-8 block relative top-1 right-2 text-[#F96868]">
-                          <RiDeleteBinLine
-                            size={20}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setRowIdToDelete(row.id);
-                              setShowModal(true);
-                            }}
-                          />
-                        </div>
+                        <ModalTemplate
+                          FormTitle="Are you sure you want to delete Company?"
+                          ButtonStyle="p-0 m-0 block relative top-1 right-2 text-[#F96868]"
+                          disabled={loading}
+                          Icon={
+                            <RiDeleteBinLine
+                              size={20}
+                              onClick={() => {
+                                setRowIdToDelete(row.id);
+                                setShowModal(true);
+                              }}
+                            />
+                          }
+                          onSubmit={handleDelete}
+                          onCancel={handleCancelDeleteCompany}
+                          SubmitText="Yes"
+                          CancelText="No"
+                          openDialog={showModal}
+                          SubmitButtonStyle="bg-[#EA0000] text-white p-2 rounded-2xl hover:bg-[#EA0000ed9] hover:text-white"
+                        />
                       )}
                       {!showEdit && (
                         <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-gray-400">
@@ -264,18 +277,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
           </div>
         </div>
       </div>
-      <ModalTemplate
-        FormTitle="Are you sure you want to delete Company?"
-        ButtonStyle="p-0 m-0"
-        disabled={loading}
-        Icon={null}
-        onSubmit={handleDelete}
-        onCancel={handleCancelDeleteCompany}
-        SubmitText="Yes"
-        CancelText="No"
-        openDialog={showModal}
-        SubmitButtonStyle="bg-[#EA0000] text-white p-2 rounded-2xl hover:bg-[#EA0000ed9] hover:text-white"
-      />
     </div>
   );
 };

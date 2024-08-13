@@ -6,7 +6,7 @@ import ModalTemplate from '../ModalTemplate';
 
 import { fetchMetrics } from '@/lib/ReduxSlices/metric_category';
 import { useDispatch } from '@/lib/utils';
-import { addFinancialMetric } from '@/services/apis/companies';
+import { addFinancialMetric } from '@/utils/apiClient';
 import { fieldOptions } from '@/utils/validations';
 import { metricSchema } from '@/utils/validations';
 

@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import CustomModalField from '../../ui/customModalField';
 import ModalTemplate from '../ModalTemplate';
 
-import { addCompanyDocuments } from '@/services/apis/companies';
+import { addCompanyDocuments } from '@/utils/apiClient';
 import { fieldOptions, financialStatementSchema } from '@/utils/validations';
 
 const AddNewStatement = ({ companyID }: { companyID: number }) => {

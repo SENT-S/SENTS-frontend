@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
-import { addFinancialMetric, addFinancialDataCategory } from '@/services/apis/companies';
+import { addFinancialMetric, addFinancialDataCategory } from '@/utils/apiClient';
 import { getAllFinancialMetrics, getAllFinancialDataCategories } from '@/utils/apiClient';
 
 // Async actions

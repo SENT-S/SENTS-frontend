@@ -26,7 +26,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSocket } from '@/hooks/useSocket';
 import MainLayout from '@/layouts';
-import { deleteCompanyFNews } from '@/services/apis/companies';
+import { deleteCompanyFNews } from '@/utils/apiClient';
 import { getAllCompanyNews, getAllCompanies } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 import { CompanyType } from '@/utils/types';

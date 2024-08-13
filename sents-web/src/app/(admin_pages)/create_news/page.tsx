@@ -19,7 +19,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import MainLayout from '@/layouts';
-import { addFinancialNews } from '@/services/apis/companies';
+import { addFinancialNews } from '@/utils/apiClient';
 import { newsCategoryList } from '@/services/mockData/mock';
 import { getAllCompanies } from '@/utils/apiClient';
 import { CompanyType } from '@/utils/types';

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { createCompany } from '@/services/apis/companies';
+import { createCompany } from '@/utils/apiClient';
 
 interface Company {
   company_name: string;

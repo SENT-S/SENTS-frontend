@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import AddNewStatementContent from '@/components/forms/modals/Add_new_statement';
 import ModalTemplate from '@/components/forms/ModalTemplate';
-import { deleteCompanyDocument } from '@/services/apis/companies';
+import { deleteCompanyDocument } from '@/utils/apiClient';
 
 const FStatements = ({
   financialStatements,

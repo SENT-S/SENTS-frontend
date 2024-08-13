@@ -35,7 +35,7 @@ import {
 import getCurrencySymbol from '@/hooks/getCurrencySymbol';
 import { formatData } from '@/hooks/tableFunctions';
 import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
-import { addCompanyFinancialData, updateCompanyFinancialData } from '@/services/apis/companies';
+import { addCompanyFinancialData, updateCompanyFinancialData } from '@/utils/apiClient';
 
 type Row = {
   metrics: string;
