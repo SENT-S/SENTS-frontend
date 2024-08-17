@@ -35,7 +35,7 @@ const Page = () => {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const { requestNewsUpdate, socket } = useSocket();
+  const { socket } = useSocket();
 
   const handleCompaniesUpdate = useCallback((updatedCompanies: any) => {
     setCompanies((prevCompanies) => {
@@ -49,12 +49,12 @@ const Page = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('companiesUpdate', handleCompaniesUpdate);
+      socket.on('companiesData', handleCompaniesUpdate);
     }
 
     return () => {
       if (socket) {
-        socket.off('companiesUpdate', handleCompaniesUpdate);
+        socket.off('companiesData', handleCompaniesUpdate);
       }
     };
   }, [socket, handleCompaniesUpdate]);
@@ -121,8 +121,6 @@ const Page = () => {
             position: 'top-center',
             duration: 5000,
           });
-
-          requestNewsUpdate();
         } else {
           const errors = response.error;
           let errorMessage = '';

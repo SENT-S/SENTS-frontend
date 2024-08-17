@@ -95,7 +95,7 @@ const AuthTemplate = ({
         setLoading(false);
       }
     },
-    [title, form, router, signIn, registerUser],
+    [title, form, router],
   );
 
   return (

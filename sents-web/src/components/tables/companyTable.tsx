@@ -34,7 +34,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
   const [showEdit, setShowEdit] = useState(false);
   const [rowIdToDelete, setRowIdToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { requestCompanyUpdate } = useSocket();
+  const { refreshCompanies } = useSocket();
 
   useEffect(() => {
     setEditableRows(rows);
@@ -57,9 +57,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
           duration: 5000,
           position: 'top-center',
         });
-
-        // After successful update, request a refresh for all clients
-        requestCompanyUpdate();
+        refreshCompanies();
       } else {
         throw new Error('Failed to delete company');
       }
@@ -115,9 +113,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
             duration: 5000,
             position: 'top-center',
           });
-
-          // After successful update, request a refresh for all clients
-          requestCompanyUpdate();
+          refreshCompanies();
         } else {
           throw new Error('Failed to update company details');
         }

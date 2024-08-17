@@ -1,54 +1,54 @@
-'use client';
-import path from 'path';
+// hooks/useSocket.ts
 
-import { config } from 'dotenv';
-import { getSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState, useCallback } from 'react';
 import io, { Socket } from 'socket.io-client';
 
 import { CustomSession } from '@/utils/types';
 
-config({ path: path.resolve(process.cwd(), '.env.local') });
-
-const BASE_URL = process.env.NEXT_PUBLIC_URL || '';
-
 export const useSocket = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const { data: session } = useSession() as { data: CustomSession };
 
   useEffect(() => {
-    let socketIo: Socket | undefined;
+    if (!session?.token) return;
 
-    const connectSocket = async () => {
-      const session = (await getSession()) as CustomSession | null;
-      if (session?.token) {
-        socketIo = io(BASE_URL, {
-          auth: { token: session.token },
-        });
-        setSocket(socketIo);
-      }
+    const socketIo = io(process.env.NEXT_PUBLIC_URL || '', {
+      path: '/api/socketio',
+      auth: { token: session.token },
+    });
+
+    const handleConnect = () => {
+      console.log('Connected to socket server');
+      socketIo.emit('subscribeCompanies');
+      socketIo.emit('subscribeCompanyNews');
     };
 
-    connectSocket();
+    const handleDisconnect = () => {
+      console.log('Disconnected from socket server');
+    };
+
+    socketIo.on('connect', handleConnect);
+    socketIo.on('disconnect', handleDisconnect);
+
+    setSocket(socketIo);
 
     return () => {
-      if (socketIo) {
-        socketIo.disconnect();
-      }
+      socketIo.off('connect', handleConnect);
+      socketIo.off('disconnect', handleDisconnect);
+      socketIo.disconnect();
     };
-  }, []);
+  }, [session?.token]);
 
-  const requestUpdate = useCallback(
-    (type: 'Company' | 'News') => {
-      if (socket) {
-        socket.emit(`request${type}Update`);
-      }
+  const refreshData = useCallback(
+    (dataType: any) => {
+      socket?.emit(dataType);
     },
     [socket],
   );
 
-  return {
-    socket,
-    requestCompanyUpdate: useCallback(() => requestUpdate('Company'), [requestUpdate]),
-    requestNewsUpdate: useCallback(() => requestUpdate('News'), [requestUpdate]),
-  };
+  const refreshCompanies = useCallback(() => refreshData('subscribeCompanies'), [refreshData]);
+  const refreshNews = useCallback(() => refreshData('subscribeCompanyNews'), [refreshData]);
+
+  return { socket, refreshCompanies, refreshNews };
 };
