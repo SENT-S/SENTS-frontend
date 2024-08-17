@@ -9,6 +9,8 @@ let io: SocketIOServer | null = null;
 const COMPANIES_REFRESH_INTERVAL = 300000; // 5 minutes
 const NEWS_REFRESH_INTERVAL = 300000; // 5 minutes
 
+const socketData = new WeakMap();
+
 const createIntervalRefresh = (socket: any, dataType: 'companies' | 'news', token: string) => {
   const fetchFunction = dataType === 'companies' ? getAllCompanies : getAllCompanyNews;
   const interval = dataType === 'companies' ? COMPANIES_REFRESH_INTERVAL : NEWS_REFRESH_INTERVAL;
@@ -41,7 +43,7 @@ export const initSocketServer = (server: any) => {
     if (!token) {
       return next(new Error('Authentication error'));
     }
-    (socket as any).token = token;
+    socketData.set(socket, { token });
     next();
   });
 
@@ -53,9 +55,9 @@ export const initSocketServer = (server: any) => {
     const setupSubscription = async (dataType: 'companies' | 'news') => {
       try {
         const fetchFunction = dataType === 'companies' ? getAllCompanies : getAllCompanyNews;
-        const data = await fetchFunction(socket.token);
+        const data = await fetchFunction(socketData.get(socket).token);
         io?.emit(`${dataType}Data`, data);
-        intervals[dataType] = createIntervalRefresh(socket, dataType, socket.token);
+        intervals[dataType] = createIntervalRefresh(socket, dataType, socketData.get(socket).token);
       } catch (error) {
         console.error(`Error fetching ${dataType}:`, error);
         socket.emit('error', `Failed to fetch ${dataType}`);
@@ -68,6 +70,7 @@ export const initSocketServer = (server: any) => {
     socket.on('disconnect', () => {
       console.log('Client disconnected');
       Object.values(intervals).forEach(clearInterval);
+      socketData.delete(socket);
     });
   });
 

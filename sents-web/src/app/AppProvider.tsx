@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { redirect, usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { toast } from 'sonner';
 
 import { CustomSession } from '@/utils/types';
@@ -28,7 +28,7 @@ const AppProvider = ({ children, themeProps }: ProviderProps) => {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
-  const isTokenExpiredOrSessionUndefined = useCallback(() => {
+  const isTokenExpiredOrSessionUndefined = useMemo(() => {
     if (!session || !session.token) {
       return true;
     }
@@ -46,10 +46,10 @@ const AppProvider = ({ children, themeProps }: ProviderProps) => {
   }, [session]);
 
   useEffect(() => {
-    if (isTokenExpiredOrSessionUndefined() && session) {
+    if (isTokenExpiredOrSessionUndefined && session) {
       signOut();
       localStorage.clear();
-      redirect('/login_register');
+      redirect('/landing');
     } else if (session && !toastShown && pathname === '/') {
       toast.success(`Welcome back, ${session.user?.first_name}!`, {
         style: {

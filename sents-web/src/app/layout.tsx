@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="overflow-y-auto dark:bg-[#0e120f]">
+      <body className="overflow-y-auto dark:bg-[#0e120f]" suppressHydrationWarning>
         <NextTopLoader
           color="#148c59"
           height={4}

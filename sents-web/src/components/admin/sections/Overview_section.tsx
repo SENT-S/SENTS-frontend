@@ -1,15 +1,16 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect, useCallback } from 'react';
 import { HiOutlineUsers } from 'react-icons/hi2';
 import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
 import { MdOutlineWebAsset } from 'react-icons/md';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { updateCompanyDetails } from '@/utils/apiClient';
 
 const Overview_section = ({ companyData, companyID, isLoading }: any) => {
@@ -38,39 +39,45 @@ const Overview_section = ({ companyData, companyID, isLoading }: any) => {
     });
   }, [companyData, companyID]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormState((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }));
+    },
+    [],
+  );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setLoading(true);
 
-    try {
-      const response = await updateCompanyDetails([formState]);
+      try {
+        const response = await updateCompanyDetails([formState]);
 
-      if (response.status === 200) {
-        toast.success('Company details updated successfully', {
-          style: { background: 'green', color: 'white', border: 'none' },
+        if (response.status === 200) {
+          toast.success('Company details updated successfully', {
+            style: { background: 'green', color: 'white', border: 'none' },
+            duration: 5000,
+            position: 'top-center',
+          });
+        } else {
+          throw new Error('An error occurred, please try again');
+        }
+      } catch (error: any) {
+        toast.error(error.message || 'An error occurred, please try again', {
+          style: { background: 'red', color: 'white', border: 'none' },
           duration: 5000,
           position: 'top-center',
         });
-      } else {
-        throw new Error('An error occurred, please try again');
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred, please try again', {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
-        position: 'top-center',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [formState, updateCompanyDetails],
+  );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">

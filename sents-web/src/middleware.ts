@@ -30,7 +30,7 @@ export async function middleware(req: any) {
     return NextResponse.next();
   }
 
-  if (!token && pathname !== '/landing') {
+  if (!token) {
     return NextResponse.redirect(new URL('/landing', req.url));
   }
 

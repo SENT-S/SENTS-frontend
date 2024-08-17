@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { GoPlusCircle } from 'react-icons/go';
 import { GrSubtractCircle } from 'react-icons/gr';
@@ -69,103 +69,71 @@ const Financial_section = ({
   const [newYears, setNewYears] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [initialRows, setInitialRows] = useState<Row[]>([]);
+  const [rows, setRows] = useState<Row[]>([]);
 
-  const categoryList =
-    category?.map((item: any) => ({
-      value: item.id,
-      label: item.category_name,
-    })) || [];
+  const categoryList = useMemo(
+    () =>
+      category?.map((item: any) => ({
+        value: item.id,
+        label: item.category_name,
+      })) || [],
+    [category],
+  );
 
-  const metricsList =
-    metrics?.map((item: any) => ({
-      value: item.id,
-      label: item.metric_name,
-    })) || [];
+  const metricsList = useMemo(
+    () =>
+      metrics?.map((item: any) => ({
+        value: item.id,
+        label: item.metric_name,
+      })) || [],
+    [metrics],
+  );
 
   useEffect(() => {
     const rangeYears = getRangeYears(yearRange);
     setNewYears(rangeYears);
   }, [yearRange]);
 
-  const TableData: any = categoryList.reduce((acc: any, category: any) => {
-    if (FinancialData && category.label in FinancialData) {
-      acc[category.label] = formatData(FinancialData[category.label]);
-    }
-    return acc;
-  }, {});
-
-  const [rows, setRows] = useState<Row[]>(() => {
-    const selectedData = TableData[selectedLink] || [];
-    return selectedData ? [...selectedData] : [];
-  });
-
-  useEffect(() => {
-    const selectedData = TableData[selectedLink] || [];
-    const newData = [...selectedData];
-    setRows(newData);
-    setInitialRows(newData);
-  }, [selectedLink]);
-
-  useEffect(() => {
-    const newData = [...(TableData[selectedLink] || [])];
-    setRows(newData);
-    setInitialRows(newData);
-  }, [selectedLink]);
-
-  const getEmptyRow = (years: string[]) => {
-    const row: Row = {
-      metrics: '',
-      category: [categoryList.find((item: any) => item.label === selectedLink)],
-    };
-    years.forEach((year) => {
-      const actualYear = 'FY’' + year.slice(-2);
-      row[actualYear] = '';
-    });
-    return row;
-  };
-
-  const addRow = () => {
-    setRows((prevRows) => [...prevRows, getEmptyRow(newYears)]);
-  };
-
-  const clearRow = (rowIndex: number) => {
-    setRows((prevRows) => prevRows.filter((_, index) => index !== rowIndex));
-  };
-
-  const handleInputChange = (e: any, rowIndex: number, column: any) => {
-    const value = e.target.value;
-    setRows((prevRows) => {
-      return prevRows.map((row, index) => {
-        if (index === rowIndex) {
-          return { ...row, [column]: value };
-        } else {
-          return row;
-        }
-      });
-    });
-  };
-
-  const handleSelectChange = (selectedOptions: any, rowIndex: number, column: string) => {
-    const value =
-      column === 'category'
-        ? selectedOptions?.map((option: any) => option.value) || []
-        : String(selectedOptions);
-
-    if (column === 'metrics') {
-      // Check if the selected metric already exists in the rows above
-      const isMetricAlreadySelected = rows.some(
-        (row, index) => row.metrics === value && index < rowIndex,
-      );
-
-      if (isMetricAlreadySelected) {
-        toast.error('This metric has already been selected for another row', {
-          style: { background: 'red', color: 'white', border: 'none' },
-          duration: 5000,
-          position: 'top-center',
-        });
+  const TableData: any = useMemo(() => {
+    return categoryList.reduce((acc: any, category: any) => {
+      if (FinancialData && category.label in FinancialData) {
+        acc[category.label] = formatData(FinancialData[category.label]);
       }
-    }
+      return acc;
+    }, {});
+  }, [categoryList, FinancialData]);
 
+  useEffect(() => {
+    const selectedData = TableData[selectedLink] || [];
+    setRows(selectedData);
+    setInitialRows(selectedData);
+  }, [selectedLink, TableData]);
+
+  const getEmptyRow = useCallback(
+    (years: string[]) => {
+      const row: Row = {
+        metrics: '',
+        category: [categoryList.find((item: any) => item.label === selectedLink)],
+      };
+      years.forEach((year) => {
+        const actualYear = 'FY’' + year.slice(-2);
+        row[actualYear] = '';
+      });
+      return row;
+    },
+    [categoryList, selectedLink],
+  );
+
+  const addRow = useCallback(() => {
+    setRows((prevRows) => [...prevRows, getEmptyRow(newYears)]);
+  }, [getEmptyRow, newYears]);
+
+  const clearRow = useCallback((rowIndex: number) => {
+    setRows((prevRows) => prevRows.filter((_, index) => index !== rowIndex));
+  }, []);
+
+  const handleInputChange = useCallback((e: any, rowIndex: number, column: any) => {
+    const value = e.target.value;
     setRows((prevRows) =>
       prevRows.map((row, index) => {
         if (index === rowIndex) {
@@ -174,95 +142,136 @@ const Financial_section = ({
         return row;
       }),
     );
-  };
+  }, []);
 
-  const handleDelete = async (rowIndex: number, name: string) => {
-    if (name === 'delete') {
-      clearRow(rowIndex);
-    } else {
-      console.log('Cancel delete company');
-    }
-  };
+  const handleSelectChange = useCallback(
+    (selectedOptions: any, rowIndex: number, column: string) => {
+      const value =
+        column === 'category'
+          ? selectedOptions?.map((option: any) => option.value) || []
+          : String(selectedOptions);
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+      if (column === 'metrics') {
+        const isMetricAlreadySelected = rows.some(
+          (row, index) => row.metrics === value && index < rowIndex,
+        );
+        if (isMetricAlreadySelected) {
+          toast.error('This metric has already been selected for another row', {
+            style: { background: 'red', color: 'white', border: 'none' },
+            duration: 5000,
+            position: 'top-center',
+          });
+          return;
+        }
+      }
 
-    try {
-      const updatedRows = [] as any[];
-      const newRows = [] as any[];
-
-      rows.forEach((row) => {
-        const { id, metrics, category, ...years } = row;
-        const metricId = metricsList.find(
-          (item: any) => item.label === metrics || item.value === Number(metrics),
-        )?.value;
-
-        const selectedCategoryId = category
-          ? category.map((item: any) => item.value || item)
-          : findCommonCategories(FinancialData.data, metrics).map((item: any) => item.value);
-
-        const initialRow = TableData[selectedLink]?.find((r: Row) => r.metrics === metrics);
-
-        Object.entries(years).forEach(([year, value]) => {
-          const initialValue = initialRow ? initialRow[year] : undefined;
-
-          // Process the value, treating empty string as null
-          const processedValue = value === '' ? '' : String(value);
-
-          const data = {
-            company: Number(companyID),
-            year: Number('20' + year.slice(-2)),
-            category: selectedCategoryId,
-            value: processedValue,
-            metric: metricId,
-          };
-
-          if (initialValue !== undefined) {
-            // Existing data: update if changed (including cleared cells)
-            if (processedValue !== initialValue) {
-              updatedRows.push(data);
-            }
-          } else if (processedValue !== null) {
-            // New data: only add if not null
-            newRows.push(data);
+      setRows((prevRows) =>
+        prevRows.map((row, index) => {
+          if (index === rowIndex) {
+            return { ...row, [column]: value };
           }
+          return row;
+        }),
+      );
+    },
+    [rows],
+  );
+
+  const handleDelete = useCallback(
+    async (rowIndex: number, name: string) => {
+      if (name === 'delete') {
+        clearRow(rowIndex);
+      } else {
+        console.log('Cancel delete company');
+      }
+    },
+    [clearRow],
+  );
+
+  const handleFormSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsLoading(true);
+
+      try {
+        const updatedRows = [] as any[];
+        const newRows = [] as any[];
+
+        rows.forEach((row) => {
+          const { id, metrics, category, ...years } = row;
+          const metricId = metricsList.find(
+            (item: any) => item.label === metrics || item.value === Number(metrics),
+          )?.value;
+          const selectedCategoryId = category
+            ? category.map((item: any) => item.value || item)
+            : findCommonCategories(FinancialData.data, metrics).map((item: any) => item.value);
+          const initialRow = TableData[selectedLink]?.find((r: Row) => r.metrics === metrics);
+
+          Object.entries(years).forEach(([year, value]) => {
+            const initialValue = initialRow ? initialRow[year] : undefined;
+            const processedValue = value === '' ? '' : String(value);
+
+            const data = {
+              company: Number(companyID),
+              year: Number('20' + year.slice(-2)),
+              category: selectedCategoryId,
+              value: processedValue,
+              metric: metricId,
+            };
+
+            if (initialValue !== undefined) {
+              if (processedValue !== initialValue) {
+                updatedRows.push(data);
+              }
+            } else if (processedValue !== null) {
+              newRows.push(data);
+            }
+          });
         });
-      });
 
-      if (updatedRows.length > 0) {
-        const updateResponse = await updateCompanyFinancialData(updatedRows);
-        if (updateResponse.status !== 200 && updateResponse.status !== 201) {
-          throw new Error(updateResponse.message || updateResponse.error);
+        if (updatedRows.length > 0) {
+          const updateResponse = await updateCompanyFinancialData(updatedRows);
+          if (updateResponse.status !== 200 && updateResponse.status !== 201) {
+            throw new Error(updateResponse.message || updateResponse.error);
+          }
         }
-      }
 
-      if (newRows.length > 0) {
-        const addResponse = await addCompanyFinancialData(newRows);
-        if (addResponse.status !== 200 && addResponse.status !== 201) {
-          throw new Error(addResponse.message || addResponse.error);
+        if (newRows.length > 0) {
+          const addResponse = await addCompanyFinancialData(newRows);
+          if (addResponse.status !== 200 && addResponse.status !== 201) {
+            throw new Error(addResponse.message || addResponse.error);
+          }
         }
+
+        setRefresh(true);
+        setShowEdit(false);
+        toast.success('Financial data updated successfully', {
+          style: { background: 'green', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'bottom-right',
+        });
+      } catch (error: any) {
+        toast.error(error.message, {
+          style: { background: 'red', color: 'white', border: 'none' },
+          duration: 5000,
+          position: 'bottom-right',
+        });
+      } finally {
+        setIsLoading(false);
       }
+    },
+    [
+      rows,
+      metricsList,
+      companyID,
+      FinancialData.data,
+      TableData,
+      selectedLink,
+      updateCompanyFinancialData,
+      addCompanyFinancialData,
+    ],
+  );
 
-      setRefresh(true);
-      setShowEdit(false);
-      toast.success('Financial data updated successfully', {
-        style: { background: 'green', color: 'white', border: 'none' },
-        duration: 5000,
-        position: 'bottom-right',
-      });
-    } catch (error: any) {
-      toast.error(error.message, {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
-        position: 'bottom-right',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // categories
   function findCommonCategories(data: any, metric: any) {
     const commonCategories = [];
     for (const category in data) {
