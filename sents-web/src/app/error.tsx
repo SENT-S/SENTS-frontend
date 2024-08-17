@@ -19,7 +19,6 @@ const Error: React.FC<ErrorProps> = ({ error }) => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="p-4 space-y-8 text-center">
         <div className="flex items-center justify-center w-auto h-auto p-3 mx-auto bg-blue-100 rounded-full">
-          {/* Replace with your own icon */}
           <Image
             src={ErrorBoundaryImage}
             alt="icon"

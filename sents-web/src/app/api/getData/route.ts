@@ -1,4 +1,3 @@
-'use server';
 import path from 'path';
 
 import axios from 'axios';
@@ -49,7 +48,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
-// Ensure that all exports are async functions
-export const dynamic = async () => 'force-dynamic';
-export const revalidate = async () => 0;

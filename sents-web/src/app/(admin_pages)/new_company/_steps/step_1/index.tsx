@@ -16,7 +16,6 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
   const dispatch = useDispatch();
   const companyFields = useSelector((state) => state.company);
   const [innerStep, setInnerStep] = useState(1);
-  const { requestCompanyUpdate } = useSocket();
 
   const handleFormSubmit = useCallback(async () => {
     try {
@@ -50,7 +49,6 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
           return;
         }
         await dispatch(createCompanyAPI(formattedData));
-        requestCompanyUpdate();
       }
     } catch (error) {
       console.error('Failed to create company', error);
@@ -60,7 +58,7 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
         position: 'top-center',
       });
     }
-  }, [companyFields, innerStep, dispatch, requestCompanyUpdate]);
+  }, [companyFields, innerStep, dispatch]);
 
   useEffect(() => {
     if (companyFields.response && companyFields.response.status === 201) {
