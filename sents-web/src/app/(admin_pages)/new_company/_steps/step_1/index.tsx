@@ -8,7 +8,6 @@ import Section_2 from './Section_2';
 
 import { Button } from '@/components/ui/button';
 import CustomBackButton from '@/components/ui/customBackButton';
-import { useSocket } from '@/hooks/useSocket';
 import { createCompanyAPI } from '@/lib/ReduxSlices/create_company';
 import { useDispatch, useSelector } from '@/lib/utils';
 
