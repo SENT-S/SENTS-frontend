@@ -7,8 +7,8 @@ import CompanyTable from '../../tables/companyTable';
 import CustomPagination from '../../ui/customPagination';
 import { Skeleton } from '../../ui/skeleton';
 
-import { useSocket } from '@/hooks/useSocket';
 import MainLayout from '@/layouts';
+import { getAllCompanies } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 
 interface Company {
@@ -30,9 +30,9 @@ function Index() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'ADMIN';
-  const { socket } = useSocket();
 
   const handleCompaniesUpdate = useCallback((updatedCompanies: any) => {
+    console.log('Updated companies:', updatedCompanies);
     setCompanies((prevCompanies) => {
       if (JSON.stringify(prevCompanies) !== JSON.stringify(updatedCompanies)) {
         return updatedCompanies;
@@ -43,21 +43,10 @@ function Index() {
   }, []);
 
   useEffect(() => {
-    if (socket) {
-      socket.on('companiesData', (data: any) => {
-        handleCompaniesUpdate(data);
-      });
-
-      socket.on('error', (error: string) => {
-        console.error('Socket error:', error);
-      });
-
-      return () => {
-        socket.off('companiesData');
-        socket.off('error');
-      };
-    }
-  }, [handleCompaniesUpdate, socket]);
+    getAllCompanies()
+      .then((data) => handleCompaniesUpdate(data))
+      .catch((error) => console.error('Error fetching companies:', error));
+  }, [handleCompaniesUpdate]);
 
   const companyCountries = useMemo(() => {
     return companies.map((item) => ({

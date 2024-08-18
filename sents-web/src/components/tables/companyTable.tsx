@@ -10,7 +10,6 @@ import { toast } from 'sonner';
 import ModalTemplate from '@/components/forms/ModalTemplate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useSocket } from '@/hooks/useSocket';
 import { updateCompanyDetails, deleteCompany } from '@/utils/apiClient';
 
 interface TableColumn {
@@ -34,7 +33,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
   const [showEdit, setShowEdit] = useState(false);
   const [rowIdToDelete, setRowIdToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { refreshCompanies } = useSocket();
 
   useEffect(() => {
     setEditableRows(rows);
@@ -57,7 +55,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
           duration: 5000,
           position: 'top-center',
         });
-        refreshCompanies();
       } else {
         throw new Error('Failed to delete company');
       }
@@ -113,7 +110,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
             duration: 5000,
             position: 'top-center',
           });
-          refreshCompanies();
         } else {
           throw new Error('Failed to update company details');
         }

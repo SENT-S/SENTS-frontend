@@ -19,9 +19,9 @@ import Resources from './sections/Resources';
 import Teams from './sections/Teams';
 import TopNews from './sections/TopNews';
 
-import { useSocket } from '@/hooks/useSocket';
 import MainLayout from '@/layouts';
 import { deleteCompanyFNews } from '@/utils/apiClient';
+import { getAllCompanies, getAllCompanyNews } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 import { CompanyType } from '@/utils/types';
 
@@ -41,7 +41,6 @@ function Index() {
   const [selectedCompany, setSelectedCompany] = useState('');
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const { socket, refreshNews } = useSocket();
 
   const data = {
     news_ids: selectedIds,
@@ -66,39 +65,14 @@ function Index() {
   }, []);
 
   useEffect(() => {
-    let companiesReady = false;
-    let newsReady = false;
-
-    const checkLoadingStatus = () => {
-      if (companiesReady && newsReady) {
+    Promise.all([getAllCompanies(), getAllCompanyNews()])
+      .then(([companiesData, newsData]) => {
+        handleCompaniesUpdate(companiesData);
+        handleNewsUpdate(newsData);
         setIsLoading(false);
-      }
-    };
-
-    if (socket) {
-      socket.on('companiesData', (data: any) => {
-        handleCompaniesUpdate(data);
-        companiesReady = true;
-        checkLoadingStatus();
-      });
-
-      socket.on('newsData', (data: any) => {
-        handleNewsUpdate(data);
-        newsReady = true;
-        checkLoadingStatus();
-      });
-
-      socket.on('error', (error: string) => {
-        console.error('Socket error:', error);
-      });
-
-      return () => {
-        socket.off('companiesData');
-        socket.off('newsData');
-        socket.off('error');
-      };
-    }
-  }, [socket, handleCompaniesUpdate, handleNewsUpdate]);
+      })
+      .catch((error) => console.error('Error fetching companies:', error));
+  }, [handleCompaniesUpdate, handleNewsUpdate]);
 
   useEffect(() => {
     const countries = companies.map((company: any) => ({
@@ -152,8 +126,6 @@ function Index() {
           duration: 5000,
           position: 'top-center',
         });
-
-        refreshNews();
       } else {
         throw new Error('Failed to delete news');
       }

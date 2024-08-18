@@ -18,10 +18,10 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
-import { useSocket } from '@/hooks/useSocket';
 import MainLayout from '@/layouts';
 import { newsCategoryList } from '@/services/mockData/mock';
 import { addFinancialNews } from '@/utils/apiClient';
+import { getAllCompanies } from '@/utils/apiClient';
 import { CompanyType } from '@/utils/types';
 
 const Page = () => {
@@ -35,7 +35,6 @@ const Page = () => {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const { socket } = useSocket();
 
   const handleCompaniesUpdate = useCallback((updatedCompanies: any) => {
     setCompanies((prevCompanies) => {
@@ -48,16 +47,10 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    if (socket) {
-      socket.on('companiesData', handleCompaniesUpdate);
-    }
-
-    return () => {
-      if (socket) {
-        socket.off('companiesData', handleCompaniesUpdate);
-      }
-    };
-  }, [socket, handleCompaniesUpdate]);
+    getAllCompanies()
+      .then((data) => handleCompaniesUpdate(data))
+      .catch((error) => console.error('Error fetching companies:', error));
+  }, [handleCompaniesUpdate]);
 
   useEffect(() => {
     const countries = companies.map((company) => ({
