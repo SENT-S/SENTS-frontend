@@ -1,14 +1,8 @@
-import path from 'path';
-
 import axios from 'axios';
-import { config } from 'dotenv';
 
 import FetchData from './FetchData';
 
-// Load environment variables from .env.local file
-config({ path: path.resolve(process.cwd(), '.env.local') });
-
-const BASE_URL = process.env.NEXT_PUBLIC_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_URL || process.env.NEXTAUTH_URL;
 
 const apiClient = axios.create({
   baseURL: `${BASE_URL}/api`,

@@ -1,7 +1,4 @@
-import path from 'path';
-
 import axios from 'axios';
-import { config } from 'dotenv';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 
@@ -9,10 +6,7 @@ import { authOptions } from '../auth/[...nextauth]/options';
 
 import { CustomSession } from '@/utils/types';
 
-// Load environment variables from .env.local file
-config({ path: path.resolve(process.cwd(), '.env.local') });
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXTAUTH_URL;
 
 export const dynamic = 'force-dynamic';
 
