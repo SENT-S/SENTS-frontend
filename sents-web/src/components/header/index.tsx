@@ -156,11 +156,13 @@ const Header = () => {
                         tabIndex={0}
                         onClick={() => {
                           router.push(`/company/${item.id}`);
+                          setQuery(item.company_name);
                           setResults([]);
                         }}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             router.push(`/company/${item.id}`);
+                            setQuery(item.company_name);
                             setResults([]);
                           }
                         }}

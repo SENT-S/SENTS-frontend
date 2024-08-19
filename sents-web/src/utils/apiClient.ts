@@ -17,12 +17,10 @@ const apiClient = axios.create({
 /**
  * Fetch / Get Methods
  */
-export const getAllCompanies = async (token?: string) => {
+export const getAllCompanies = async () => {
   try {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const response = await apiClient.get('/getData', {
       params: { endpoint: 'allcompanies' },
-      headers,
     });
     if (response.status === 200) {
       return response.data.data;
@@ -69,12 +67,10 @@ export const getAllFinancialDataCategories = async () => {
   }
 };
 
-export const getAllCompanyNews = async (token?: string) => {
+export const getAllCompanyNews = async () => {
   try {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const response = await apiClient.get('/getData', {
       params: { endpoint: 'allnews' },
-      headers,
     });
 
     if (response.status === 200) {

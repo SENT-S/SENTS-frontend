@@ -20,9 +20,8 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     const endpoint = req.nextUrl.searchParams.get('endpoint');
-    const authorization = req.headers.get('Authorization');
 
-    if (!session && !authorization) {
+    if (!session) {
       return new NextResponse(JSON.stringify({ data: 'Unauthorized user connection' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
@@ -40,7 +39,7 @@ export async function GET(req: NextRequest) {
     const url = `${BASE_URL}/${endpoint}`;
 
     const headers = {
-      Authorization: authorization || `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     };
 
     const response = await axios.get(url, { headers });
