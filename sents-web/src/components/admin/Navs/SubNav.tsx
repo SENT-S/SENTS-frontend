@@ -60,6 +60,14 @@ const SubNav = ({ links, selectedLink, setSelectedLink, bgColor, addCat }: SubNa
     return () => window.removeEventListener('resize', checkContainerSize);
   }, [links]);
 
+  if (!links || links.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
+        <p>No data available</p>
+      </div>
+    );
+  }
+
   const linkClasses = (link: string) =>
     `text-sm md:text-md cursor-pointer px-2 md:px-6 py-2 rounded-full ${
       link === selectedLink

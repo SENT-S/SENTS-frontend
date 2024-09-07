@@ -26,8 +26,8 @@ export default function News({
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full w-full px-8 py-4">
-        <p>No data available.</p>
+      <div className="flex items-center justify-center h-full w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
+        <p>No data available</p>
       </div>
     );
   }

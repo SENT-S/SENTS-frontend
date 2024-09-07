@@ -305,7 +305,13 @@ const Financials = ({
                                     })}
                               </TableCell>
                             ))}
-                            <TableCell className="w-2/6 py-2">
+                            <TableCell
+                              className="py-2"
+                              style={{
+                                width: 'max-content',
+                                minWidth: '120px',
+                              }}
+                            >
                               <button
                                 onClick={() => handleViewChart(item as FormattedMetric)}
                                 className="text-[#148C59] z-50"

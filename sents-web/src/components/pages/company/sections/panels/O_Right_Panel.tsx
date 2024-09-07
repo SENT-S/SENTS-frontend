@@ -10,19 +10,30 @@ interface AboutProps {
 }
 
 const O_Right_Panel = ({ data }: AboutProps) => {
-  const url = new URL(data?.website_url);
-  const cleanedUrl = url.hostname;
+  let cleanedUrl = '';
+
+  if (data?.website_url) {
+    try {
+      const url = new URL(data.website_url);
+      cleanedUrl = url.hostname;
+    } catch (error) {
+      console.error('Invalid URL:', data.website_url);
+      cleanedUrl = data.website_url;
+    }
+  }
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
-        <p>No data available.</p>
+      <div className="w-full space-y-10 h-full max-h-[788px] overflow-y-auto rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
+        <div className="flex items-center justify-center h-full w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80]  py-4">
+          <p>No data available</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full space-y-10 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
+    <div className="w-full space-y-10 h-full max-h-[788px] overflow-y-auto rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
       <h1 className="text-2xl font-bold">About</h1>
       <div>
         <p className="text-justify">{data?.about_company && data.about_company}</p>

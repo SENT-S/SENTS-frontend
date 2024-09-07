@@ -17,20 +17,26 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
   };
 
   const companyDocuments = data?.company_documents
-    .map((document: { docid: number; docurl: string }) => {
-      try {
-        const url = new URL(document.docurl);
-        return {
-          url: document.docurl,
-          hostname: url.pathname.split('/').pop(),
-        };
-      } catch (error) {
-        console.error(`Invalid URL: ${document.docurl}`, error);
-        return null;
-      }
-    })
-    .filter(Boolean); // Filter out any null values
+    ? data.company_documents
+        .map((document: { docid: number; docurl: string }) => {
+          if (!document.docurl) {
+            console.error('Document URL is missing');
+            return null;
+          }
 
+          try {
+            const url = new URL(document.docurl);
+            return {
+              url: document.docurl,
+              hostname: url.pathname.split('/').pop() || '',
+            };
+          } catch (error) {
+            console.error(`Invalid URL: ${document.docurl}`, error);
+            return null;
+          }
+        })
+        .filter((doc: any): doc is NonNullable<typeof doc> => doc !== null)
+    : [];
   return (
     <div className="space-y-8 w-full">
       <div className="space-y-4 rounded-2xl h-auto overflow-y-auto max-h-[395px] bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
@@ -74,9 +80,9 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
                     }
                   }}
                 >
-                  <div>
-                    <p className="font-medium">{stock.name}</p>
-                    <p className="text-gray-500">{stock.symbol}</p>
+                  <div className="flex">
+                    <p className="font-medium mr-2">{stock.name}</p>
+                    {`(${stock.symbol})`}
                   </div>
                   <RiArrowRightSLine size={24} className="text-green-600 dark:text-[#8D9D93]" />
                 </button>
