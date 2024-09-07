@@ -90,6 +90,16 @@ const Page = () => {
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
+      // Ensure all FormData entries have values
+      for (const [key, value] of Object.entries(data)) {
+        if (!value) {
+          toast.info(`Please enter all required fields`, {
+            position: 'top-center',
+          });
+          return;
+        }
+      }
+
       const selectedCompanyID = companyList.find(
         (company) => company.label === selectedCompany,
       )?.value;

@@ -8,6 +8,8 @@ import CustomPagination from '../../ui/customPagination';
 import { Skeleton } from '../../ui/skeleton';
 
 import MainLayout from '@/layouts';
+import { stopRefresh } from '@/lib/ReduxSlices/refreshSlice';
+import { useSelector, useDispatch } from '@/lib/utils';
 import { getAllCompanies } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
 
@@ -25,28 +27,34 @@ interface Company {
 }
 
 function Index() {
+  const dispatch = useDispatch();
   const { data: session } = useSession() as { data: CustomSession };
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const isAdmin = session?.user?.role === 'ADMIN';
+  const isRefreshing = useSelector((state) => state.refresh.isRefreshing);
 
-  const handleCompaniesUpdate = useCallback((updatedCompanies: any) => {
-    console.log('Updated companies:', updatedCompanies);
-    setCompanies((prevCompanies) => {
-      if (JSON.stringify(prevCompanies) !== JSON.stringify(updatedCompanies)) {
-        return updatedCompanies;
-      }
-      return prevCompanies;
-    });
-    setIsLoading(false);
-  }, []);
+  const handleCompaniesUpdate = useCallback(
+    (updatedCompanies: any) => {
+      console.log('Updated companies:', updatedCompanies);
+      setCompanies((prevCompanies) => {
+        if (JSON.stringify(prevCompanies) !== JSON.stringify(updatedCompanies)) {
+          return updatedCompanies;
+        }
+        return prevCompanies;
+      });
+      setIsLoading(false);
+      dispatch(stopRefresh());
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     getAllCompanies()
       .then((data) => handleCompaniesUpdate(data))
       .catch((error) => console.error('Error fetching companies:', error));
-  }, [handleCompaniesUpdate]);
+  }, [handleCompaniesUpdate, isRefreshing]);
 
   const companyCountries = useMemo(() => {
     return companies.map((item) => ({
@@ -134,6 +142,7 @@ function Index() {
             render={(currentItems) => (
               <CompanyTable
                 isAdmin={isAdmin}
+                isTableLoading={isRefreshing}
                 columns={[
                   {
                     field: 'company_name',

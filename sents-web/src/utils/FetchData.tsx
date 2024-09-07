@@ -5,18 +5,10 @@ import { removeTrailingSlash } from '@/utils/removeTrailingSlash';
 import { CustomSession } from '@/utils/types';
 
 const BASE_URL = removeTrailingSlash(process.env.NEXT_PUBLIC_API_URL);
-const API_TIMEOUT = 10000; // 10 seconds
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
-interface CacheItem {
-  data: any;
-  expiry: number;
-}
-
 let axiosInstance: AxiosInstance | null = null;
-const cache: Record<string, CacheItem> = {};
 
 async function getAxiosInstance(): Promise<AxiosInstance> {
   if (axiosInstance) return axiosInstance;
@@ -29,7 +21,6 @@ async function getAxiosInstance(): Promise<AxiosInstance> {
 
   axiosInstance = axios.create({
     baseURL: BASE_URL,
-    timeout: API_TIMEOUT,
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -40,8 +31,8 @@ async function getAxiosInstance(): Promise<AxiosInstance> {
     (response) => response,
     async (error) => {
       if (error.response?.status === 401) {
-        console.error('Unauthorized access. Refreshing token or logging out...');
         // Handle token refresh or logout here
+        console.error('Unauthorized access. Refreshing token or logging out...');
       }
       return Promise.reject(error);
     },
@@ -50,39 +41,12 @@ async function getAxiosInstance(): Promise<AxiosInstance> {
   return axiosInstance;
 }
 
-function getCacheKey(endpoint: string, method: HttpMethod, body?: any): string {
-  return `${method}:${endpoint}:${JSON.stringify(body)}`;
-}
-
-function getFromCache(cacheKey: string): any | null {
-  const cached = cache[cacheKey];
-  if (cached && cached.expiry > Date.now()) {
-    return cached.data;
-  }
-  return null;
-}
-
-function setInCache(cacheKey: string, data: any): void {
-  cache[cacheKey] = {
-    data,
-    expiry: Date.now() + CACHE_DURATION,
-  };
-}
-
 export async function FetchData(
   endpoint: string,
   method: HttpMethod = 'GET',
   body?: any,
   isFormData: boolean = false,
-  useCache: boolean = true,
 ): Promise<any> {
-  const cacheKey = getCacheKey(endpoint, method, body);
-
-  if (useCache && method === 'GET') {
-    const cachedData = getFromCache(cacheKey);
-    if (cachedData) return cachedData;
-  }
-
   try {
     const instance = await getAxiosInstance();
 
@@ -99,19 +63,11 @@ export async function FetchData(
       config.headers = { ...config.headers, 'Content-Type': 'multipart/form-data' };
     }
 
-    const response = await instance.request(config);
-
-    if (useCache && method === 'GET') {
-      setInCache(cacheKey, response.data);
-    }
-
+    const response = await instance.request<any>(config);
     return response.data;
   } catch (error) {
     console.error(`Error ${method} data from ${endpoint}: `, error);
-    if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
-      console.error('Request timed out');
-    }
-    return null;
+    throw error;
   }
 }
 

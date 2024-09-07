@@ -371,7 +371,7 @@ const Financial_section = ({
         itemsPerPage={5}
         render={(currentItems) => (
           <div className="relative shadow-md rounded-2xl w-full h-auto">
-            <Table className="min-w-full text-black dark:text-white">
+            <Table className="min-w-full overflow-hidden text-black dark:text-white">
               {/* table header */}
               <TableHeader className="bg-[#1EF1A5]">
                 <TableRow className="text-black text-lg font-bold">

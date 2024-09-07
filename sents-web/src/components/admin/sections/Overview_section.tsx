@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { HiOutlineUsers } from 'react-icons/hi2';
 import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
@@ -11,56 +11,80 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { startRefresh } from '@/lib/ReduxSlices/refreshSlice';
+import { useDispatch } from '@/lib/utils';
 import { updateCompanyDetails } from '@/utils/apiClient';
 
-const Overview_section = ({ companyData, companyID, isLoading }: any) => {
+interface CompanyData {
+  about_company: string;
+  mission_statement: string;
+  vision_statement: string;
+  ceo: string;
+  number_of_employees: number;
+  year_founded: number;
+  website_url: string;
+}
+
+const Overview_section = ({ companyData, companyID }: any) => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [formState, setFormState] = useState({
-    company_id: Number(companyID) || '',
-    about_company: companyData?.about_company || '',
-    mission_statement: companyData?.mission_statement || '',
-    vision_statement: companyData?.vision_statement || '',
-    ceo: companyData?.ceo || '',
-    number_of_employees: companyData?.number_of_employees || 0,
-    year_founded: companyData?.year_founded || 0,
-    website_url: companyData?.website_url || '',
+  const [formState, setFormState] = useState<CompanyData>({
+    about_company: '',
+    mission_statement: '',
+    vision_statement: '',
+    ceo: '',
+    number_of_employees: 0,
+    year_founded: 0,
+    website_url: '',
   });
 
   useEffect(() => {
-    setFormState({
-      company_id: Number(companyID) || '',
-      about_company: companyData?.about_company || '',
-      mission_statement: companyData?.mission_statement || '',
-      vision_statement: companyData?.vision_statement || '',
-      ceo: companyData?.ceo || '',
-      number_of_employees: companyData?.number_of_employees || 0,
-      year_founded: companyData?.year_founded || 0,
-      website_url: companyData?.website_url || '',
-    });
-  }, [companyData, companyID]);
+    if (companyData) {
+      setFormState({
+        about_company: companyData.about_company || '',
+        mission_statement: companyData.mission_statement || '',
+        vision_statement: companyData.vision_statement || '',
+        ceo: companyData.ceo || '',
+        number_of_employees: companyData.number_of_employees || 0,
+        year_founded: companyData.year_founded || 0,
+        website_url: companyData.website_url || '',
+      });
+    }
+  }, [companyData]);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
       setFormState((prevState) => ({
         ...prevState,
-        [e.target.name]: e.target.value,
+        [name]: name === 'number_of_employees' || name === 'year_founded' ? Number(value) : value,
       }));
     },
     [],
   );
 
+  const isFormChanged = useMemo(() => {
+    return Object.keys(formState).some(
+      (key) => formState[key as keyof CompanyData] !== companyData[key as keyof CompanyData],
+    );
+  }, [formState, companyData]);
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      if (!isFormChanged) {
+        toast.info('No changes detected', { position: 'top-center' });
+        return;
+      }
+
       setLoading(true);
-
       try {
-        const response = await updateCompanyDetails([formState]);
-
+        const response = await updateCompanyDetails([
+          { ...formState, company_id: Number(companyID) },
+        ]);
         if (response.status === 200) {
-          toast.success('Company details updated successfully', {
-            position: 'top-center',
-          });
+          toast.success('Company details updated successfully', { position: 'top-center' });
+          dispatch(startRefresh());
         } else {
           throw new Error('An error occurred, please try again');
         }
@@ -72,9 +96,8 @@ const Overview_section = ({ companyData, companyID, isLoading }: any) => {
         setLoading(false);
       }
     },
-    [formState, updateCompanyDetails],
+    [dispatch, formState, companyID, isFormChanged],
   );
-
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">Overview</h1>

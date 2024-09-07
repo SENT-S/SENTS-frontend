@@ -80,8 +80,8 @@ function Index({ params }: CompanyDetailsProps) {
       {isLoading ? (
         <SkeletonLayout />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
-          <div className="col-span-1 lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mt-4">
+          <div className="xl:col-span-2 space-y-8">
             <SubNav links={links} selectedLink={selectedLink} setSelectedLink={setSelectedLink} />
             <div className="rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] p-4 overflow-hidden">
               {renderSection()}

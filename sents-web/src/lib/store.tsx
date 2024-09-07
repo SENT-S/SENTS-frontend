@@ -6,6 +6,7 @@ import companySlice from './ReduxSlices/create_company';
 import companyFinancialSlice from './ReduxSlices/create_company_financial';
 import newsFormSlice from './ReduxSlices/create_news';
 import MetricCategorySlice from './ReduxSlices/metric_category';
+import refreshSlice from './ReduxSlices/refreshSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     news: newsFormSlice,
     companyFinancial: companyFinancialSlice,
     metricCategory: MetricCategorySlice,
+    refresh: refreshSlice,
   },
 });
 

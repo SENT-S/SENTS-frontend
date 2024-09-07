@@ -33,7 +33,7 @@ const F_Right_Panel = ({ data }: FinancialProps) => {
 
   return (
     <div className="space-y-8 w-full">
-      <div className="space-y-4 rounded-2xl bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
+      <div className="space-y-4 rounded-2xl h-auto overflow-y-auto max-h-[395px] bg-white dark:text-white dark:bg-[#39463E80] px-8 py-4">
         <h1 className="text-2xl font-semibold">Financial Statements</h1>
         <ul className="list-none divide-y divide-[#E6EEEA] dark:divide-[#39463E] space-y-6 scroll-smooth overflow-y-auto">
           {companyDocuments.length !== 0 ? (

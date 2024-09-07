@@ -4,10 +4,13 @@ import { toast } from 'sonner';
 import CustomModalField from '../../ui/customModalField';
 import ModalTemplate from '../ModalTemplate';
 
+import { startRefresh } from '@/lib/ReduxSlices/refreshSlice';
+import { useDispatch } from '@/lib/utils';
 import { addCompanyDocuments } from '@/utils/apiClient';
 import { fieldOptions, financialStatementSchema } from '@/utils/validations';
 
 const AddNewStatement = ({ companyID }: { companyID: number }) => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -20,18 +23,15 @@ const AddNewStatement = ({ companyID }: { companyID: number }) => {
       const res = await addCompanyDocuments(formData);
       if (res.status === 201 || res.status === 200) {
         toast.success('Document added successfully', {
-          style: { background: 'green', color: 'white', border: 'none' },
           position: 'top-center',
-          duration: 5000,
         });
+        dispatch(startRefresh());
       } else {
         throw new Error('Failed to add document');
       }
     } catch (error: any) {
       toast.error('An error occurred, please try again', {
-        style: { background: 'red', color: 'white', border: 'none' },
         position: 'top-center',
-        duration: 5000,
       });
     } finally {
       setLoading(false);

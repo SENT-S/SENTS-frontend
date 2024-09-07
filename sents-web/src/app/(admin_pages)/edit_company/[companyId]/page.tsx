@@ -11,6 +11,7 @@ import CustomBackButton from '@/components/ui/customBackButton';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/layouts';
 import { fetchMetrics, fetchCategories } from '@/lib/ReduxSlices/metric_category';
+import { stopRefresh } from '@/lib/ReduxSlices/refreshSlice';
 import { useSelector, useDispatch } from '@/lib/utils';
 import { getCompany, getCompanyNews, getCompanyFinancials } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
@@ -35,6 +36,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const financialMetrics = useSelector<any>((state) => state.metricCategory.metricList);
   const financialDataCategories = useSelector<any>((state) => state.metricCategory.categoryList);
+  const isRefreshing = useSelector((state) => state.refresh.isRefreshing);
 
   const fetchCompanies = useCallback(async () => {
     setIsLoading(true);
@@ -52,11 +54,12 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
       console.error('Failed to fetch company', error);
     } finally {
       setIsLoading(false);
+      dispatch(stopRefresh());
       if (refresh) {
         setRefresh(false);
       }
     }
-  }, [companyId, refresh]);
+  }, [companyId, dispatch, refresh]);
 
   useEffect(() => {
     dispatch(fetchMetrics());
@@ -65,18 +68,12 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
 
   useEffect(() => {
     fetchCompanies();
-  }, [fetchCompanies]);
+  }, [fetchCompanies, isRefreshing]);
 
   const renderSection = useCallback(() => {
     switch (selectedLink) {
       case 'Overview':
-        return (
-          <Overview_section
-            isLoading={isLoading}
-            companyData={companyData}
-            companyID={params.companyId}
-          />
-        );
+        return <Overview_section companyData={companyData} companyID={params.companyId} />;
       case 'Financials':
         return (
           <Financial_section
@@ -96,7 +93,6 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
     }
   }, [
     selectedLink,
-    isLoading,
     companyData,
     params.companyId,
     financialData,
@@ -109,7 +105,7 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
 
   return (
     <MainLayout>
-      {isLoading && status === 'authenticated' ? (
+      {isLoading ? (
         Array.from({ length: 5 }).map((_, index) => (
           <Skeleton
             key={index}

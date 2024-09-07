@@ -4,6 +4,8 @@ import { toast } from 'sonner';
 
 import AddNewStatementContent from '@/components/forms/modals/Add_new_statement';
 import ModalTemplate from '@/components/forms/ModalTemplate';
+import { startRefresh } from '@/lib/ReduxSlices/refreshSlice';
+import { useDispatch } from '@/lib/utils';
 import { deleteCompanyDocument } from '@/utils/apiClient';
 
 const FStatements = ({
@@ -13,6 +15,7 @@ const FStatements = ({
   financialStatements: any[];
   companyID: any;
 }) => {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState<{ [key: number]: boolean }>({});
 
   const getFileNameFromUrl = (url: string) => {
@@ -32,6 +35,7 @@ const FStatements = ({
         toast.success('Document deleted successfully', {
           position: 'bottom-right',
         });
+        dispatch(startRefresh());
         setOpen((prev) => ({ ...prev, [index]: false }));
       } else {
         toast.error('Failed to delete document', {

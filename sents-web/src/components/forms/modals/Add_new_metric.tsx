@@ -26,13 +26,7 @@ const Add_new_metric = () => {
 
         // Display a success message
         toast.success('Financial data metric added successfully', {
-          style: {
-            background: 'green',
-            color: 'white',
-            border: 'none',
-          },
           position: 'top-center',
-          duration: 5000,
         });
       } else {
         if (res.error) {
@@ -50,9 +44,7 @@ const Add_new_metric = () => {
     } catch (error: any) {
       // Log any errors that occur
       toast.error(error, {
-        style: { background: 'red', color: 'white', border: 'none' },
         position: 'top-center',
-        duration: 5000,
       });
     } finally {
       // Set loading to false after the async operation finishes

@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { MdDone, MdCancel } from 'react-icons/md';
 import { RiArrowRightSLine, RiDeleteBinLine } from 'react-icons/ri';
@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import ModalTemplate from '@/components/forms/ModalTemplate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { startRefresh } from '@/lib/ReduxSlices/refreshSlice';
+import { useDispatch } from '@/lib/utils';
 import { updateCompanyDetails, deleteCompany } from '@/utils/apiClient';
 
 interface TableColumn {
@@ -24,10 +26,19 @@ interface TableProps {
   rows: { [key: string]: any }[];
   onRowClick?: (row: { [key: string]: any }) => void;
   renderCell?: (row: { [key: string]: any }, column: TableColumn) => JSX.Element;
+  isTableLoading?: boolean;
 }
 
-const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderCell, isAdmin }) => {
+const CompanyTable: React.FC<TableProps> = ({
+  columns,
+  rows,
+  onRowClick,
+  renderCell,
+  isAdmin,
+  isTableLoading = false,
+}) => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [editableRows, setEditableRows] = useState<{ [key: string]: any }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -38,56 +49,48 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
     setEditableRows(rows);
   }, [rows]);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     if (!rowIdToDelete) return;
-
-    const updatedRows = editableRows.filter((r) => r.id !== rowIdToDelete);
-    setEditableRows(updatedRows);
-    setShowModal(false);
 
     try {
       setLoading(true);
       const response = await deleteCompany(rowIdToDelete);
 
       if (response.status === 200 || response.status === 204) {
-        toast.success('Company deleted successfully', {
-          position: 'top-center',
-        });
+        setEditableRows((prevRows) => prevRows.filter((r) => r.id !== rowIdToDelete));
+        toast.success('Company deleted successfully', { position: 'top-center' });
+        dispatch(startRefresh());
       } else {
         throw new Error('Failed to delete company');
       }
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete company', {
-        position: 'top-center',
-      });
+      toast.error(error.message || 'Failed to delete company', { position: 'top-center' });
     } finally {
+      setShowModal(false);
       setShowEdit(false);
       setRowIdToDelete(null);
       setLoading(false);
     }
-  };
+  }, [dispatch, rowIdToDelete]);
 
-  const handleCancelDeleteCompany = () => {
-    setShowModal(false);
-    setRowIdToDelete(null);
-  };
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, rowIndex: number, column: TableColumn) => {
+      setEditableRows((prevRows) => {
+        const updatedRows = [...prevRows];
+        updatedRows[rowIndex] = {
+          ...updatedRows[rowIndex],
+          [column.field]: e.target.value,
+          isEdited: true,
+        };
+        return updatedRows;
+      });
+    },
+    [],
+  );
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    rowIndex: number,
-    column: TableColumn,
-  ) => {
-    const updatedRows = [...editableRows];
-    updatedRows[rowIndex] = {
-      ...updatedRows[rowIndex],
-      [column.field]: e.target.value,
-      isEdited: true,
-    };
-    setEditableRows(updatedRows);
-  };
-
-  const handleEditCompany = async () => {
+  const handleEditCompany = useCallback(async () => {
     try {
+      setLoading(true);
       const editedRows = editableRows.filter((row) => row.isEdited);
       const updatedRows = editedRows.map((row) => ({
         company_id: row.id,
@@ -96,27 +99,27 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
         sector_or_industry: row.sector_or_industry,
       }));
 
-      setLoading(true);
       if (updatedRows.length > 0) {
         const response = await updateCompanyDetails(updatedRows);
 
         if (response.status === 200) {
-          toast.success('Company details updated successfully', {
-            position: 'top-center',
-          });
+          toast.success('Company details updated successfully', { position: 'top-center' });
+          dispatch(startRefresh());
         } else {
           throw new Error('Failed to update company details');
         }
       }
+
+      toast.info('No changes detected', { position: 'top-center' });
     } catch (error: any) {
-      toast.error(error.message || 'Failed to update company details', {
-        position: 'top-center',
-      });
+      toast.error(error.message || 'Failed to update company details', { position: 'top-center' });
     } finally {
       setLoading(false);
       setShowEdit(false);
     }
-  };
+  }, [dispatch, editableRows]);
+
+  const memoizedColumns = useMemo(() => columns, [columns]);
 
   return (
     <div className="space-y-8">
@@ -133,9 +136,10 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
               <Button
                 className="bg-[#148C59] text-white p-2 md:p-7 rounded-2xl hover:bg-[#148C59ed9] hover:text-white"
                 onClick={handleEditCompany}
+                disabled={loading}
               >
                 {loading ? (
-                  <>Updating...</>
+                  'Updating...'
                 ) : (
                   <>
                     Done <MdDone className="ml-3" size={20} />
@@ -149,6 +153,7 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
                   setShowEdit(false);
                   setEditableRows(rows);
                 }}
+                disabled={loading}
               >
                 Cancel <MdCancel className="ml-3" size={20} />
               </Button>
@@ -163,13 +168,18 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
           )}
         </div>
       )}
-      <div className="flex flex-col">
+      <div className="flex flex-col relative">
+        {isTableLoading && (
+          <div className="absolute inset-0 bg-white dark:bg-opacity-30 bg-opacity-50 cursor-not-allowed flex items-center justify-center z-10">
+            <div className="loader"></div>
+          </div>
+        )}
         <div className="overflow-x-auto">
           <div className="align-middle inline-block min-w-full">
             <div className="overflow-hidden">
               <div className="bg-white dark:text-[#FFFFFF] dark:bg-[#39463E80] p-6 rounded-2xl">
                 <div className="flex text-left text-sm leading-4 font-medium capitalize tracking-wider">
-                  {columns.map((column, index) => (
+                  {memoizedColumns.map((column, index) => (
                     <div
                       key={index}
                       className={`px-6 py-3 font-semibold ${column.width || 'w-1/2'}`}
@@ -187,27 +197,23 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
                       tabIndex={0}
                       className="flex items-center bg-gray-50 dark:bg-[#39463E] rounded-2xl mt-4 cursor-pointer hover:bg-gray-100"
                       onClick={() => {
-                        if (isAdmin) {
-                          if (!showEdit) {
-                            router.push(`/edit_company/${row.id}`);
-                          }
-                        } else {
+                        if (isAdmin && !showEdit) {
+                          router.push(`/edit_company/${row.id}`);
+                        } else if (!isAdmin) {
                           router.push(`/company/${row.id}`);
                         }
                       }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                          if (isAdmin) {
-                            if (!showEdit) {
-                              router.push(`/edit_company/${row.id}`);
-                            }
-                          } else {
+                          if (isAdmin && !showEdit) {
+                            router.push(`/edit_company/${row.id}`);
+                          } else if (!isAdmin) {
                             router.push(`/company/${row.id}`);
                           }
                         }
                       }}
                     >
-                      {columns.map((column: TableColumn, cellIndex: number) => (
+                      {memoizedColumns.map((column: TableColumn, cellIndex: number) => (
                         <div
                           key={cellIndex}
                           className={`px-6 py-4 whitespace-normal text-sm overflow-auto ${column.width || 'w-1/2'}`}
@@ -234,14 +240,18 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
                           Icon={
                             <RiDeleteBinLine
                               size={20}
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setRowIdToDelete(row.id);
                                 setShowModal(true);
                               }}
                             />
                           }
                           onSubmit={handleDelete}
-                          onCancel={handleCancelDeleteCompany}
+                          onCancel={() => {
+                            setShowModal(false);
+                            setRowIdToDelete(null);
+                          }}
                           SubmitText="Yes"
                           CancelText="No"
                           openDialog={showModal}

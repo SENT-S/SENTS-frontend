@@ -33,13 +33,7 @@ const Add_new_category = ({ ButtonText, Icon, ButtonStyle }: Add_new_categoryPro
 
         // Display a success message
         toast.success('Financial data category added successfully', {
-          style: {
-            background: 'green',
-            color: 'white',
-            border: 'none',
-          },
           position: 'top-center',
-          duration: 5000,
         });
       } else {
         if (res.error) {
@@ -60,9 +54,7 @@ const Add_new_category = ({ ButtonText, Icon, ButtonStyle }: Add_new_categoryPro
 
       // Log any errors that occur
       toast.error(errorMessage, {
-        style: { background: 'red', color: 'white', border: 'none' },
         position: 'top-center',
-        duration: 5000,
       });
     } finally {
       // Set loading to false after the async operation finishes

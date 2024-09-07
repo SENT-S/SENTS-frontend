@@ -20,6 +20,8 @@ import Teams from './sections/Teams';
 import TopNews from './sections/TopNews';
 
 import MainLayout from '@/layouts';
+import { startRefresh, stopRefresh } from '@/lib/ReduxSlices/refreshSlice';
+import { useDispatch, useSelector } from '@/lib/utils';
 import { deleteCompanyFNews } from '@/utils/apiClient';
 import { getAllCompanies, getAllCompanyNews } from '@/utils/apiClient';
 import { CustomSession } from '@/utils/types';
@@ -29,6 +31,7 @@ const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
 function Index() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { data: session } = useSession() as { data: CustomSession };
   const [newsData, setNewsData] = useState<any[]>([]);
   const [selectedLink, setSelectedLink] = useState<any>(Categories[0]);
@@ -41,6 +44,7 @@ function Index() {
   const [selectedCompany, setSelectedCompany] = useState('');
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const isRefreshing = useSelector((state) => state.refresh.isRefreshing);
 
   const data = {
     news_ids: selectedIds,
@@ -70,9 +74,10 @@ function Index() {
         handleCompaniesUpdate(companiesData);
         handleNewsUpdate(newsData);
         setIsLoading(false);
+        dispatch(stopRefresh());
       })
       .catch((error) => console.error('Error fetching companies:', error));
-  }, [handleCompaniesUpdate, handleNewsUpdate]);
+  }, [dispatch, handleCompaniesUpdate, handleNewsUpdate, isRefreshing]);
 
   useEffect(() => {
     const countries = companies.map((company: any) => ({
@@ -124,6 +129,7 @@ function Index() {
         toast.success('News deleted successfully', {
           position: 'top-center',
         });
+        dispatch(startRefresh());
       } else {
         throw new Error('Failed to delete news');
       }
