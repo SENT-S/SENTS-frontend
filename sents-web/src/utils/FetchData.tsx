@@ -5,19 +5,24 @@ import { removeTrailingSlash } from '@/utils/removeTrailingSlash';
 import { CustomSession } from '@/utils/types';
 
 const BASE_URL = removeTrailingSlash(process.env.NEXT_PUBLIC_API_URL);
-
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
 let axiosInstance: AxiosInstance | null = null;
 
-async function getAxiosInstance(): Promise<AxiosInstance> {
+async function getAxiosInstance(): Promise<AxiosInstance | null> {
   if (axiosInstance) return axiosInstance;
 
   const session = await getSession();
-  if (!session) throw new Error('Session not found');
+  if (!session) {
+    console.error('Session not found');
+    return null;
+  }
 
   const { token } = session as CustomSession;
-  if (!token) throw new Error('Session token not found');
+  if (!token) {
+    console.error('Session token not found');
+    return null;
+  }
 
   axiosInstance = axios.create({
     baseURL: BASE_URL,
@@ -31,8 +36,9 @@ async function getAxiosInstance(): Promise<AxiosInstance> {
     (response) => response,
     async (error) => {
       if (error.response?.status === 401) {
-        // Handle token refresh or logout here
-        console.error('Unauthorized access. Refreshing token or logging out...');
+        console.error('Unauthorized access. Token may be invalid.');
+        axiosInstance = null; // Reset the instance so it will be recreated on next request
+        return Promise.reject(new Error('Unauthorized'));
       }
       return Promise.reject(error);
     },
@@ -46,9 +52,13 @@ export async function FetchData(
   method: HttpMethod = 'GET',
   body?: any,
   isFormData: boolean = false,
-): Promise<any> {
+): Promise<any | null> {
   try {
     const instance = await getAxiosInstance();
+    if (!instance) {
+      console.error('Failed to create Axios instance. Token may be missing or invalid.');
+      return null;
+    }
 
     const config: AxiosRequestConfig = {
       method,
@@ -66,6 +76,10 @@ export async function FetchData(
     const response = await instance.request<any>(config);
     return response.data;
   } catch (error) {
+    if (error instanceof Error && error.message === 'Unauthorized') {
+      console.error('Unauthorized request. Stopping further requests.');
+      return null;
+    }
     console.error(`Error ${method} data from ${endpoint}: `, error);
     throw error;
   }
