@@ -58,12 +58,14 @@ const ModalTemplate = (props: Props) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         disabled={props.disabled}
-        onClick={() => props.setDialog?.(true)}
+        onClick={() => {
+          props.setDialog?.(true);
+        }}
         type="button"
         className={`${props.ButtonStyle || 'bg-[#39463E] text-white dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white hover:dark:bg-[#39463ed9] hover:dark:text-white'} p-2 md:p-4 rounded-2xl flex items-center`}
       >
         {props.ButtonText}
-        {props.Icon}
+        {props.Icon && <span> {props.Icon}</span>}
       </DialogTrigger>
       <DialogContent
         ref={ref}

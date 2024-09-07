@@ -44,6 +44,7 @@ const CompanyTable: React.FC<TableProps> = ({
   const [showEdit, setShowEdit] = useState(false);
   const [rowIdToDelete, setRowIdToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setEditableRows(rows);
@@ -53,7 +54,7 @@ const CompanyTable: React.FC<TableProps> = ({
     if (!rowIdToDelete) return;
 
     try {
-      setLoading(true);
+      setIsDeleting(true);
       const response = await deleteCompany(rowIdToDelete);
 
       if (response.status === 200 || response.status === 204) {
@@ -69,7 +70,7 @@ const CompanyTable: React.FC<TableProps> = ({
       setShowModal(false);
       setShowEdit(false);
       setRowIdToDelete(null);
-      setLoading(false);
+      setIsDeleting(false);
     }
   }, [dispatch, rowIdToDelete]);
 
@@ -108,9 +109,9 @@ const CompanyTable: React.FC<TableProps> = ({
         } else {
           throw new Error('Failed to update company details');
         }
+      } else {
+        toast.info('No changes detected', { position: 'top-center' });
       }
-
-      toast.info('No changes detected', { position: 'top-center' });
     } catch (error: any) {
       toast.error(error.message || 'Failed to update company details', { position: 'top-center' });
     } finally {
@@ -118,6 +119,11 @@ const CompanyTable: React.FC<TableProps> = ({
       setShowEdit(false);
     }
   }, [dispatch, editableRows]);
+
+  const handleOpen = (id: any) => {
+    setRowIdToDelete(id);
+    setShowModal(true);
+  };
 
   const memoizedColumns = useMemo(() => columns, [columns]);
 
@@ -236,16 +242,12 @@ const CompanyTable: React.FC<TableProps> = ({
                         <ModalTemplate
                           FormTitle="Are you sure you want to delete Company?"
                           ButtonStyle="p-0 m-0 block relative top-1 right-2 text-[#F96868]"
-                          disabled={loading}
+                          disabled={isDeleting}
+                          loading={isDeleting}
                           Icon={
-                            <RiDeleteBinLine
-                              size={20}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setRowIdToDelete(row.id);
-                                setShowModal(true);
-                              }}
-                            />
+                            <div className="p-1">
+                              <RiDeleteBinLine size={20} />
+                            </div>
                           }
                           onSubmit={handleDelete}
                           onCancel={() => {
@@ -255,6 +257,7 @@ const CompanyTable: React.FC<TableProps> = ({
                           SubmitText="Yes"
                           CancelText="No"
                           openDialog={showModal}
+                          setDialog={() => handleOpen(row.id)}
                           SubmitButtonStyle="bg-[#EA0000] text-white p-2 rounded-2xl hover:bg-[#EA0000ed9] hover:text-white"
                         />
                       )}
