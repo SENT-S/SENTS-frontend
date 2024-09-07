@@ -1,12 +1,12 @@
 import '@/styles/globals.scss';
 import NextTopLoader from 'nextjs-toploader';
+import { Toaster } from 'sonner';
 
 import NetworkStatus from '../components/ui/NetworkStatus';
 
 import AppProvider from './AppProvider';
 
 import AuthProvider from '@/app/AuthProvider';
-import { Toaster } from '@/components/ui/sonner';
 
 export const metadata = {
   title: "Sent's",
@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           shadow={false}
           zIndex={999999}
         />
-        <Toaster />
+        <Toaster expand={true} richColors />
         <AuthProvider>
           <AppProvider themeProps={themeProps}>
             <NetworkStatus>{children}</NetworkStatus>

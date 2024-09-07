@@ -106,13 +106,7 @@ const Page = () => {
           setNewsImage(null);
 
           toast.success('News added successfully', {
-            style: {
-              background: 'green',
-              color: 'white',
-              border: 'none',
-            },
             position: 'top-center',
-            duration: 5000,
           });
         } else {
           const errors = response.error;
@@ -128,8 +122,6 @@ const Page = () => {
         }
       } catch (error: any) {
         toast.error(error.message || 'An error occurred', {
-          style: { background: 'red', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'top-center',
         });
       } finally {

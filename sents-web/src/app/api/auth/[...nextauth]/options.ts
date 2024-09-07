@@ -3,7 +3,9 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { removeTrailingSlash } from '@/utils/removeTrailingSlash';
+
+const BASE_URL = removeTrailingSlash(process.env.NEXT_PUBLIC_API_URL);
 
 export const providers = [
   CredentialsProvider({

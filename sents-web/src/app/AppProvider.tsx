@@ -52,13 +52,7 @@ const AppProvider = ({ children, themeProps }: ProviderProps) => {
       redirect('/landing');
     } else if (session && !toastShown && pathname === '/') {
       toast.success(`Welcome back, ${session.user?.first_name}!`, {
-        style: {
-          background: 'green',
-          color: 'white',
-          border: 'none',
-        },
         position: 'top-center',
-        duration: 5000,
       });
       setToastShown(true);
     }

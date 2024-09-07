@@ -171,8 +171,6 @@ const Financials = ({
       // Display a success message
       toast.success('Chart exported successfully', {
         position: 'top-right',
-        style: { background: 'green', color: 'white', border: 'none' },
-        duration: 5000,
       });
     } else {
       console.error('Chart not found');
@@ -184,8 +182,6 @@ const Financials = ({
     if (!selectedData || !data?.company_name) {
       toast.error('No data available to export', {
         position: 'top-right',
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
       });
       return;
     }
@@ -193,8 +189,6 @@ const Financials = ({
     // Display a success message
     toast.success('Data exported successfully', {
       position: 'top-right',
-      style: { background: 'green', color: 'white', border: 'none' },
-      duration: 5000,
     });
 
     // Create a new workbook and a new worksheet

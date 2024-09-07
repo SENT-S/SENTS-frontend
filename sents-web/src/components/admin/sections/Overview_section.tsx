@@ -59,8 +59,6 @@ const Overview_section = ({ companyData, companyID, isLoading }: any) => {
 
         if (response.status === 200) {
           toast.success('Company details updated successfully', {
-            style: { background: 'green', color: 'white', border: 'none' },
-            duration: 5000,
             position: 'top-center',
           });
         } else {
@@ -68,8 +66,6 @@ const Overview_section = ({ companyData, companyID, isLoading }: any) => {
         }
       } catch (error: any) {
         toast.error(error.message || 'An error occurred, please try again', {
-          style: { background: 'red', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'top-center',
         });
       } finally {

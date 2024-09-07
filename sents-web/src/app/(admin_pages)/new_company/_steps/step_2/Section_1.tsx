@@ -168,13 +168,7 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
 
         // Show success message
         toast.success(response.message, {
-          style: {
-            background: 'green',
-            color: 'white',
-            border: 'none',
-          },
           position: 'top-center',
-          duration: 5000,
         });
 
         // Reset rows state to initial state after form submission
@@ -183,8 +177,6 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
         window.location.reload();
       } catch (error: any) {
         toast.error(error.message || 'An error occurred, please try again', {
-          style: { background: 'red', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'top-center',
         });
       } finally {

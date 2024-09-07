@@ -56,8 +56,6 @@ const AuthTemplate = ({
 
           if (res?.ok) {
             toast.success('Sign in successful, redirecting...', {
-              style: { background: 'green', color: 'white', border: 'none' },
-              duration: 5000,
               position: 'top-center',
             });
             form.reset();
@@ -72,8 +70,6 @@ const AuthTemplate = ({
 
           if (response?.status === 201) {
             toast.success('Registration successful, redirecting...', {
-              style: { background: 'green', color: 'white', border: 'none' },
-              duration: 5000,
               position: 'top-center',
             });
             form.reset();
@@ -87,8 +83,6 @@ const AuthTemplate = ({
         }
       } catch (error: any) {
         toast.error(`${error.message}` || 'An error occurred during the process', {
-          style: { background: 'red', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'top-center',
         });
       } finally {

@@ -84,15 +84,24 @@ const Header = () => {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response = await getAllCompanies();
-      if (response) {
-        // Flatten the data into a single array of companies
-        const flattenedData = response.flatMap((data: any) => data.list_of_companies);
-        setSearchData(flattenedData);
-      } else {
-        console.error('Error: No data received');
+      try {
+        const response = await getAllCompanies();
+        if (response && Array.isArray(response)) {
+          // Flatten the data into a single array of companies
+          const flattenedData = response.flatMap(
+            (countryData: any) => countryData.list_of_companies || [],
+          );
+          setSearchData(flattenedData);
+        } else {
+          console.error('Error: Invalid data format received');
+          setSearchData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching companies:', error);
+        setSearchData([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchCompanies();

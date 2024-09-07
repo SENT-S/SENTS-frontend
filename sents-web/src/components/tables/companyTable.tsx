@@ -51,8 +51,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
 
       if (response.status === 200 || response.status === 204) {
         toast.success('Company deleted successfully', {
-          style: { background: 'green', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'top-center',
         });
       } else {
@@ -60,8 +58,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to delete company', {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
         position: 'top-center',
       });
     } finally {
@@ -106,8 +102,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
 
         if (response.status === 200) {
           toast.success('Company details updated successfully', {
-            style: { background: 'green', color: 'white', border: 'none' },
-            duration: 5000,
             position: 'top-center',
           });
         } else {
@@ -116,8 +110,6 @@ const CompanyTable: React.FC<TableProps> = ({ columns, rows, onRowClick, renderC
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to update company details', {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
         position: 'top-center',
       });
     } finally {

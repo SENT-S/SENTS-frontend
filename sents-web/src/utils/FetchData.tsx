@@ -1,70 +1,118 @@
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 
+import { removeTrailingSlash } from '@/utils/removeTrailingSlash';
 import { CustomSession } from '@/utils/types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = removeTrailingSlash(process.env.NEXT_PUBLIC_API_URL);
+const API_TIMEOUT = 10000; // 10 seconds
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-});
+type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
-const FetchData = async (
+interface CacheItem {
+  data: any;
+  expiry: number;
+}
+
+let axiosInstance: AxiosInstance | null = null;
+const cache: Record<string, CacheItem> = {};
+
+async function getAxiosInstance(): Promise<AxiosInstance> {
+  if (axiosInstance) return axiosInstance;
+
+  const session = await getSession();
+  if (!session) throw new Error('Session not found');
+
+  const { token } = session as CustomSession;
+  if (!token) throw new Error('Session token not found');
+
+  axiosInstance = axios.create({
+    baseURL: BASE_URL,
+    timeout: API_TIMEOUT,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      if (error.response?.status === 401) {
+        console.error('Unauthorized access. Refreshing token or logging out...');
+        // Handle token refresh or logout here
+      }
+      return Promise.reject(error);
+    },
+  );
+
+  return axiosInstance;
+}
+
+function getCacheKey(endpoint: string, method: HttpMethod, body?: any): string {
+  return `${method}:${endpoint}:${JSON.stringify(body)}`;
+}
+
+function getFromCache(cacheKey: string): any | null {
+  const cached = cache[cacheKey];
+  if (cached && cached.expiry > Date.now()) {
+    return cached.data;
+  }
+  return null;
+}
+
+function setInCache(cacheKey: string, data: any): void {
+  cache[cacheKey] = {
+    data,
+    expiry: Date.now() + CACHE_DURATION,
+  };
+}
+
+export async function FetchData(
   endpoint: string,
-  method: string = 'get',
+  method: HttpMethod = 'GET',
   body?: any,
   isFormData: boolean = false,
-) => {
-  try {
-    const session = await getSession();
-    if (!session) {
-      throw new Error('Session not found');
-    }
+  useCache: boolean = true,
+): Promise<any> {
+  const cacheKey = getCacheKey(endpoint, method, body);
 
-    const { token } = session as CustomSession;
-    if (!token) {
-      throw new Error('Session token not found');
-    }
-
-    // Set the Authorization header for this request
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-    // Set the correct Content-Type for FormData
-    if (isFormData) {
-      axiosInstance.defaults.headers.common['Content-Type'] = 'multipart/form-data';
-    } else {
-      axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
-    }
-
-    let res;
-    switch (method.toLowerCase()) {
-      case 'get':
-        res = await axiosInstance.get(endpoint);
-        break;
-      case 'post':
-        res = await axiosInstance.post(endpoint, body);
-        break;
-      case 'patch':
-        res = await axiosInstance.patch(endpoint, body);
-        break;
-      case 'put':
-        res = await axiosInstance.put(endpoint, body);
-        break;
-      case 'delete':
-        res = await axiosInstance.delete(endpoint);
-        break;
-      case 'delete2':
-        res = await axiosInstance.delete(endpoint, { data: body });
-        break;
-      default:
-        throw new Error(`Unsupported method: ${method}`);
-    }
-
-    return res.data;
-  } catch (error) {
-    console.error(`Error ${method.toUpperCase()} data from ${endpoint}: `, error);
-    throw error;
+  if (useCache && method === 'GET') {
+    const cachedData = getFromCache(cacheKey);
+    if (cachedData) return cachedData;
   }
-};
+
+  try {
+    const instance = await getAxiosInstance();
+
+    const config: AxiosRequestConfig = {
+      method,
+      url: endpoint,
+    };
+
+    if (body) {
+      config.data = isFormData ? body : JSON.stringify(body);
+    }
+
+    if (isFormData) {
+      config.headers = { ...config.headers, 'Content-Type': 'multipart/form-data' };
+    }
+
+    const response = await instance.request(config);
+
+    if (useCache && method === 'GET') {
+      setInCache(cacheKey, response.data);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error(`Error ${method} data from ${endpoint}: `, error);
+    if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
+      console.error('Request timed out');
+    }
+    return null;
+  }
+}
 
 export default FetchData;

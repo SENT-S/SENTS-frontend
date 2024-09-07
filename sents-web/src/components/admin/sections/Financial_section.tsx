@@ -157,8 +157,6 @@ const Financial_section = ({
         );
         if (isMetricAlreadySelected) {
           toast.error('This metric has already been selected for another row', {
-            style: { background: 'red', color: 'white', border: 'none' },
-            duration: 5000,
             position: 'top-center',
           });
           return;
@@ -246,14 +244,10 @@ const Financial_section = ({
         setRefresh(true);
         setShowEdit(false);
         toast.success('Financial data updated successfully', {
-          style: { background: 'green', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'bottom-right',
         });
       } catch (error: any) {
         toast.error(error.message, {
-          style: { background: 'red', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'bottom-right',
         });
       } finally {

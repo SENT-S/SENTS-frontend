@@ -1,172 +1,61 @@
-import axios from 'axios';
-
 import FetchData from './FetchData';
 
-const BASE_URL = process.env.NEXT_PUBLIC_URL || process.env.NEXTAUTH_URL;
-
-const apiClient = axios.create({
-  baseURL: `${BASE_URL}/api`,
-});
-
-/**
- * Fetch / Get Methods
- */
-export const getAllCompanies = async () => {
-  try {
-    const response = await apiClient.get('/getData', {
-      params: { endpoint: 'allcompanies' },
-    });
-    if (response.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('Error fetching data');
-    }
-  } catch (error) {
-    console.error('An error occurred while fetching data:', error);
-    throw error;
-  }
+// GET Methods
+export const getAllCompanies = async (): Promise<any> => {
+  const response = await FetchData('allcompanies');
+  return response?.data || [];
 };
 
-export const getAllFinancialMetrics = async () => {
-  try {
-    const response = await apiClient.get('/getData', {
-      params: { endpoint: 'allfinancialmetrics' },
-    });
-
-    if (response.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('Error fetching data');
-    }
-  } catch (error) {
-    console.error('An error occurred while fetching data:', error);
-    throw error;
-  }
+export const getAllFinancialMetrics = async (): Promise<any> => {
+  const response = await FetchData('allfinancialmetrics');
+  return response?.data || [];
 };
 
-export const getAllFinancialDataCategories = async () => {
-  try {
-    const response = await apiClient.get('/getData', {
-      params: { endpoint: 'allfinancialdatacategories' },
-    });
-
-    if (response.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('Error fetching data');
-    }
-  } catch (error) {
-    console.error('An error occurred while fetching data:', error);
-    throw error;
-  }
+export const getAllFinancialDataCategories = async (): Promise<any> => {
+  const response = await FetchData('allfinancialdatacategories');
+  return response?.data || [];
 };
 
-export const getAllCompanyNews = async () => {
-  try {
-    const response = await apiClient.get('/getData', {
-      params: { endpoint: 'allnews' },
-    });
-
-    if (response.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('Error fetching data');
-    }
-  } catch (error) {
-    console.error('An error occurred while fetching data:', error);
-    throw error;
-  }
+export const getAllCompanyNews = async (): Promise<any> => {
+  const response = await FetchData('allnews');
+  return response?.data || [];
 };
 
-export const getCompanyFinancials = async (id: any) => {
-  try {
-    const response = await apiClient.get('/getData', {
-      params: { endpoint: `companyfinancialdata/${id}` },
-    });
-
-    if (response.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('Error fetching data');
-    }
-  } catch (error) {
-    console.error('An error occurred while fetching data:', error);
-    throw error;
-  }
+export const getCompanyFinancials = async (id: any): Promise<any> => {
+  const response = await FetchData(`companyfinancialdata/${id}`);
+  return response?.data || [];
 };
 
-export const getCompany = async (id: any) => {
-  try {
-    const response = await apiClient.get('/getData', {
-      params: { endpoint: `acompany/${id}` },
-    });
-
-    if (response.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('Error fetching data');
-    }
-  } catch (error) {
-    console.error('An error occurred while fetching data:', error);
-    throw error;
-  }
+export const getCompany = async (id: any): Promise<any> => {
+  const response = await FetchData(`acompany/${id}`);
+  return response?.data || null;
 };
 
-export const getCompanyNews = async (id: any) => {
-  try {
-    const response = await apiClient.get('/getData', {
-      params: { endpoint: `newsbycompany/${id}` },
-    });
-
-    if (response.status === 200) {
-      return response.data.data;
-    } else {
-      throw new Error('Error fetching data');
-    }
-  } catch (error) {
-    console.error('An error occurred while fetching data:', error);
-    throw error;
-  }
+export const getCompanyNews = async (id: any): Promise<any> => {
+  const response = await FetchData(`newsbycompany/${id}`);
+  return response?.data || [];
 };
 
-/**
- * Post / Create Methods
- */
-
-export const createCompany = (data: any) => FetchData('/create/company/', 'post', data);
-
-export const addFinancialMetric = (data: any) =>
-  FetchData('/create/financialmetric/', 'post', data);
-
+// POST Methods
+export const createCompany = (data: any) => FetchData('create/company/', 'POST', data);
+export const addFinancialMetric = (data: any) => FetchData('create/financialmetric/', 'POST', data);
 export const addFinancialDataCategory = (data: any) =>
-  FetchData('/create/financialdatacategory/', 'post', data);
-
-export const addFinancialNews = (data: any) => FetchData('/create/financialnews/', 'post', data);
-
+  FetchData('create/financialdatacategory/', 'POST', data);
+export const addFinancialNews = (data: any) => FetchData('create/financialnews/', 'POST', data);
 export const addCompanyFinancialData = (data: any) =>
-  FetchData('/create/financialdata/', 'post', data);
-
+  FetchData('create/financialdata/', 'POST', data);
 export const addCompanyDocuments = (data: FormData) =>
-  FetchData('/upload/companydocuments/', 'post', data, true);
+  FetchData('upload/companydocuments/', 'POST', data, true);
 
-/**
- * Patch / Update Methods
- */
+// PATCH Methods
 export const updateCompanyFinancialData = (data: any) =>
-  FetchData(`/update/financialdata/`, 'patch', data);
+  FetchData('update/financialdata/', 'PATCH', data);
+export const updateCompanyDetails = (data: any) => FetchData('update/company(s)/', 'PATCH', data);
+export const updateCompanyFNews = (data: any, id: string) =>
+  FetchData(`update/financialnews/${id}/`, 'PATCH', data);
 
-export const updateCompanyDetails = (data: any) => FetchData(`/update/company(s)/`, 'patch', data);
-
-export const updateCompanyFNews = (data: any, id: any) =>
-  FetchData(`/update/financialnews/${id}/`, 'patch', data);
-
-/**
- * Delete Methods
- */
-export const deleteCompany = (id: any) => FetchData(`/delete/company/${id}/`, 'delete');
-
-export const deleteCompanyDocument = (id: any) =>
-  FetchData(`/delete/companydocuments/${id}/`, 'delete');
-
-export const deleteCompanyFNews = (data: any) =>
-  FetchData(`/delete/financialnews/`, 'delete2', data);
+// DELETE Methods
+export const deleteCompany = (id: string) => FetchData(`delete/company/${id}/`, 'DELETE');
+export const deleteCompanyDocument = (id: string) =>
+  FetchData(`delete/companydocuments/${id}/`, 'DELETE');
+export const deleteCompanyFNews = (data: any) => FetchData('delete/financialnews/', 'DELETE', data);

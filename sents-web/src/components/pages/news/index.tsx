@@ -122,8 +122,6 @@ function Index() {
       const response = await deleteCompanyFNews(data);
       if (response.status === 200 || response.status === 204) {
         toast.success('News deleted successfully', {
-          style: { background: 'green', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'top-center',
         });
       } else {
@@ -131,8 +129,6 @@ function Index() {
       }
     } catch (error: any) {
       toast.error(error.message || 'An error occurred, please try again', {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
         position: 'top-center',
       });
     } finally {

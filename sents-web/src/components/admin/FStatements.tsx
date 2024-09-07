@@ -30,22 +30,16 @@ const FStatements = ({
       const response = await deleteCompanyDocument(id);
       if (response.status === 200) {
         toast.success('Document deleted successfully', {
-          style: { background: 'green', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'bottom-right',
         });
         setOpen((prev) => ({ ...prev, [index]: false }));
       } else {
         toast.error('Failed to delete document', {
-          style: { background: 'red', color: 'white', border: 'none' },
-          duration: 5000,
           position: 'bottom-right',
         });
       }
     } catch (error) {
       toast.error('An error occurred while deleting the document', {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
         position: 'bottom-right',
       });
       console.log(error);

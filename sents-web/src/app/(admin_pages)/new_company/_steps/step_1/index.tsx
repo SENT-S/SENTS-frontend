@@ -41,8 +41,6 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
       if (innerStep === 2) {
         if (!allFieldsFilled) {
           toast.error('All fields must be filled to create a company', {
-            style: { background: 'red', color: 'white', border: 'none' },
-            duration: 5000,
             position: 'top-center',
           });
           return;
@@ -52,8 +50,6 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
     } catch (error) {
       console.error('Failed to create company', error);
       toast.error('Failed to create company, please try again', {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
         position: 'top-center',
       });
     }
@@ -63,18 +59,10 @@ function Index({ setStep, step }: { setStep: any; step: number }) {
     if (companyFields.response && companyFields.response.status === 201) {
       setInnerStep((prevStep) => prevStep + 1);
       toast.success('Company created successfully', {
-        style: {
-          background: 'green',
-          color: 'white',
-          border: 'none',
-        },
         position: 'top-center',
-        duration: 5000,
       });
     } else if (companyFields.response && companyFields.response.status !== 201) {
       toast.error(companyFields.response.error, {
-        style: { background: 'red', color: 'white', border: 'none' },
-        duration: 5000,
         position: 'top-center',
       });
     }
