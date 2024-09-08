@@ -46,6 +46,8 @@ function Index() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const isRefreshing = useSelector((state) => state.refresh.isRefreshing);
 
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const data = {
     news_ids: selectedIds,
   };
@@ -124,6 +126,7 @@ function Index() {
 
   const handleDeleteNews = async () => {
     try {
+      setIsDeleting(true);
       const response = await deleteCompanyFNews(data);
       if (response.status === 200 || response.status === 204) {
         toast.success('News deleted successfully', {
@@ -140,6 +143,7 @@ function Index() {
     } finally {
       setShowCheckbox(false);
       setSelectedIds([]);
+      setIsDeleting(false);
     }
   };
 
@@ -195,6 +199,8 @@ function Index() {
                   onCancel={handleCancelDeleteNews}
                   SubmitText="Yes"
                   CancelText="No"
+                  disabled={isDeleting}
+                  loading={isDeleting}
                   SubmitButtonStyle="bg-[#EA0000] text-white hover:bg-[#EA0000]"
                 />
               ) : (

@@ -146,21 +146,17 @@ const Financial_section = ({
 
   const handleSelectChange = useCallback(
     (selectedOptions: any, rowIndex: number, column: string) => {
-      const value =
-        column === 'category'
-          ? selectedOptions?.map((option: any) => option.value) || []
-          : String(selectedOptions);
+      let value;
 
-      if (column === 'metrics') {
-        const isMetricAlreadySelected = rows.some(
-          (row, index) => row.metrics === value && index < rowIndex,
-        );
-        if (isMetricAlreadySelected) {
-          toast.error('This metric has already been selected for another row', {
-            position: 'top-center',
-          });
-          return;
-        }
+      if (column === 'category') {
+        // For category, store the full objects
+        value = Array.isArray(selectedOptions) ? selectedOptions : [selectedOptions];
+      } else if (column === 'metrics') {
+        // For metrics, store the full object
+        value = selectedOptions;
+      } else {
+        // For other columns, store the value as a string
+        value = String(selectedOptions);
       }
 
       setRows((prevRows) =>
@@ -200,10 +196,22 @@ const Financial_section = ({
           const metricId = metricsList.find(
             (item: any) => item.label === metrics || item.value === Number(metrics),
           )?.value;
-          const selectedCategoryId = category
-            ? category.map((item: any) => item.value || item)
-            : findCommonCategories(FinancialData.data, metrics).map((item: any) => item.value);
+
+          // Handle the optional category field
+          let selectedCategoryId: number[] = [];
+          if (category && Array.isArray(category)) {
+            selectedCategoryId = category.map((cat: any) => cat.value);
+          } else {
+            // If category doesn't exist, use findCommonCategories
+            selectedCategoryId = findCommonCategories(row)
+              .map((item: any) => (item && item.value !== undefined ? item.value : item))
+              .filter(Boolean);
+          }
+
           const initialRow = TableData[selectedLink]?.find((r: Row) => r.metrics === metrics);
+          const initialCategories = findCommonCategories(initialRow);
+          const initialCategoryIds = initialCategories.map((cat: any) => cat.value);
+          const categoryChanged = !areArraysEqual(selectedCategoryId, initialCategoryIds);
 
           Object.entries(years).forEach(([year, value]) => {
             const initialValue = initialRow ? initialRow[year] : undefined;
@@ -218,14 +226,26 @@ const Financial_section = ({
             };
 
             if (initialValue !== undefined) {
-              if (processedValue !== initialValue) {
+              if (processedValue !== initialValue || categoryChanged) {
                 updatedRows.push(data);
               }
-            } else if (processedValue !== null) {
+            } else {
               newRows.push(data);
             }
           });
         });
+
+        console.info('rows', rows);
+        console.info('updatedRows', updatedRows);
+        console.info('newRows', newRows);
+
+        if (updatedRows.length === 0 && newRows.length === 0) {
+          toast.info('No changes detected. Please make some changes before submitting.', {
+            position: 'bottom-right',
+          });
+          setIsLoading(false);
+          return;
+        }
 
         if (updatedRows.length > 0) {
           const updateResponse = await updateCompanyFinancialData(updatedRows);
@@ -258,7 +278,6 @@ const Financial_section = ({
       rows,
       metricsList,
       companyID,
-      FinancialData.data,
       TableData,
       selectedLink,
       updateCompanyFinancialData,
@@ -266,16 +285,37 @@ const Financial_section = ({
     ],
   );
 
-  function findCommonCategories(data: any, metric: any) {
-    const commonCategories = [];
-    for (const category in data) {
-      if (data[category][metric]) {
-        commonCategories.push(category);
+  // Helper function to compare arrays
+  function areArraysEqual(arr1: any[], arr2: any[]) {
+    if (arr1.length !== arr2.length) return false;
+    const sortedArr1 = [...arr1].sort();
+    const sortedArr2 = [...arr2].sort();
+    return sortedArr1.every((value, index) => value === sortedArr2[index]);
+  }
+
+  function findCommonCategories(row: any) {
+    if (row?.category && Array.isArray(row.category)) {
+      // If category is already an array of objects, return it as is
+      if (row.category.length > 0 && typeof row.category[0] === 'object') {
+        return row.category;
       }
+      // If category is an array of IDs, convert them to objects
+      return row.category
+        .map((categoryId: any) =>
+          categoryList.find((category: any) => category.value === categoryId),
+        )
+        .filter(Boolean);
+    } else {
+      const commonCategories = [];
+      for (const category in FinancialData) {
+        if (FinancialData[category][row.metrics]) {
+          commonCategories.push(category);
+        }
+      }
+      return commonCategories
+        .map((commonCategory) => categoryList.find((item: any) => item.label === commonCategory))
+        .filter(Boolean);
     }
-    return commonCategories.map((commonCategory) =>
-      categoryList.find((item: any) => item.label === commonCategory),
-    );
   }
 
   return (
@@ -456,20 +496,14 @@ const Financial_section = ({
                           <div className="relative">
                             <ReactSelect
                               name="category"
-                              key={rowIndex}
+                              key={`category-${rowIndex}`}
                               isMulti={true}
                               options={categoryList}
                               isClearable={false}
                               className="react-select-container relative dark:text-black"
                               classNamePrefix="react-select"
                               placeholder="Category"
-                              defaultValue={
-                                row?.category?.map((item: any) =>
-                                  categoryList.find(
-                                    (category: any) => category.label === item.label,
-                                  ),
-                                ) || findCommonCategories(FinancialData.data, row.metrics)
-                              }
+                              value={row.category || findCommonCategories(row)}
                               onChange={(selectedOptions: any) =>
                                 handleSelectChange(selectedOptions, rowIndex, 'category')
                               }
