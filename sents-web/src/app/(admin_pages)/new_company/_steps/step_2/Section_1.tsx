@@ -27,6 +27,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
+import { resetCompanyFields } from '@/lib/ReduxSlices/create_company';
 import { stopRefresh } from '@/lib/ReduxSlices/refreshSlice';
 import { setStep, setInnerStep } from '@/lib/ReduxSlices/stepSlice';
 import { useDispatch, useSelector } from '@/lib/utils';
@@ -200,12 +201,13 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
       } finally {
         // Reset rows state to initial state after form submission
         setRows([getEmptyRow(newYears)]);
-        dispatch(setInnerStep(innerStep - 2));
         dispatch(setStep(1));
+        dispatch(setInnerStep(1));
+        dispatch(resetCompanyFields());
         setIsLoading(false);
       }
     },
-    [rows, getEmptyRow, newYears, companyID],
+    [rows, companyID, getEmptyRow, newYears, dispatch],
   );
 
   return (

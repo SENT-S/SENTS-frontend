@@ -37,7 +37,6 @@ function Index() {
 
   const handleCompaniesUpdate = useCallback(
     (updatedCompanies: any) => {
-      console.log('Updated companies:', updatedCompanies);
       setCompanies((prevCompanies) => {
         if (JSON.stringify(prevCompanies) !== JSON.stringify(updatedCompanies)) {
           return updatedCompanies;

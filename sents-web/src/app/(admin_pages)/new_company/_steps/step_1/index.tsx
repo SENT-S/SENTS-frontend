@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
@@ -8,7 +8,7 @@ import Section_2 from './Section_2';
 
 import { Button } from '@/components/ui/button';
 import CustomBackButton from '@/components/ui/customBackButton';
-import { createCompanyAPI } from '@/lib/ReduxSlices/create_company';
+import { createCompanyAPI, resetCompanyFields } from '@/lib/ReduxSlices/create_company';
 import { setInnerStep } from '@/lib/ReduxSlices/stepSlice';
 import { useDispatch, useSelector } from '@/lib/utils';
 
@@ -17,7 +17,6 @@ function Index() {
   const companyFields = useSelector((state) => state.company);
   const innerStep = useSelector<any>((state) => state.steps.innerStep);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasShownSuccessToast = useRef(false);
 
   const handleFormSubmit = useCallback(async () => {
     if (isSubmitting) return;
@@ -50,6 +49,10 @@ function Index() {
         };
 
         await dispatch(createCompanyAPI(formattedData));
+        dispatch(setInnerStep(3));
+        toast.success('Company created successfully', {
+          position: 'top-center',
+        });
       }
     } catch (error) {
       console.error('Failed to create company', error);
@@ -60,26 +63,6 @@ function Index() {
       setIsSubmitting(false);
     }
   }, [companyFields, innerStep, dispatch, isSubmitting]);
-
-  useEffect(() => {
-    if (companyFields.response) {
-      if (companyFields.response.status === 201 && !hasShownSuccessToast.current) {
-        dispatch(setInnerStep(3));
-        toast.success('Company created successfully', {
-          position: 'top-center',
-        });
-        hasShownSuccessToast.current = true;
-      } else if (companyFields.response.status !== 201) {
-        toast.error(companyFields.response.error, {
-          position: 'top-center',
-        });
-      }
-    }
-
-    return () => {
-      hasShownSuccessToast.current = false;
-    };
-  }, [companyFields.response, dispatch]);
 
   const renderSection = useCallback(() => {
     switch (innerStep) {

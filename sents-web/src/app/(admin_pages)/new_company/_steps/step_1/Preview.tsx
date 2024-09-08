@@ -11,7 +11,6 @@ import { useSelector, useDispatch } from '@/lib/utils';
 const Preview = () => {
   const dispatch = useDispatch();
   const companyFields = useSelector((state) => state.company);
-  const step = useSelector<any>((state) => state.steps.step);
 
   return (
     <div className="space-y-8">
@@ -34,7 +33,7 @@ const Preview = () => {
           type="button"
           className="bg-[#148C59] flex items-center text-white p-2 md:p-7 rounded-2xl hover:bg-[#148C59d9]"
           onClick={() => {
-            dispatch(setStep(step + 1));
+            dispatch(setStep(2));
           }}
         >
           Proceed to add financial data
