@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React, { useState, useCallback, useEffect } from 'react';
+import { ScaleLoader } from 'react-spinners';
 
 import SubNav from '@/components/admin/Navs/SubNav';
 import Financial_section from '@/components/admin/sections/Financial_section';
@@ -106,12 +107,16 @@ const EditPage: React.FC<CompanyDetailsProps> = React.memo(({ params }) => {
   return (
     <MainLayout>
       {isLoading ? (
-        Array.from({ length: 5 }).map((_, index) => (
-          <Skeleton
-            key={index}
-            className="h-20 mt-4 mb-4 rounded-xl bg-slate-200 dark:bg-slate-800"
-          />
-        ))
+        // Array.from({ length: 5 }).map((_, index) => (
+        //   <Skeleton
+        //     key={index}
+        //     className="h-20 mt-4 mb-4 rounded-xl bg-slate-200 dark:bg-slate-800"
+        //   />
+        // ))
+        <div className="w-full inset-0 flex flex-col gap-2 justify-center items-center h-full">
+          <ScaleLoader color="#148c59" />
+          <span>Processing Company data...</span>
+        </div>
       ) : (
         <div className="mt-4">
           <div className="flex items-center justify-between">

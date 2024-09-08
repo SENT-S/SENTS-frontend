@@ -6,7 +6,6 @@ import { GoPlusCircle } from 'react-icons/go';
 import { GrSubtractCircle } from 'react-icons/gr';
 import { MdDone } from 'react-icons/md';
 import { MdCancel } from 'react-icons/md';
-import ReactSelect from 'react-select';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
@@ -16,6 +15,7 @@ import Add_new_metric from '@/components/forms/modals/Add_new_metric';
 import ModalTemplate from '@/components/forms/ModalTemplate';
 import { Button } from '@/components/ui/button';
 import CustomPagination from '@/components/ui/customPagination';
+import CustomSelect from '@/components/ui/CustomSelect';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -144,40 +144,15 @@ const Financial_section = ({
     );
   }, []);
 
-  const handleSelectChange = useCallback(
-    (selectedOptions: any, rowIndex: number, column: string) => {
-      let value;
-
-      if (column === 'category') {
-        // For category, store the full objects
-        value = Array.isArray(selectedOptions) ? selectedOptions : [selectedOptions];
-      } else if (column === 'metrics') {
-        // For metrics, store the full object
-        value = selectedOptions;
-      } else {
-        // For other columns, store the value as a string
-        value = String(selectedOptions);
-      }
-
-      setRows((prevRows) =>
-        prevRows.map((row, index) => {
-          if (index === rowIndex) {
-            return { ...row, [column]: value };
-          }
-          return row;
-        }),
-      );
-    },
-    [rows],
-  );
+  const handleSelectChange = useCallback((rowIndex: number, column: string, value: any) => {
+    setRows((prevRows) =>
+      prevRows.map((row, index) => (index === rowIndex ? { ...row, [column]: value } : row)),
+    );
+  }, []);
 
   const handleDelete = useCallback(
-    async (rowIndex: number, name: string) => {
-      if (name === 'delete') {
-        clearRow(rowIndex);
-      } else {
-        console.log('Cancel delete company');
-      }
+    (rowIndex: number) => {
+      clearRow(rowIndex);
     },
     [clearRow],
   );
@@ -234,10 +209,6 @@ const Financial_section = ({
             }
           });
         });
-
-        console.info('rows', rows);
-        console.info('updatedRows', updatedRows);
-        console.info('newRows', newRows);
 
         if (updatedRows.length === 0 && newRows.length === 0) {
           toast.info('No changes detected. Please make some changes before submitting.', {
@@ -410,7 +381,7 @@ const Financial_section = ({
         items={rows}
         itemsPerPage={5}
         render={(currentItems) => (
-          <div className="relative shadow-md rounded-2xl w-full h-auto">
+          <div className="shadow-sm rounded-2xl w-full h-auto relative">
             <Table className="min-w-full overflow-hidden text-black dark:text-white">
               {/* table header */}
               <TableHeader className="bg-[#1EF1A5]">
@@ -445,24 +416,18 @@ const Financial_section = ({
                         }}
                       >
                         {showEdit ? (
-                          <div className="relative">
-                            <ReactSelect
-                              name="metrics"
-                              key={rowIndex}
-                              options={metricsList}
-                              isClearable={false}
-                              className="react-select-container relative dark:text-black"
-                              classNamePrefix="react-select"
-                              placeholder="Metrics"
-                              defaultValue={metricsList.find(
-                                (item: any) =>
-                                  item.label === row.metrics || item.value === Number(row.metrics),
-                              )}
-                              onChange={(selectedOption: any) =>
-                                handleSelectChange(selectedOption.value, rowIndex, 'metrics')
-                              }
-                            />
-                          </div>
+                          <CustomSelect
+                            options={metricsList}
+                            onChange={(selectedOption: any) =>
+                              handleSelectChange(rowIndex, selectedOption.value, 'metrics')
+                            }
+                            defaultValue={metricsList.find(
+                              (item: any) =>
+                                item.label === row.metrics || item.value === Number(row.metrics),
+                            )}
+                            placeholder="Select metrics..."
+                            className="w-auto"
+                          />
                         ) : (
                           metricsList.find(
                             (item: any) =>
@@ -493,22 +458,16 @@ const Financial_section = ({
 
                       {showEdit && (
                         <TableCell className="text-center">
-                          <div className="relative">
-                            <ReactSelect
-                              name="category"
-                              key={`category-${rowIndex}`}
-                              isMulti={true}
-                              options={categoryList}
-                              isClearable={false}
-                              className="react-select-container relative dark:text-black"
-                              classNamePrefix="react-select"
-                              placeholder="Category"
-                              value={row.category || findCommonCategories(row)}
-                              onChange={(selectedOptions: any) =>
-                                handleSelectChange(selectedOptions, rowIndex, 'category')
-                              }
-                            />
-                          </div>
+                          <CustomSelect
+                            options={categoryList}
+                            multi
+                            onChange={(selectedOptions: any) =>
+                              handleSelectChange(rowIndex, selectedOptions, 'category')
+                            }
+                            defaultValue={row.category || findCommonCategories(row)}
+                            placeholder="Category"
+                            className="w-auto"
+                          />
                         </TableCell>
                       )}
 
@@ -523,8 +482,8 @@ const Financial_section = ({
                                 <GrSubtractCircle className="text-[#EA0000]" size={20} />
                               </div>
                             }
-                            onSubmit={() => handleDelete(rowIndex, 'delete')}
-                            onCancel={() => handleDelete(rowIndex, 'cancel')}
+                            onSubmit={() => handleDelete(rowIndex)}
+                            onCancel={() => null}
                             SubmitText="Yes"
                             CancelText="No"
                             SubmitButtonStyle="bg-[#EA0000] hover:bg-[#ea0000e7]"

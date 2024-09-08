@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import Step_1 from './_steps/step_1';
 import Step_2 from './_steps/step_2';
@@ -22,9 +22,9 @@ const steps = ['Step 1', 'Step 2'];
 const AddCompanyPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [step, setStep] = useState(1);
   const financialMetrics = useSelector<any>((state) => state.metricCategory.metricList);
   const financialDataCategories = useSelector<any>((state) => state.metricCategory.categoryList);
+  const step = useSelector<any>((state) => state.steps.step);
 
   const fetchMetricsAndCategories = useCallback(() => {
     dispatch(fetchMetrics());
@@ -66,10 +66,9 @@ const AddCompanyPage = () => {
         <Stepper currentStep={step} steps={steps} />
 
         {/* Display steps */}
-        {step === 1 && <Step_1 setStep={setStep} step={step} />}
+        {step === 1 && <Step_1 />}
         {step === 2 && (
           <Step_2
-            setStep={setStep}
             category={financialDataCategories?.data || financialDataCategories}
             metrics={financialMetrics}
           />

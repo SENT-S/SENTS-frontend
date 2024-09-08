@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { GrSubtractCircle } from 'react-icons/gr';
-import ReactSelect from 'react-select';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
@@ -10,6 +9,7 @@ import Add_new_category from '@/components/forms/modals/Add_new_category';
 import Add_new_metric from '@/components/forms/modals/Add_new_metric';
 import { Button } from '@/components/ui/button';
 import CustomPagination from '@/components/ui/customPagination';
+import CustomSelect from '@/components/ui/CustomSelect';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -27,8 +27,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
-import { useSelector } from '@/lib/utils';
+import { stopRefresh } from '@/lib/ReduxSlices/refreshSlice';
+import { setStep, setInnerStep } from '@/lib/ReduxSlices/stepSlice';
+import { useDispatch, useSelector } from '@/lib/utils';
 import { addCompanyFinancialData } from '@/utils/apiClient';
+import { getCompany } from '@/utils/apiClient';
 
 type Row = {
   metrics: string;
@@ -37,12 +40,32 @@ type Row = {
 };
 
 const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
+  const dispatch = useDispatch();
   const yearRanges = useMemo(() => getYearRanges(), []);
   const [isLoading, setIsLoading] = useState(false);
   const [yearRange, setYearRange] = useState(yearRanges[0]);
   const [newYears, setNewYears] = useState<string[]>([]);
   const createdCompanyData = useSelector((state) => state.company.response);
   const companyID = useMemo(() => Number(createdCompanyData?.data?.id), [createdCompanyData]);
+  const isRefreshing = useSelector((state) => state.refresh.isRefreshing);
+  const [financialStatements, setFinancialStatements] = useState<any>([]);
+  const innerStep = useSelector<any>((state) => state.steps.innerStep);
+
+  const fetchCompanies = useCallback(async () => {
+    try {
+      const companyData = await getCompany(companyID);
+
+      setFinancialStatements(companyData.company_documents);
+    } catch (error) {
+      console.error('Failed to fetch company', error);
+    } finally {
+      dispatch(stopRefresh());
+    }
+  }, [companyID, dispatch]);
+
+  useEffect(() => {
+    fetchCompanies();
+  }, [fetchCompanies, isRefreshing]);
 
   // Change the format of the data from categories and metric to react-select format
   const categoryList = useMemo(
@@ -170,20 +193,19 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
         toast.success(response.message, {
           position: 'top-center',
         });
-
-        // Reset rows state to initial state after form submission
-        setRows([getEmptyRow(newYears)]);
-        // reload the page
-        window.location.reload();
       } catch (error: any) {
         toast.error(error.message || 'An error occurred, please try again', {
           position: 'top-center',
         });
       } finally {
+        // Reset rows state to initial state after form submission
+        setRows([getEmptyRow(newYears)]);
+        dispatch(setInnerStep(innerStep - 2));
+        dispatch(setStep(1));
         setIsLoading(false);
       }
     },
-    [rows, companyID, newYears, getEmptyRow],
+    [rows, getEmptyRow, newYears, companyID],
   );
 
   return (
@@ -250,21 +272,15 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
                 {currentItems.map((row: any, rowIndex: any) => (
                   <TableRow key={rowIndex}>
                     <TableCell className="text-center">
-                      <div className="relative">
-                        <ReactSelect
-                          isMulti={false}
-                          name="metrics"
-                          options={metricsList}
-                          isClearable={false}
-                          value={metricsList.find((item: any) => item.value === row.metrics)}
-                          className="react-select-container dark:text-black"
-                          classNamePrefix="react-select"
-                          placeholder="Metrics"
-                          onChange={(item: any) =>
-                            handleSelectChange(item.value, rowIndex, 'metrics')
-                          }
-                        />
-                      </div>
+                      <CustomSelect
+                        options={metricsList}
+                        onChange={(item: any) =>
+                          handleSelectChange(item.value, rowIndex, 'metrics')
+                        }
+                        defaultValue={metricsList.find((item: any) => item.value === row.metrics)}
+                        placeholder="Select metrics..."
+                        className="w-auto"
+                      />
                     </TableCell>
                     {newYears.map((year) => (
                       <TableCell key={year} className="text-center">
@@ -277,21 +293,16 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
                       </TableCell>
                     ))}
                     <TableCell className="text-center">
-                      <div className="relative">
-                        <ReactSelect
-                          isMulti={true}
-                          name="category"
-                          options={categoryList}
-                          isClearable={false}
-                          value={row.category.map((cat: any) =>
-                            categoryList.find((item: any) => item.value === cat),
-                          )}
-                          className="react-select-container dark:text-black"
-                          classNamePrefix="react-select"
-                          placeholder="Category"
-                          onChange={(item: any) => handleSelectChange(item, rowIndex, 'category')}
-                        />
-                      </div>
+                      <CustomSelect
+                        options={categoryList}
+                        multi
+                        onChange={(item: any) => handleSelectChange(item, rowIndex, 'category')}
+                        defaultValue={row.category.map((cat: any) =>
+                          categoryList.find((item: any) => item.value === cat),
+                        )}
+                        placeholder="Category"
+                        className="w-auto"
+                      />
                     </TableCell>
                     {rows.length > 1 && (
                       <TableCell className="text-center">
@@ -309,7 +320,7 @@ const Section_1 = ({ metrics, category }: { metrics: any; category: any }) => {
       />
 
       {/* statements */}
-      <FStatements financialStatements={[]} companyID={companyID} />
+      <FStatements financialStatements={financialStatements} companyID={companyID} />
 
       <Button
         type="button"
