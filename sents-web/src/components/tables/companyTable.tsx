@@ -181,7 +181,7 @@ const CompanyTable: React.FC<TableProps> = ({
           </div>
         )}
         <div className="overflow-x-auto">
-          <div className="align-middle inline-block min-w-full">
+          <div className="align-middle inline-block w-full max-w-full min-w-[660px]">
             <div className="overflow-hidden shadow-sm">
               <div className="bg-white dark:text-[#FFFFFF] dark:bg-[#39463E80] p-6 rounded-2xl">
                 <div className="flex text-left text-sm leading-4 font-medium capitalize tracking-wider">
