@@ -50,7 +50,7 @@ const SideBar = () => {
       <div className="flex flex-col w-full h-full justify-between items-center">
         <div />
         <div className="relative">
-          <div className="absolute left-[-114px] -bottom-16 bg-white dark:bg-[#39463E80] rounded-r-3xl py-4">
+          <div className="absolute left-[-114px] -bottom-16 shadow-sm bg-white dark:bg-[#39463E80] rounded-r-3xl py-4">
             {status !== 'loading'
               ? (isAdmin ? AdminLinks : UserLinks).map((link, index) => {
                   const Icon = link.icon;
