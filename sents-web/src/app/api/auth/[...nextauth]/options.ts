@@ -1,17 +1,18 @@
-// options.ts
+import axios from 'axios';
+import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-import axios from 'axios';
+
+import { removeTrailingSlash } from '@/utils/removeTrailingSlash';
+
+const BASE_URL = removeTrailingSlash(process.env.NEXT_PUBLIC_API_URL);
 
 export const providers = [
   CredentialsProvider({
     id: 'credentials',
     name: 'Credentials',
     credentials: {},
-    async authorize(
-      credentials: { email?: string; password?: string } | undefined,
-      req: any,
-    ) {
+    async authorize(credentials: { email?: string; password?: string } | undefined) {
       if (!credentials) {
         throw new Error('No credentials provided');
       }
@@ -19,7 +20,7 @@ export const providers = [
       const { email: username = '', password = '' } = credentials;
 
       try {
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/login/`;
+        const url = `${BASE_URL}/login/`;
         const { data: response } = await axios.post(url, {
           username,
           password,
@@ -38,9 +39,7 @@ export const providers = [
         }
 
         // throw the message from the response
-        throw new Error(
-          response?.message || 'Failed to log in, please try again',
-        );
+        throw new Error(response?.message || 'Failed to log in, please try again');
       } catch (error: any) {
         throw new Error(error.message || 'Failed to log in, please try again');
       }
@@ -53,8 +52,8 @@ export const providers = [
 ];
 
 export const pages = {
-  signIn: '/login_register',
-  signOut: '/login_register',
+  signIn: '/dashboard',
+  signOut: '/landing',
   error: '/error',
 };
 
@@ -77,4 +76,11 @@ export const callbacks = {
     session.token = token.token;
     return session;
   },
+};
+
+export const authOptions: NextAuthOptions = {
+  providers,
+  pages,
+  secret,
+  callbacks,
 };

@@ -1,16 +1,23 @@
 // store.tsx
 import { configureStore } from '@reduxjs/toolkit';
-import darkModeSlice from './ReduxSlices/darkMode';
+
+import authSlice from './ReduxSlices/authSlice';
 import companySlice from './ReduxSlices/create_company';
-import newsFormSlice from './ReduxSlices/create_news';
 import companyFinancialSlice from './ReduxSlices/create_company_financial';
+import newsFormSlice from './ReduxSlices/create_news';
+import MetricCategorySlice from './ReduxSlices/metric_category';
+import refreshSlice from './ReduxSlices/refreshSlice';
+import stepSlice from './ReduxSlices/stepSlice';
 
 export const store = configureStore({
   reducer: {
-    darkMode: darkModeSlice,
+    auth: authSlice,
     company: companySlice,
     news: newsFormSlice,
     companyFinancial: companyFinancialSlice,
+    metricCategory: MetricCategorySlice,
+    refresh: refreshSlice,
+    steps: stepSlice,
   },
 });
 

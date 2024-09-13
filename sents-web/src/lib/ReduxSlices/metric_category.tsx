@@ -1,23 +1,24 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import {
-  addFinancialMetric,
-  addFinancialDataCategory,
-} from '@/services/apis/companies';
+
+import { addFinancialMetric, addFinancialDataCategory } from '@/utils/apiClient';
+import { getAllFinancialMetrics, getAllFinancialDataCategories } from '@/utils/apiClient';
 
 // Async actions
-export const addMetric = createAsyncThunk(
-  'company/addMetric',
-  async (metricData: any) => {
-    return await addFinancialMetric(metricData);
-  },
-);
+export const addMetric = createAsyncThunk('company/addMetric', async (metricData: any) => {
+  return await addFinancialMetric(metricData);
+});
 
-export const addCategory = createAsyncThunk(
-  'company/addCategory',
-  async (categoryData: any) => {
-    return await addFinancialDataCategory(categoryData);
-  },
-);
+export const addCategory = createAsyncThunk('company/addCategory', async (categoryData: any) => {
+  return await addFinancialDataCategory(categoryData);
+});
+
+export const fetchMetrics = createAsyncThunk('company/fetchMetrics', async () => {
+  return await getAllFinancialMetrics();
+});
+
+export const fetchCategories = createAsyncThunk('company/fetchCategories', async () => {
+  return await getAllFinancialDataCategories();
+});
 
 // Initial state
 const initialState = {
@@ -31,12 +32,12 @@ const initialState = {
 
 // Slice
 const companySlice = createSlice({
-  name: 'company',
+  name: 'metric_category',
   initialState,
   reducers: {},
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(addMetric.pending, state => {
+      .addCase(addMetric.pending, (state) => {
         state.isLoading = 'loading';
       })
       .addCase(addMetric.fulfilled, (state, action: PayloadAction<any>) => {
@@ -47,7 +48,7 @@ const companySlice = createSlice({
         state.isLoading = 'idle';
         state.error = action.payload;
       })
-      .addCase(addCategory.pending, state => {
+      .addCase(addCategory.pending, (state) => {
         state.isLoading = 'loading';
       })
       .addCase(addCategory.fulfilled, (state, action: PayloadAction<any>) => {
@@ -57,6 +58,12 @@ const companySlice = createSlice({
       .addCase(addCategory.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = 'idle';
         state.error = action.payload;
+      })
+      .addCase(fetchMetrics.fulfilled, (state, action: PayloadAction<any>) => {
+        state.metricList = action.payload;
+      })
+      .addCase(fetchCategories.fulfilled, (state, action: PayloadAction<any>) => {
+        state.categoryList = action.payload;
       });
   },
 });

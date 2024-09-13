@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '@fontsource/urbanist';
+
+@font-face {
+  font-family: 'Unigeo64';
+  src: url('../fonts/Unigoe/Unigeo64-Bold-trial.ttf') format('truetype');
+}
+
+html {
+  height: -webkit-fill-available;
+}
+
+body,
+html {
+  height: 100dvh;
+  height: -webkit-fill-available;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Urbanist', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #4a4d56;
+  background-color: #f8f8fa;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1630px;
+  padding-right: 16px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 8px 0 8px;
+  }
+}
+
+.Unigoe-font {
+  font-family: 'Unigeo64';
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+h4 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+h5 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+h6 {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+/**
+  * React Select
+  */
+
+.react-select__control.css-13cymwt-control {
+  background: none;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 0;
+  cursor: pointer;
+  border: 1px solid #8d9d93;
+  border-radius: 12px;
+}
+
+.react-select__control {
+  overflow-y: auto;
+  position: relative;
+  max-height: 38px;
+  // focus within
+  &:focus-within {
+    border: 1px solid #8d9d93;
+    box-shadow: none;
+    border-radius: 12px;
+  }
+}
+
+.react-select__indicators {
+  padding: 0 10px;
+}
+
+.react-select__indicator-separator {
+  display: none;
+}
+
+.react-select__dropdown-indicator {
+  svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+.react-select__menu.css-1nmdiq5-menu {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.react-select__single-value.css-1dimb5e-singleValue {
+  color: #afafaf;
+}
+
+.react-select__menu-list.css-1n6sfyn-MenuList {
+  position: absolute;
+  top: 43px;
+  max-height: 200px;
+  width: max-content;
+  background-color: #e6eeea;
+  border: none;
+  border-radius: 12px;
+  margin-top: -45px;
+  text-align: left;
+}
+
+/**
+  Custom loader
+*/
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #148c59;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Customized scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  max-height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #148c59; /* Color of the scrollbar thumb */
+  border-radius: 6px; /* Rounded corners for the scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #148c5af1; /* Color of the scrollbar thumb on hover */
+}

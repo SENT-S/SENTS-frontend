@@ -1,46 +1,39 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import MainLayout from '@/layouts';
-import Stepper from '@/components/ui/Stepper';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useCallback } from 'react';
+
+import Step_1 from './_steps/step_1';
+import Step_2 from './_steps/step_2';
+
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import {
-  getAllFinancialDataCategories,
-  getAllFinancialMetrics,
-} from '@/services/apis/companies';
-
-const Step_1 = dynamic(() => import('./_steps/step_1'));
-const Step_2 = dynamic(() => import('./_steps/step_2'));
+import Stepper from '@/components/ui/Stepper';
+import MainLayout from '@/layouts';
+import { fetchMetrics, fetchCategories } from '@/lib/ReduxSlices/metric_category';
+import { useSelector, useDispatch } from '@/lib/utils';
 
 const steps = ['Step 1', 'Step 2'];
 
-const fetchFinancialData = async () => {
-  const [categoriesRes, metricsRes] = await Promise.all([
-    getAllFinancialDataCategories(),
-    getAllFinancialMetrics(),
-  ]);
-
-  return { categories: categoriesRes, metrics: metricsRes.data };
-};
-
 const AddCompanyPage = () => {
-  const [step, setStep] = useState(1);
-  const [category, setCategory] = useState([]);
-  const [metrics, setMetrics] = useState([]);
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const financialMetrics = useSelector<any>((state) => state.metricCategory.metricList);
+  const financialDataCategories = useSelector<any>((state) => state.metricCategory.categoryList);
+  const step = useSelector<any>((state) => state.steps.step);
+
+  const fetchMetricsAndCategories = useCallback(() => {
+    dispatch(fetchMetrics());
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   useEffect(() => {
-    fetchFinancialData().then(({ categories, metrics }) => {
-      setCategory(categories);
-      setMetrics(metrics);
-    });
-  }, []);
+    fetchMetricsAndCategories();
+  }, [fetchMetricsAndCategories]);
 
   return (
     <MainLayout>
@@ -48,9 +41,19 @@ const AddCompanyPage = () => {
         <Breadcrumb className="bg-white rounded-md shadow-md p-4 dark:bg-[#39463E80]">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard" className="text-green-600">
+              <div
+                role="button"
+                tabIndex={0}
+                className="text-green-600 cursor-pointer"
+                onClick={() => router.push('/dashboard')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    router.push('/dashboard');
+                  }
+                }}
+              >
                 Dashboard
-              </BreadcrumbLink>
+              </div>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -63,9 +66,12 @@ const AddCompanyPage = () => {
         <Stepper currentStep={step} steps={steps} />
 
         {/* Display steps */}
-        {step === 1 && <Step_1 setStep={setStep} step={step} />}
+        {step === 1 && <Step_1 />}
         {step === 2 && (
-          <Step_2 setStep={setStep} category={category} metrics={metrics} />
+          <Step_2
+            category={financialDataCategories?.data || financialDataCategories}
+            metrics={financialMetrics}
+          />
         )}
       </div>
     </MainLayout>

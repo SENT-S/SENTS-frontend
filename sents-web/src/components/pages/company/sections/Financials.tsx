@@ -1,0 +1,432 @@
+import html2canvas from 'html2canvas';
+import { useTheme } from 'next-themes';
+import React, { useState, useEffect, useRef } from 'react';
+import { IoChevronBackOutline } from 'react-icons/io5';
+import { PiMicrosoftExcelLogoDuotone } from 'react-icons/pi';
+import { TooltipProps } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { toast } from 'sonner';
+import * as XLSX from 'xlsx';
+
+import SubNav from '@/components/admin/Navs/SubNav';
+import { Button } from '@/components/ui/button';
+import CustomPagination from '@/components/ui/customPagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import getCurrencySymbol from '@/hooks/getCurrencySymbol';
+import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
+import { formatData } from '@/hooks/tableFunctions';
+
+// Define types for better type checking
+type FormattedMetric = {
+  metrics: string;
+  [key: string]: string | number;
+};
+
+type TableData = {
+  [key: string]: FormattedMetric[];
+};
+
+const CustomBar = (props: any) => {
+  const { fill, x, y, width, height } = props;
+
+  return (
+    <path
+      d={`M${x},${y + height} 
+         H${x + width} 
+         V${y + 10} 
+         Q${x + width},${y} ${x + width - 10},${y} 
+         H${x + 10} 
+         Q${x},${y} ${x},${y + 10} 
+         Z`}
+      fill={fill}
+    />
+  );
+};
+
+const CustomTooltip: React.FC<TooltipProps<any, any>> = ({ active, payload, label }) => {
+  const { theme } = useTheme(); // Assuming you're using a theme context
+
+  if (active && payload && payload.length) {
+    return (
+      <div className={`tooltip p-3 ${theme === 'dark' ? 'text-white bg-gray-800' : 'bg-white '}`}>
+        <p className="label">{`${label} : ${payload[0].value}`}</p>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+const Financials = ({
+  data,
+  financialData,
+  category,
+}: {
+  data: any;
+  financialData: any[];
+  category: any[];
+}) => {
+  const { theme } = useTheme();
+  const chartRef = useRef(null);
+  const [barWidth, setBarWidth] = useState(60);
+  const [selectedLink, setSelectedLink] = useState<string>('Financial Summary');
+  const [selectedMetric, setSelectedMetric] = useState<FormattedMetric | null>(null);
+  const currentYear = new Date().getFullYear();
+  const yearRanges = getYearRanges();
+
+  const chartYears = Array.from({ length: 5 }, (_, i) => `${currentYear - i - 1}`).reverse();
+
+  const [yearRange, setYearRange] = useState(yearRanges[0]);
+  const [newYears, setNewYears] = useState<string[]>([]);
+
+  const categoryList = Array.isArray(category)
+    ? category.map((item: any) => ({
+        value: item.id,
+        label: item.category_name,
+      }))
+    : [];
+
+  useEffect(() => {
+    const rangeYears = getRangeYears(yearRange);
+    setNewYears(rangeYears);
+  }, [yearRange]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setBarWidth(window.innerWidth < 768 ? 10 : 60);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Call the function initially
+    handleResize();
+
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const TableData: TableData = {
+    'Financial Summary': formatData(financialData['Financial Summary' as any]),
+    'Profit & Loss': formatData(financialData['Profit & Loss' as any]),
+    'Balance Sheet': formatData(financialData['Balance Sheet' as any]),
+    'Cashflow Statement': formatData(financialData['Cashflow Statement' as any]),
+    'Financial Analysis': formatData(financialData['Financial Analysis' as any]),
+  };
+
+  const selectedData = TableData[selectedLink];
+
+  const handleViewChart = (item: FormattedMetric) => {
+    setSelectedMetric(item);
+  };
+
+  const handleSelectMetric = (metricName: string) => {
+    const selectedMetric = selectedData.find((item) => item.metrics === metricName);
+    if (selectedMetric) {
+      setSelectedMetric(selectedMetric);
+    } else {
+      console.error(`Metric ${metricName} not found`);
+    }
+  };
+
+  const chartData = selectedMetric
+    ? newYears.map((year, index) => {
+        const value = selectedMetric[year];
+        // Check if the value is a percentage
+        if (typeof value === 'string' && value.endsWith('%')) {
+          // Remove the '%' sign and convert to a number
+          return {
+            name: chartYears[index],
+            value: parseFloat(value.slice(0, -1)),
+          };
+        } else {
+          return { name: chartYears[index], value: Number(value) };
+        }
+      })
+    : [];
+
+  const exportChartAsImage = async () => {
+    if (chartRef.current) {
+      const canvas = await html2canvas(chartRef.current, { useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = imgData;
+      link.download = `${data?.company_name && data.company_name}-${selectedLink}.png`;
+      link.click();
+
+      // Display a success message
+      toast.success('Chart exported successfully', {
+        position: 'top-right',
+      });
+    } else {
+      console.error('Chart not found');
+    }
+  };
+
+  const exportTableAsExcel = () => {
+    // Check if data is available
+    if (!selectedData || !data?.company_name) {
+      toast.error('No data available to export', {
+        position: 'top-right',
+      });
+      return;
+    }
+
+    // Display a success message
+    toast.success('Data exported successfully', {
+      position: 'top-right',
+    });
+
+    // Create a new workbook and a new worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(selectedData);
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    // Generate the filename
+    const filename = `${data.company_name}-${selectedLink}.xlsx`;
+
+    // Write the workbook to a file
+    XLSX.writeFile(wb, filename);
+  };
+
+  return (
+    <div className="space-y-8 w-full">
+      <div>
+        <h1 className="text-2xl font-semibold">{data?.company_name && data.company_name}</h1>
+        <h2 className="text-xl font-thin mb-2">{data?.stock_symbol && data.stock_symbol}</h2>
+        <span className="font-semibold text-lg">Yearly Financials</span>
+      </div>
+
+      {!selectedMetric ? (
+        <div className="space-y-5">
+          {/* subNav */}
+          <SubNav
+            links={categoryList.map((item: any) => item.label)}
+            selectedLink={selectedLink}
+            setSelectedLink={setSelectedLink}
+            bgColor={true}
+          />
+
+          {selectedData && selectedData.length > 0 && (
+            <div className="flex justify-between gap-3 items-center">
+              <div>
+                <Select onValueChange={(value) => setYearRange(value)} defaultValue={yearRanges[0]}>
+                  <SelectTrigger className="rounded-2xl p-2 md:p-4 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
+                    <SelectValue placeholder="Range" className="text-center w-full">
+                      {yearRange}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
+                    {yearRanges.map((range, index) => (
+                      <SelectItem key={index} value={range}>
+                        {range}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                className="bg-green-600 text-white hover:bg-green-700"
+                onClick={() => {
+                  exportTableAsExcel();
+                }}
+              >
+                <PiMicrosoftExcelLogoDuotone className="mr-2" size={20} />
+                Excel
+              </Button>
+            </div>
+          )}
+          <CustomPagination
+            items={selectedData}
+            itemsPerPage={10}
+            render={(currentItems) => (
+              <div className="relative shadow-md rounded-2xl w-full h-auto">
+                <Table className="min-w-full text-black dark:text-white bg-[#1EF1A5]">
+                  <TableHeader>
+                    <TableRow className="text-black font-semibold">
+                      <TableHead className="w-1/6 py-2">Metrics</TableHead>
+                      {newYears.map((year) => (
+                        <TableHead key={year} className="w-[13%] py-2">
+                          {year}
+                        </TableHead>
+                      ))}
+                      <TableHead className="w-1/3 py-2">Chart</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody className="bg-white dark:bg-[#39463E]">
+                    {currentItems.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="py-8 text-center">
+                          No Financial Data Available
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      currentItems.map(
+                        (item: { [key: string]: string | number }, index: number) => (
+                          <TableRow
+                            key={index}
+                            className={`
+            ${index === currentItems.length - 1 ? 'rounded-b-xl' : ''}
+            hover:bg-[#E6F6F0] dark:hover:bg-[#8D9D9380] cursor-pointer
+          `}
+                          >
+                            <TableCell
+                              className="py-2"
+                              style={{
+                                width: 'max-content',
+                                minWidth: '180px',
+                              }}
+                            >
+                              {item.metrics}
+                            </TableCell>
+                            {newYears.map((year) => (
+                              <TableCell key={year} className="flex-grow py-2">
+                                {isNaN(Number(item[year])) || Number(item[year]) === 0
+                                  ? '__'
+                                  : Number(item[year]).toLocaleString('en-US', {
+                                      style: 'currency',
+                                      currency: getCurrencySymbol(data?.company_country),
+                                    })}
+                              </TableCell>
+                            ))}
+                            <TableCell
+                              className="py-2"
+                              style={{
+                                width: 'max-content',
+                                minWidth: '120px',
+                              }}
+                            >
+                              <button
+                                onClick={() => handleViewChart(item as FormattedMetric)}
+                                className="text-[#148C59] z-50"
+                              >
+                                view chart
+                              </button>
+                            </TableCell>
+                          </TableRow>
+                        ),
+                      )
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          />
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-between items-center">
+            <Button
+              variant="outline"
+              size="icon"
+              className="ml-3"
+              onClick={() => setSelectedMetric(null)}
+            >
+              <IoChevronBackOutline />
+            </Button>
+            <Button
+              className="bg-green-600 text-white hover:bg-green-700"
+              onClick={() => {
+                exportChartAsImage();
+              }}
+            >
+              Export
+            </Button>
+          </div>
+          <div className="p-4 bg-[#F8FAF9] dark:text-white dark:bg-[#39463E] w-auto rounded-2xl shadow">
+            <div className="flex justify-end">
+              <Select onValueChange={handleSelectMetric}>
+                <SelectTrigger className="w-[180px] rounded-full flex justify-around border-none dark:text-white bg-[#E6F6F0] dark:bg-[#8D9D93]">
+                  <SelectValue placeholder="Select Metric" className="text-center w-full" />
+                </SelectTrigger>
+                <SelectContent className="z-50 bg-[#E6F6F0] rounded-xl">
+                  {selectedData.map((item, index) => (
+                    <SelectItem key={index} value={item.metrics}>
+                      {item.metrics}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="overflow-x-auto md:overflow-visible">
+              <div
+                className={`py-2 w-auto ${theme === 'dark' ? 'bg-[#39463E] text-white' : ''}`}
+                ref={chartRef}
+              >
+                <div className="w-full px-3 md:px-6">
+                  <div className="flex flex-col justify-start">
+                    <h2 className="text-[#9291A5] font-normal text-[18px]">Chart</h2>
+                    <h1 className="font-semibold text-[22px]">{selectedMetric?.metrics}</h1>
+                  </div>
+                  <div className="mb-8">
+                    <Separator className="my-4 h-[1px] w-full dark:bg-[#E6EEEA]" />
+                  </div>
+                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData} className="-ml-3 md:-ml-0">
+                    <CartesianGrid strokeDasharray="6 6" vertical={false} />
+                    <XAxis
+                      dataKey="name"
+                      strokeWidth={1}
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{
+                        fill: theme === 'dark' ? 'white' : '#615E83',
+                        dy: 10,
+                      }}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: theme === 'dark' ? 'white' : '#615E83' }}
+                      tickFormatter={(value) => {
+                        if (value >= 1e18) {
+                          return Math.round(value / 1e18) + ' ' + 'Qi';
+                        } else if (value >= 1e15) {
+                          return Math.round(value / 1e15) + ' ' + 'Qa';
+                        } else if (value >= 1e12) {
+                          return Math.round(value / 1e12) + ' ' + 'T';
+                        } else if (value >= 1e9) {
+                          return Math.round(value / 1e9) + ' ' + 'B';
+                        } else if (value >= 1e6) {
+                          return Math.round(value / 1e6) + ' ' + 'M';
+                        } else if (value >= 1e3) {
+                          return Math.round(value / 1e3) + ' ' + 'K';
+                        } else {
+                          return value;
+                        }
+                      }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Bar dataKey="value" fill="#148C59" barSize={barWidth} shape={<CustomBar />} />
+                  </BarChart>
+                </ResponsiveContainer>
+                <div className="text-center mt-4 text-sm">
+                  © {currentYear} Sents. All rights reserved.
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Financials;

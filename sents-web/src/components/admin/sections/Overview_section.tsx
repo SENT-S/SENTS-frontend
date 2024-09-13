@@ -1,17 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { HiOutlineUsers } from 'react-icons/hi2';
 import { HiOutlineUser } from 'react-icons/hi2';
 import { MdOutlineDateRange } from 'react-icons/md';
 import { MdOutlineWebAsset } from 'react-icons/md';
 import { ScaleLoader } from 'react-spinners';
+import { toast } from 'sonner';
 
-const Overview_section = ({ companyData, companyID, isLoading }: any) => {
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { startRefresh } from '@/lib/ReduxSlices/refreshSlice';
+import { useDispatch } from '@/lib/utils';
+import { updateCompanyDetails } from '@/utils/apiClient';
+
+interface CompanyData {
+  about_company: string;
+  mission_statement: string;
+  vision_statement: string;
+  ceo: string;
+  number_of_employees: number;
+  year_founded: number;
+  website_url: string;
+}
+
+const Overview_section = ({ companyData, companyID }: any) => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<CompanyData>({
     about_company: '',
     mission_statement: '',
     vision_statement: '',
@@ -22,31 +39,65 @@ const Overview_section = ({ companyData, companyID, isLoading }: any) => {
   });
 
   useEffect(() => {
-    setFormState({
-      about_company: companyData?.about_company,
-      mission_statement: companyData?.mission_statement,
-      vision_statement: companyData?.vision_statement,
-      ceo: companyData?.ceo,
-      number_of_employees: companyData?.number_of_employees,
-      year_founded: companyData?.year_founded,
-      website_url: companyData?.website_url,
-    });
+    if (companyData) {
+      setFormState({
+        about_company: companyData.about_company || '',
+        mission_statement: companyData.mission_statement || '',
+        vision_statement: companyData.vision_statement || '',
+        ceo: companyData.ceo || '',
+        number_of_employees: companyData.number_of_employees || 0,
+        year_founded: companyData.year_founded || 0,
+        website_url: companyData.website_url || '',
+      });
+    }
   }, [companyData]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+      setFormState((prevState) => ({
+        ...prevState,
+        [name]: name === 'number_of_employees' || name === 'year_founded' ? Number(value) : value,
+      }));
+    },
+    [],
+  );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(formState);
-  };
+  const isFormChanged = useMemo(() => {
+    return Object.keys(formState).some(
+      (key) => formState[key as keyof CompanyData] !== companyData[key as keyof CompanyData],
+    );
+  }, [formState, companyData]);
 
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!isFormChanged) {
+        toast.info('No changes detected', { position: 'top-center' });
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await updateCompanyDetails([
+          { ...formState, company_id: Number(companyID) },
+        ]);
+        if (response.status === 200) {
+          toast.success('Company details updated successfully', { position: 'top-center' });
+          dispatch(startRefresh());
+        } else {
+          throw new Error('An error occurred, please try again');
+        }
+      } catch (error: any) {
+        toast.error(error.message || 'An error occurred, please try again', {
+          position: 'top-center',
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch, formState, companyID, isFormChanged],
+  );
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">Overview</h1>

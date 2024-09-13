@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 
 function News_section({ companyID }: { companyID: any }) {
