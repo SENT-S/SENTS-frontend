@@ -7,6 +7,8 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import Loading from './loading';
+
 import { CustomSession } from '@/utils/types';
 
 interface ProviderProps {
@@ -38,7 +40,6 @@ const AppProvider = ({ children, themeProps }: ProviderProps) => {
   // Handle session and token expiration
   useEffect(() => {
     if (status === 'loading') {
-      // Optionally, show a loading state here
       return;
     }
 
@@ -85,7 +86,7 @@ const AppProvider = ({ children, themeProps }: ProviderProps) => {
   }, [session, toastShown, pathname]);
 
   // Prevent rendering until the component is mounted and session is loaded
-  if (!mounted || status === 'loading') return null;
+  if (!mounted || status === 'loading') return <Loading />;
 
   return <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>;
 };
