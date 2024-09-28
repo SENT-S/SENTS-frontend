@@ -44,7 +44,6 @@ const Header: React.FC = () => {
     setLoading(true);
     await signOut({ redirect: true, callbackUrl: '/login_register' });
     setLoading(false);
-    localStorage.clear();
   }, []);
 
   const toggleTheme = useCallback(() => {
