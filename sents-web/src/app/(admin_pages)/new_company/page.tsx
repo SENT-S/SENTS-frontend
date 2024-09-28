@@ -38,7 +38,7 @@ const AddCompanyPage = () => {
   return (
     <MainLayout>
       <div className="space-y-8 mt-4 text-center">
-        <Breadcrumb className="bg-white rounded-md shadow-md p-4 dark:bg-[#39463E80]">
+        <Breadcrumb className="bg-white rounded-md shadow-sm p-4 dark:bg-[#39463E80]">
           <BreadcrumbList>
             <BreadcrumbItem>
               <div

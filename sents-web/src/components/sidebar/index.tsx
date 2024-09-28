@@ -66,7 +66,6 @@ const SideBar = () => {
         redirect: false,
         callbackUrl: '/login_register',
       });
-      localStorage.clear();
       router.push(response.url);
     } finally {
       setLoading(false);
