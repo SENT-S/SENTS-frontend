@@ -1,12 +1,9 @@
 import React, { useCallback } from 'react';
-import { HiOutlineUsers } from 'react-icons/hi2';
-import { HiOutlineUser } from 'react-icons/hi2';
-import { MdOutlineDateRange } from 'react-icons/md';
-import { MdOutlineWebAsset } from 'react-icons/md';
+import { HiOutlineUsers, HiOutlineUser } from 'react-icons/hi2';
+import { MdOutlineDateRange, MdOutlineWebAsset } from 'react-icons/md';
 
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { TextAreaField, IconInputField } from '../components';
+
 import { updateCompanyField } from '@/lib/ReduxSlices/create_company';
 import { useDispatch, useSelector } from '@/lib/utils';
 
@@ -15,107 +12,76 @@ const Section_2 = () => {
   const companyFields = useSelector((state) => state.company);
 
   const handleInputChange = useCallback(
-    (field: any, value: any) => {
+    (field: any, value: string) => {
       dispatch(updateCompanyField({ field, value }));
     },
     [dispatch],
   );
 
   return (
-    <div>
+    <div className="space-y-8">
       <h2 className="text-[#0D4222] text-center dark:text-[#E6F6F0]">Overview</h2>
 
-      <div className="space-y-8">
-        <div className="space-y-3">
-          <div className="text-left text-[#0D4222] dark:text-gray-300">
-            <Label className="text-2xl font-medium">About</Label>
-          </div>
-          <Textarea
-            value={companyFields.about_company}
-            onChange={(e) => handleInputChange('about_company', e.target.value)}
-            placeholder="About"
-            className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <div className="space-y-3">
-            <div className="text-left text-[#0D4222] dark:text-gray-300">
-              <Label className="text-2xl font-medium">Mission Statement</Label>
-            </div>
-            <Textarea
-              value={companyFields.mission_statement}
-              onChange={(e) => handleInputChange('mission_statement', e.target.value)}
-              placeholder="Mission Statement"
-              className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-            />
-          </div>
-          <div className="space-y-3">
-            <div className="text-left text-[#0D4222] dark:text-gray-300">
-              <Label className="text-2xl font-medium">Vision Statement</Label>
-            </div>
-            <Textarea
-              value={companyFields.vision_statement}
-              onChange={(e) => handleInputChange('vision_statement', e.target.value)}
-              placeholder="Vision Statement"
-              className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <div className="space-y-3">
-            <div className="flex items-center text-[#0D4222] dark:text-gray-300">
-              <HiOutlineUser size={20} className="mr-2" />
-              <Label className="text-2xl font-medium">CEO</Label>
-            </div>
-            <Input
-              value={companyFields.ceo}
-              onChange={(e) => handleInputChange('ceo', e.target.value)}
-              placeholder="Enter CEO Name"
-              className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-            />
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center text-[#0D4222] dark:text-gray-300">
-              <HiOutlineUsers size={20} className="mr-2" />
-              <Label className="text-2xl font-medium">Employees</Label>
-            </div>
-            <Input
-              type="number"
-              value={companyFields.number_of_employees}
-              onChange={(e) => handleInputChange('number_of_employees', e.target.value)}
-              placeholder="Enter Number of Employees"
-              className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <div className="space-y-3">
-            <div className="flex items-center text-[#0D4222] dark:text-gray-300">
-              <MdOutlineDateRange size={20} className="mr-2" />
-              <Label className="text-2xl font-medium">Founded</Label>
-            </div>
-            <Input
-              type="number"
-              value={companyFields.year_founded}
-              onChange={(e) => handleInputChange('year_founded', e.target.value)}
-              placeholder="Enter Founded Year"
-              className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-            />
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center text-[#0D4222] dark:text-gray-300">
-              <MdOutlineWebAsset size={20} className="mr-2" />
-              <Label className="text-2xl font-medium">Website</Label>
-            </div>
-            <Input
-              type="url"
-              value={companyFields.website_url}
-              onChange={(e) => handleInputChange('website_url', e.target.value)}
-              placeholder="Enter Website"
-              className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
-            />
-          </div>
-        </div>
+      {/* About Company */}
+      <TextAreaField
+        value={companyFields.about_company}
+        placeholder="About"
+        label="About"
+        onChange={(value) => handleInputChange('about_company', value)}
+      />
+
+      {/* Mission & Vision Statements */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <TextAreaField
+          value={companyFields.mission_statement}
+          placeholder="Mission Statement"
+          label="Mission Statement"
+          onChange={(value) => handleInputChange('mission_statement', value)}
+        />
+        <TextAreaField
+          value={companyFields.vision_statement}
+          placeholder="Vision Statement"
+          label="Vision Statement"
+          onChange={(value) => handleInputChange('vision_statement', value)}
+        />
+      </div>
+
+      {/* CEO & Employees */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <IconInputField
+          value={companyFields.ceo}
+          placeholder="Enter CEO Name"
+          label="CEO"
+          icon={<HiOutlineUser size={20} />}
+          onChange={(value) => handleInputChange('ceo', value)}
+        />
+        <IconInputField
+          value={String(companyFields.number_of_employees)}
+          placeholder="Enter Number of Employees"
+          label="Employees"
+          type="number"
+          icon={<HiOutlineUsers size={20} />}
+          onChange={(value) => handleInputChange('number_of_employees', value)}
+        />
+      </div>
+      {/* Founded & Website */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <IconInputField
+          value={String(companyFields.year_founded)}
+          placeholder="Enter Founded Year"
+          label="Founded"
+          type="number"
+          icon={<MdOutlineDateRange size={20} />}
+          onChange={(value) => handleInputChange('year_founded', value)}
+        />
+        <IconInputField
+          value={companyFields.website_url}
+          placeholder="Enter Website"
+          label="Website"
+          type="url"
+          icon={<MdOutlineWebAsset size={20} />}
+          onChange={(value) => handleInputChange('website_url', value)}
+        />
       </div>
     </div>
   );

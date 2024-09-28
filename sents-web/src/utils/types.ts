@@ -24,3 +24,11 @@ export interface CompanyType {
     sector_or_industry: string;
   }[];
 }
+
+export type Company = {
+  id: number;
+  company_name: string;
+  company_country: string;
+  stock_symbol: string;
+  sector_or_industry: string;
+};

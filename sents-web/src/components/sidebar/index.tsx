@@ -1,10 +1,11 @@
 'use client';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { IoIosLogOut } from 'react-icons/io';
 import { ScaleLoader } from 'react-spinners';
 
@@ -13,6 +14,32 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { UserLinks, AdminLinks } from '@/utils/Links';
 import { CustomSession } from '@/utils/types';
 
+// Memoized Link Button Component
+const LinkButton = React.memo(({ link, isActiveLink, isAdmin }: any) => {
+  const Icon = link.icon;
+
+  return (
+    <Button
+      type="button"
+      className={`flex w-full ${
+        isAdmin ? 'justify-between px-8 py-6' : 'justify-center px-8 py-9'
+      } items-center space-x-2 relative ${isActiveLink ? 'text-[#148c59]' : 'text-gray-400'}`}
+      disabled={link.disable}
+    >
+      <Link href={link.path} className={`${isAdmin ? 'flex items-center' : ''}`}>
+        <Icon
+          size={isAdmin ? 25 : 30}
+          className={isActiveLink ? 'text-[#148c59]' : 'text-gray-400'}
+        />
+        <span className={`${isAdmin ? 'ml-2' : 'hidden'}`}>{link.name}</span>
+      </Link>
+      {isActiveLink && <span className="absolute right-0 bg-[#148c59] rounded-l-md h-6 w-1"></span>}
+    </Button>
+  );
+});
+LinkButton.displayName = 'LinkButton';
+
+// Sidebar Component
 const SideBar = () => {
   const router = useRouter();
   const { data: session, status } = useSession() as {
@@ -23,20 +50,31 @@ const SideBar = () => {
   const pathname = usePathname();
   const isAdmin = session?.user?.role === 'ADMIN';
 
-  const isActive = (path: string) => {
-    return (pathname === '/' && path === '/dashboard') || pathname.includes(path);
-  };
+  // Determine active path
+  const isActive = useCallback(
+    (path: string) => {
+      return (pathname === '/' && path === '/dashboard') || pathname.includes(path);
+    },
+    [pathname],
+  );
 
+  // Handle logout
   const handleLogout = async () => {
     setLoading(true);
-    const response = await signOut({
-      redirect: false,
-      callbackUrl: '/login_register',
-    });
-    setLoading(false);
-    router.push(response.url);
-    localStorage.clear();
+    try {
+      const response = await signOut({
+        redirect: false,
+        callbackUrl: '/login_register',
+      });
+      localStorage.clear();
+      router.push(response.url);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Memoized Links to prevent re-renders
+  const links = useMemo(() => (isAdmin ? AdminLinks : UserLinks), [isAdmin]);
 
   return (
     <div className="hidden lg:flex flex-col w-56 h-full p-4 bg-transparent">
@@ -52,31 +90,14 @@ const SideBar = () => {
         <div className="relative">
           <div className="absolute left-[-114px] -bottom-16 shadow-sm bg-white dark:bg-[#39463E80] rounded-r-3xl py-4">
             {status !== 'loading'
-              ? (isAdmin ? AdminLinks : UserLinks).map((link, index) => {
-                  const Icon = link.icon;
-                  const isActiveLink = link.activePaths.some((path) => isActive(path));
-                  return (
-                    <Button
-                      key={index}
-                      type="button"
-                      className={`flex w-full ${isAdmin ? 'justify-between px-8 py-6' : 'justify-center px-8 py-9'} items-center space-x-2 relative ${
-                        isActiveLink ? 'text-[#148c59]' : 'text-gray-400'
-                      } `}
-                      disabled={link.disable}
-                    >
-                      <Link href={link.path} className={`${isAdmin ? 'flex items-center' : ''}`}>
-                        <Icon
-                          size={isAdmin ? 25 : 30}
-                          className={isActiveLink ? 'text-[#148c59]' : 'text-gray-400'}
-                        />
-                        <span className={`${isAdmin ? 'ml-2' : 'hidden'}`}>{link.name}</span>
-                      </Link>
-                      {isActiveLink && (
-                        <span className="absolute right-0 bg-[#148c59] rounded-l-md h-6 w-1"></span>
-                      )}
-                    </Button>
-                  );
-                })
+              ? links.map((link, index) => (
+                  <LinkButton
+                    key={index}
+                    link={link}
+                    isAdmin={isAdmin}
+                    isActiveLink={link.activePaths.some((path) => isActive(path))}
+                  />
+                ))
               : Array.from({ length: 4 }).map((_, index) => (
                   <li
                     key={index}
@@ -107,4 +128,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default React.memo(SideBar);

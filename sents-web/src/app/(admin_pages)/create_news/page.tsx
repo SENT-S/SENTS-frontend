@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { IoImageOutline } from 'react-icons/io5';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
@@ -20,8 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import MainLayout from '@/layouts';
 import { newsCategoryList } from '@/services/mockData/mock';
-import { addFinancialNews } from '@/utils/apiClient';
-import { getAllCompanies } from '@/utils/apiClient';
+import { addFinancialNews, getAllCompanies } from '@/utils/apiClient';
 import { CompanyType } from '@/utils/types';
 
 const Page = () => {
@@ -30,116 +29,86 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [newsImage, setNewsImage] = useState<File | null>(null);
-  const [countryList, setCountryList] = useState<{ label: string; value: any }[]>([]);
-  const [companyList, setCompanyList] = useState<{ label: string; value: any }[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
 
-  const handleCompaniesUpdate = useCallback((updatedCompanies: any) => {
-    setCompanies((prevCompanies) => {
-      if (JSON.stringify(prevCompanies) !== JSON.stringify(updatedCompanies)) {
-        return updatedCompanies;
+  // Fetch and set companies data
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const data = await getAllCompanies();
+        setCompanies(data);
+      } catch (error) {
+        console.error('Error fetching companies:', error);
+      } finally {
+        setIsLoading(false);
       }
-      return prevCompanies;
-    });
-    setIsLoading(false);
+    };
+    fetchCompanies();
   }, []);
 
-  useEffect(() => {
-    getAllCompanies()
-      .then((data) => handleCompaniesUpdate(data))
-      .catch((error) => console.error('Error fetching companies:', error));
-  }, [handleCompaniesUpdate]);
+  // Set country list from fetched companies
+  const countryList = Array.from(new Set(companies.map((company) => company.company_country))).map(
+    (country) => ({
+      label: country,
+      value: country,
+    }),
+  );
 
-  useEffect(() => {
-    const countries = companies.map((company) => ({
-      label: company.company_country,
-      value: company.company_country,
-    }));
-    setCountryList(countries);
-
-    if (countries.length > 0) {
-      setSelectedCountry((prevCountry) => prevCountry || countries[0].label);
-    }
-  }, [companies]);
-
-  useEffect(() => {
-    const filteredCompanies = companies.find(
-      (company) => company.company_country === selectedCountry,
-    );
-    if (filteredCompanies) {
-      const companiesList = filteredCompanies.list_of_companies.map((company) => ({
+  // Set company list based on selected country
+  const companyList = companies
+    .filter((company) => company.company_country === selectedCountry)
+    .flatMap((filteredCompany) =>
+      filteredCompany.list_of_companies.map((company) => ({
         label: company.company_name,
-        value: company.id,
-      }));
-      setCompanyList(companiesList);
-    }
-  }, [selectedCountry, companies]);
+        value: company.id.toString(),
+      })),
+    );
 
-  const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file change for news image
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
     setNewsImage(file);
-  }, []);
+  };
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  // Form submission handler
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-      const form = e.currentTarget;
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    formData.append('company', selectedCompany);
+    if (newsImage) formData.append('newsImage', newsImage);
 
-      // Ensure all FormData entries have values
-      for (const [key, value] of Object.entries(data)) {
-        if (!value) {
-          toast.info(`Please enter all required fields`, {
-            position: 'top-center',
-          });
-          return;
-        }
-      }
+    if (!selectedCountry || !selectedCompany || !selectedCategory) {
+      toast.info('Please enter all required fields', {
+        position: 'top-center',
+      });
+      return;
+    }
 
-      const selectedCompanyID = companyList.find(
-        (company) => company.label === selectedCompany,
-      )?.value;
+    setLoading(true);
+    try {
+      const response = await addFinancialNews(formData);
 
-      data.company = selectedCompanyID || '';
-
-      setLoading(true);
-
-      try {
-        const response = await addFinancialNews(data);
-
-        if (response.status === 201) {
-          form.reset();
-          setNewsImage(null);
-
-          toast.success('News added successfully', {
-            position: 'top-center',
-          });
-        } else {
-          const errors = response.error;
-          let errorMessage = '';
-          for (const key in errors) {
-            if (Object.prototype.hasOwnProperty.call(errors, key)) {
-              errors[key].forEach((error: string) => {
-                errorMessage += `${key}: ${error}\n`;
-              });
-            }
-          }
-          throw new Error(errorMessage);
-        }
-      } catch (error: any) {
-        toast.error(error.message || 'An error occurred', {
+      if (response.status === 201) {
+        form.reset();
+        setNewsImage(null);
+        toast.success('News added successfully', {
           position: 'top-center',
         });
-      } finally {
-        setLoading(false);
+      } else {
+        throw new Error('Failed to add news. Please check your inputs and try again.');
       }
-    },
-    [companyList, selectedCompany],
-  );
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred', {
+        position: 'top-center',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <MainLayout>
@@ -151,15 +120,7 @@ const Page = () => {
 
       {isLoading ? (
         <div className="space-y-4">
-          <div className="gap-4 flex">
-            {[...Array(2)].map((_, index) => (
-              <Skeleton
-                key={index}
-                className="w-full p-7 rounded-xl bg-slate-200 dark:bg-slate-800"
-              />
-            ))}
-          </div>
-          {[...Array(5)].map((_, index) => (
+          {[...Array(7)].map((_, index) => (
             <Skeleton
               key={index}
               className="w-full p-7 rounded-xl bg-slate-200 dark:bg-slate-800"
@@ -171,54 +132,44 @@ const Page = () => {
           <div className="flex gap-6 items-center">
             <Select
               onValueChange={(value) => setSelectedCountry(value)}
-              name="country"
               value={selectedCountry}
               defaultValue={selectedCountry}
             >
               <SelectTrigger className="rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
-                <SelectValue placeholder="Select Country" className="text-center w-full">
-                  {selectedCountry}
-                </SelectValue>
+                <SelectValue placeholder="Select Country" className="text-center w-full" />
               </SelectTrigger>
-              <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                {countryList.map((item, index) => (
-                  <SelectItem key={index} value={item.value}>
+              <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl" defaultValue={'Uganda'}>
+                {countryList.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
                     {item.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Select
-              onValueChange={(item) => {
-                setSelectedCompany(item);
-              }}
-              name="company"
+              onValueChange={setSelectedCompany}
               value={selectedCompany}
               defaultValue={selectedCompany}
             >
               <SelectTrigger className="rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
-                <SelectValue placeholder="Select Company" className="text-center w-full">
-                  {selectedCompany}
-                </SelectValue>
+                <SelectValue placeholder="Select Company" className="text-center w-full" />
               </SelectTrigger>
               <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-                {companyList.map((item: any) => (
-                  <SelectItem key={item.value} value={item.label}>
+                {companyList.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
                     {item.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          <Select onValueChange={(value) => setSelectedCategory(value)} name="news_category">
+          <Select onValueChange={setSelectedCategory} value={selectedCategory}>
             <SelectTrigger className="rounded-2xl p-7 flex justify-between border border-[#8D9D93] dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
-              <SelectValue placeholder="Select Category" className="text-center w-full">
-                {selectedCategory}
-              </SelectValue>
+              <SelectValue placeholder="Select Category" className="text-center w-full" />
             </SelectTrigger>
             <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
-              {newsCategoryList.map((item, index) => (
-                <SelectItem key={index} value={item.value}>
+              {newsCategoryList.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>
               ))}
@@ -253,12 +204,12 @@ const Page = () => {
               accept="image/*"
               id="fileUpload"
               name="newsImage"
-              className="w-full border-none hidden"
+              className="hidden"
               onChange={handleFileChange}
             />
             <Label
               htmlFor="fileUpload"
-              className="w-full flex justify-center items-center border-none cursor-pointer"
+              className="w-full flex justify-center items-center cursor-pointer"
             >
               {newsImage ? newsImage.name : 'Upload Image'}
               <IoImageOutline className="ml-2" size={18} />
