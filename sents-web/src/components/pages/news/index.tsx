@@ -105,6 +105,7 @@ function Index() {
   const handleSelectCountry = (value: string) => setSelectedCountry(value);
   const handleSelectCompany = (value: string) => setSelectedCompany(value);
   const handleCreateNews = () => router.push('/create_news');
+
   const handleDeleteNews = useCallback(async () => {
     setIsDeleting(true);
     try {
@@ -123,10 +124,12 @@ function Index() {
       setIsDeleting(false);
     }
   }, [dispatch, selectedIds]);
+
   const handleCancelDeleteNews = () => {
     setShowCheckbox(false);
     setSelectedIds([]);
   };
+
   const handleCheckboxChange = (id: string, checked: boolean) =>
     setSelectedIds((prev) =>
       checked ? [...prev, Number(id)] : prev.filter((newsId) => newsId !== Number(id)),

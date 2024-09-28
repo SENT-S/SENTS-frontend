@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoImageOutline } from 'react-icons/io5';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
@@ -32,6 +32,10 @@ const Page = () => {
   const [selectedCountry, setSelectedCountry] = useState('Uganda');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [newsUrl, setNewsUrl] = useState('');
+  const [newsSource, setNewsSource] = useState('');
+  const [newsTitle, setNewsTitle] = useState('');
+  const [newsSummary, setNewsSummary] = useState('');
 
   // Fetch and set companies data
   useEffect(() => {
@@ -76,28 +80,50 @@ const Page = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    formData.append('company', selectedCompany);
-    if (newsImage) formData.append('newsImage', newsImage);
-
-    if (!selectedCountry || !selectedCompany || !selectedCategory) {
+    if (
+      !selectedCountry ||
+      !selectedCompany ||
+      !selectedCategory ||
+      !newsUrl ||
+      !newsSource ||
+      !newsTitle ||
+      !newsSummary
+    ) {
       toast.info('Please enter all required fields', {
         position: 'top-center',
       });
       return;
     }
 
+    // Construct the data object
+    const data = {
+      country: selectedCountry,
+      company: parseInt(selectedCompany, 10), // Convert company ID to a number
+      news_category: selectedCategory,
+      link_to_news_page: newsUrl,
+      news_source: newsSource,
+      headline: newsTitle,
+      short_description: newsSummary,
+      newsImage,
+    };
+
     setLoading(true);
+    console.info('Data to be sent:', data);
     try {
-      const response = await addFinancialNews(formData);
+      const response = await addFinancialNews(data);
 
       if (response.status === 201) {
-        form.reset();
-        setNewsImage(null);
         toast.success('News added successfully', {
           position: 'top-center',
         });
+        // clear the state
+        setSelectedCompany('');
+        setSelectedCategory('');
+        setNewsUrl('');
+        setNewsSource('');
+        setNewsTitle('');
+        setNewsSummary('');
+        setNewsImage(null);
       } else {
         throw new Error('Failed to add news. Please check your inputs and try again.');
       }
@@ -138,7 +164,7 @@ const Page = () => {
               <SelectTrigger className="rounded-2xl p-7 flex justify-between border-none dark:text-white bg-[#E6EEEA] dark:bg-[#39463E] dark:border-[#39463E]">
                 <SelectValue placeholder="Select Country" className="text-center w-full" />
               </SelectTrigger>
-              <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl" defaultValue={'Uganda'}>
+              <SelectContent className="z-50 bg-[#E6EEEA] rounded-xl">
                 {countryList.map((item) => (
                   <SelectItem key={item.value} value={item.value}>
                     {item.label}
@@ -179,23 +205,31 @@ const Page = () => {
             type="url"
             name="link_to_news_page"
             placeholder="Enter News URL"
+            value={newsUrl}
+            onChange={(e) => setNewsUrl(e.target.value)}
             className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
           />
           <Input
             type="text"
             name="news_source"
             placeholder="Enter News Source"
+            value={newsSource}
+            onChange={(e) => setNewsSource(e.target.value)}
             className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
           />
           <Input
             type="text"
             name="headline"
             placeholder="Enter News Title"
+            value={newsTitle}
+            onChange={(e) => setNewsTitle(e.target.value)}
             className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-7 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
           />
           <Textarea
             name="short_description"
             placeholder="Enter News Summary"
+            value={newsSummary}
+            onChange={(e) => setNewsSummary(e.target.value)}
             className="w-full rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] h-[150px] max-h-[250px] dark:bg-[#39463E] dark:border-[#39463E] dark:text-white"
           />
           <div className="flex items-center rounded-2xl bg-[#E6EEEA] border border-[#8D9D93] p-4 dark:bg-[#39463E] dark:border-[#39463E] dark:text-white">
