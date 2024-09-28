@@ -19,11 +19,11 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => (
         </div>
         <main className="container flex-grow w-full space-y-8 bg-transparent">{children}</main>
         {/* trade mark */}
-        <div className="w-full flex justify-center items-center">
+        <footer className="w-full flex justify-center items-center py-4">
           <span className="text-sm text-gray-500">
             © {new Date().getFullYear()} Sents. All rights reserved.
           </span>
-        </div>
+        </footer>
       </div>
     </div>
   </div>

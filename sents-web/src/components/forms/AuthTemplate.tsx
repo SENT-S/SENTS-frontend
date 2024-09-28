@@ -19,6 +19,7 @@ import { Separator } from '@/components/ui/separator';
 import { registerUser } from '@/services/apis/registerUser';
 import { defaultSocialButtons } from '@/utils/Links';
 
+// Props type definition
 interface AuthTemplateProps {
   title: string;
   children: React.ReactNode;
@@ -27,6 +28,24 @@ interface AuthTemplateProps {
   formSchema: z.ZodSchema<any>;
   defaultValues?: any;
 }
+
+// Memoized Social Buttons Component
+const SocialButtons = React.memo(
+  ({ socialButtons }: { socialButtons: { id: string; icon: StaticImageData; name: string }[] }) => (
+    <div className="flex space-x-3 cursor-not-allowed">
+      {socialButtons.map((button) => (
+        <Button
+          key={button.id}
+          className="dark:bg-[#39463E80] hover:bg-[#148C5966] border border-[#148C5966] relative w-full"
+          disabled={true}
+        >
+          <Image src={button.icon} alt={button.name} width={25} height={25} />
+        </Button>
+      ))}
+    </div>
+  ),
+);
+SocialButtons.displayName = 'SocialButtons';
 
 const AuthTemplate = ({
   title,
@@ -44,58 +63,67 @@ const AuthTemplate = ({
     defaultValues,
   });
 
-  const onSubmit = useCallback(
+  // Handle Form Submission
+  const handleSubmit = useCallback(
     async (values: Record<string, any>) => {
       setLoading(true);
       try {
         if (title === 'Sign In') {
-          const res = await signIn('credentials', {
-            ...values,
-            redirect: false,
-          });
-
-          if (res?.ok) {
-            toast.success('Sign in successful, redirecting...', {
-              position: 'top-center',
-            });
-            form.reset();
-            router.push('/dashboard');
-          } else {
-            throw new Error(
-              `${res?.error}` || 'An error occurred during the process, please try again',
-            );
-          }
+          await handleSignIn(values);
         } else {
-          const response = await registerUser(values);
-
-          if (response?.status === 201) {
-            toast.success('Registration successful, redirecting...', {
-              position: 'top-center',
-            });
-            form.reset();
-
-            setTimeout(() => {
-              router.push('/success-register');
-            }, 500);
-          } else {
-            throw new Error(`${response?.message}` || 'An error occurred during the process');
-          }
+          await handleSignUp(values);
         }
       } catch (error: any) {
-        toast.error(`${error.message}` || 'An error occurred during the process', {
+        toast.error(error.message || 'An error occurred during the process', {
           position: 'top-center',
         });
       } finally {
         setLoading(false);
       }
     },
-    [title, form, router],
+    [title, router, form],
   );
+
+  // Sign In Handler
+  const handleSignIn = async (values: Record<string, any>) => {
+    const res = await signIn('credentials', {
+      ...values,
+      redirect: false,
+    });
+
+    if (res?.ok) {
+      toast.success('Sign in successful, redirecting...', {
+        position: 'top-center',
+      });
+      form.reset();
+      router.push('/dashboard');
+    } else {
+      throw new Error(res?.error || 'An error occurred during the process, please try again');
+    }
+  };
+
+  // Sign Up Handler
+  const handleSignUp = async (values: Record<string, any>) => {
+    const response = await registerUser(values);
+
+    if (response?.status === 201) {
+      toast.success('Registration successful, redirecting...', {
+        position: 'top-center',
+      });
+      form.reset();
+
+      setTimeout(() => {
+        router.push('/success-register');
+      }, 500);
+    } else {
+      throw new Error(response?.message || 'An error occurred during the process');
+    }
+  };
 
   return (
     <Card className="relative border-none shadow-none space-y-4 text-[#9C9AA5]">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <CardContent className="space-y-2 p-0">{children}</CardContent>
           <CardFooter className="p-0">
             <Button
@@ -114,17 +142,7 @@ const AuthTemplate = ({
           OR
         </span>
       </div>
-      <div className="flex space-x-3 cursor-not-allowed">
-        {socialButtons.map((button: any) => (
-          <Button
-            key={button.id}
-            className={`dark:bg-[#39463E80] hover:bg-[#148C5966] border border-[#148C5966] relative w-full`}
-            disabled={true}
-          >
-            <Image src={button.icon} alt={button.name} width={25} height={25} />
-          </Button>
-        ))}
-      </div>
+      <SocialButtons socialButtons={socialButtons} />
       <CardDescription className="text-center text-[10px]">
         By signing up to create an account I accept Company’s
         <Link href="/terms" className="text-black dark:text-[#1EF1A5] pl-2">
@@ -135,4 +153,4 @@ const AuthTemplate = ({
   );
 };
 
-export default AuthTemplate;
+export default React.memo(AuthTemplate);
