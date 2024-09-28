@@ -11,7 +11,6 @@ import LandingHeader from '../../header/Landing';
 import landingIllustration from '@/public/images/landingIllustration.png';
 import landingImage from '@/public/images/landingImage.png';
 import landingImage2 from '@/public/images/landingImage2.png';
-import { CustomSession } from '@/utils/types';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 50 },
@@ -20,13 +19,13 @@ const fadeInUp = {
 
 const Index = () => {
   const { data: session, status } = useSession() as {
-    data: CustomSession;
+    data: any;
     status: 'loading' | 'authenticated' | 'unauthenticated';
   };
 
   return (
     <div className="container relative mx-auto px-4 h-dvh flex flex-col">
-      <LandingHeader session={session} status={status} />
+      <LandingHeader session={session as any} status={status} />
       <main className="flex flex-col container justify-center md:justify-around flex-grow text-center">
         <motion.section
           initial="hidden"
