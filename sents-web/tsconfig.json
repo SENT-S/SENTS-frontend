@@ -41,7 +41,8 @@
     "src/app/api/auth/[...nextauth]/**/*.ts",
     "src/lib/**/*.ts",
     "src/utils/**/*.ts",
-    "src/services/**/*.ts"
+    "src/services/**/*.ts",
+    "global.d.ts"
   ],
   "exclude": ["node_modules"]
 }

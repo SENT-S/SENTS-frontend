@@ -4,8 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { GoPlusCircle } from 'react-icons/go';
 import { GrSubtractCircle } from 'react-icons/gr';
-import { MdDone } from 'react-icons/md';
-import { MdCancel } from 'react-icons/md';
+import { MdDone, MdCancel } from 'react-icons/md';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
@@ -33,14 +32,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import getCurrencySymbol from '@/hooks/getCurrencySymbol';
-import { formatData } from '@/hooks/tableFunctions';
-import { getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
+import { formatData, getYearRanges, getRangeYears } from '@/hooks/tableFunctions';
 import { addCompanyFinancialData, updateCompanyFinancialData } from '@/utils/apiClient';
 
 type Row = {
   metrics: string;
-  category: string[];
-  [key: string]: string | string[];
+  category: any[];
+  [key: string]: string | string[] | any;
 };
 
 interface FinancialSectionProps {
@@ -52,6 +50,181 @@ interface FinancialSectionProps {
   countryName: string;
   setRefresh: (value: boolean) => void;
 }
+
+function areArraysEqual(arr1: any[], arr2: any[]) {
+  if (arr1.length !== arr2.length) return false;
+  const sortedArr1 = [...arr1].sort();
+  const sortedArr2 = [...arr2].sort();
+  return sortedArr1.every((value, index) => value === sortedArr2[index]);
+}
+
+function findCommonCategories(row: any, categoryList: any[], FinancialData: any) {
+  if (!row || !row.metrics) {
+    return [];
+  }
+
+  if (row?.category && Array.isArray(row.category)) {
+    if (row.category.length > 0 && typeof row.category[0] === 'object') {
+      return row.category;
+    }
+    return row.category
+      .map((categoryId: any) => categoryList.find((category: any) => category.value === categoryId))
+      .filter(Boolean);
+  } else {
+    const commonCategories = [];
+    for (const category in FinancialData) {
+      if (FinancialData[category][row.metrics]) {
+        commonCategories.push(category);
+      }
+    }
+    return commonCategories
+      .map((commonCategory) => categoryList.find((item: any) => item.label === commonCategory))
+      .filter(Boolean);
+  }
+}
+
+const FinancialTable = ({
+  rows,
+  showEdit,
+  newYears,
+  metricsList,
+  categoryList,
+  handleInputChange,
+  handleSelectChange,
+  handleDelete,
+  countryName,
+  currentItems,
+  FinancialData,
+}: {
+  rows: Row[];
+  showEdit: boolean;
+  newYears: string[];
+  metricsList: any[];
+  categoryList: any[];
+  handleInputChange: any;
+  handleSelectChange: any;
+  handleDelete: any;
+  countryName: string;
+  currentItems: Row[];
+  FinancialData: any;
+}) => {
+  return (
+    <div className="shadow-sm rounded-2xl w-full h-auto relative">
+      <Table className="min-w-full overflow-hidden text-black dark:text-white">
+        <TableHeader className="bg-[#1EF1A5]">
+          <TableRow className="text-black text-lg font-bold">
+            <TableHead className="w-1/6 py-2 text-center">Metrics</TableHead>
+            {newYears.map((year) => (
+              <TableHead key={year} className="w-[13%] py-2 text-center">
+                {year}
+              </TableHead>
+            ))}
+            {showEdit && <TableHead className="w-1/6 py-2 text-center">Category</TableHead>}
+            {showEdit && <TableHead className="w-1/6 py-2 text-center">Clear</TableHead>}
+          </TableRow>
+        </TableHeader>
+
+        <TableBody className="bg-white dark:bg-[#39463E]">
+          {currentItems.length === 0 && !showEdit ? (
+            <TableRow>
+              <TableCell className="text-center" colSpan={newYears.length + 3}>
+                No Financial Data Available
+              </TableCell>
+            </TableRow>
+          ) : (
+            currentItems.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                <TableCell
+                  className="text-left"
+                  style={{ width: 'max-content', minWidth: '180px' }}
+                >
+                  {showEdit ? (
+                    <CustomSelect
+                      options={metricsList}
+                      onChange={(selectedOption: any) =>
+                        handleSelectChange(rowIndex, 'metrics', selectedOption.value)
+                      }
+                      defaultValue={
+                        metricsList.find(
+                          (item: any) =>
+                            item.label === row.metrics || item.value === Number(row.metrics),
+                        ) || null
+                      }
+                      placeholder="Select metrics..."
+                      className="w-auto"
+                    />
+                  ) : (
+                    metricsList.find(
+                      (item: any) =>
+                        item.label === row.metrics || item.value === Number(row.metrics),
+                    )?.label || '__'
+                  )}
+                </TableCell>
+
+                {newYears.map((year) => (
+                  <TableCell key={year} className="text-center">
+                    {showEdit ? (
+                      <Input
+                        type="text"
+                        value={row[year]}
+                        className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
+                        onChange={(e) => handleInputChange(e, rowIndex, year)}
+                      />
+                    ) : isNaN(Number(row[year])) || Number(row[year]) === 0 ? (
+                      '__'
+                    ) : (
+                      Number(row[year]).toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: getCurrencySymbol(countryName),
+                      })
+                    )}
+                  </TableCell>
+                ))}
+
+                {showEdit && (
+                  <TableCell className="text-center">
+                    <CustomSelect
+                      options={categoryList}
+                      multi
+                      onChange={(selectedOptions: any) =>
+                        handleSelectChange(rowIndex, 'category', selectedOptions)
+                      }
+                      defaultValue={
+                        row.category || findCommonCategories(row, categoryList, FinancialData)
+                      }
+                      placeholder="Category"
+                      className="w-auto"
+                    />
+                  </TableCell>
+                )}
+
+                {showEdit && (
+                  <TableCell className="flex justify-center">
+                    <ModalTemplate
+                      FormTitle="Are you sure you want to delete?"
+                      ButtonStyle="p-0 m-0"
+                      disabled
+                      Icon={
+                        <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-[#F96868] cursor-not-allowed">
+                          <GrSubtractCircle className="text-[#EA0000]" size={20} />
+                        </div>
+                      }
+                      onSubmit={() => handleDelete(rowIndex)}
+                      onCancel={() => null}
+                      SubmitText="Yes"
+                      CancelText="No"
+                      SubmitButtonStyle="bg-[#EA0000] hover:bg-[#ea0000e7]"
+                    />
+                  </TableCell>
+                )}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
 
 const Financial_section = ({
   financialStatements,
@@ -66,9 +239,8 @@ const Financial_section = ({
   const [showEdit, setShowEdit] = useState(false);
   const yearRanges = getYearRanges();
   const [yearRange, setYearRange] = useState(yearRanges[0]);
-  const [newYears, setNewYears] = useState<string[]>([]);
+  const newYears = useMemo(() => getRangeYears(yearRange), [yearRange]);
   const [isLoading, setIsLoading] = useState(false);
-  const [initialRows, setInitialRows] = useState<Row[]>([]);
   const [rows, setRows] = useState<Row[]>([]);
 
   const categoryList = useMemo(
@@ -89,11 +261,6 @@ const Financial_section = ({
     [metrics],
   );
 
-  useEffect(() => {
-    const rangeYears = getRangeYears(yearRange);
-    setNewYears(rangeYears);
-  }, [yearRange]);
-
   const TableData: any = useMemo(() => {
     return categoryList.reduce((acc: any, category: any) => {
       if (FinancialData && category.label in FinancialData) {
@@ -106,7 +273,6 @@ const Financial_section = ({
   useEffect(() => {
     const selectedData = TableData[selectedLink] || [];
     setRows(selectedData);
-    setInitialRows(selectedData);
   }, [selectedLink, TableData]);
 
   const getEmptyRow = useCallback(
@@ -116,8 +282,7 @@ const Financial_section = ({
         category: [categoryList.find((item: any) => item.label === selectedLink)],
       };
       years.forEach((year) => {
-        const actualYear = 'FY’' + year.slice(-2);
-        row[actualYear] = '';
+        row[year] = '';
       });
       return row;
     },
@@ -163,28 +328,40 @@ const Financial_section = ({
       setIsLoading(true);
 
       try {
-        const updatedRows = [] as any[];
-        const newRows = [] as any[];
+        const updatedRows: any[] = [];
+        const newRows: any[] = [];
 
         rows.forEach((row) => {
-          const { id, metrics, category, ...years } = row;
+          const { metrics, category, ...years } = row;
+
+          if (!metrics) {
+            // Skip processing this row as 'metrics' is empty or undefined
+            return;
+          }
+
           const metricId = metricsList.find(
             (item: any) => item.label === metrics || item.value === Number(metrics),
           )?.value;
 
-          // Handle the optional category field
+          if (!metricId) {
+            // Skip processing this row as 'metricId' could not be found
+            return;
+          }
+
           let selectedCategoryId: number[] = [];
           if (category && Array.isArray(category)) {
             selectedCategoryId = category.map((cat: any) => cat.value);
           } else {
-            // If category doesn't exist, use findCommonCategories
-            selectedCategoryId = findCommonCategories(row)
+            selectedCategoryId = findCommonCategories(row, categoryList, FinancialData)
               .map((item: any) => (item && item.value !== undefined ? item.value : item))
               .filter(Boolean);
           }
 
           const initialRow = TableData[selectedLink]?.find((r: Row) => r.metrics === metrics);
-          const initialCategories = findCommonCategories(initialRow);
+          let initialCategories: any[] = [];
+          if (initialRow) {
+            initialCategories = findCommonCategories(initialRow, categoryList, FinancialData);
+          }
           const initialCategoryIds = initialCategories.map((cat: any) => cat.value);
           const categoryChanged = !areArraysEqual(selectedCategoryId, initialCategoryIds);
 
@@ -238,6 +415,7 @@ const Financial_section = ({
           position: 'bottom-right',
         });
       } catch (error: any) {
+        console.info(error);
         toast.error(error.message, {
           position: 'bottom-right',
         });
@@ -251,47 +429,14 @@ const Financial_section = ({
       companyID,
       TableData,
       selectedLink,
-      updateCompanyFinancialData,
-      addCompanyFinancialData,
+      categoryList,
+      FinancialData,
+      setRefresh,
     ],
   );
 
-  // Helper function to compare arrays
-  function areArraysEqual(arr1: any[], arr2: any[]) {
-    if (arr1.length !== arr2.length) return false;
-    const sortedArr1 = [...arr1].sort();
-    const sortedArr2 = [...arr2].sort();
-    return sortedArr1.every((value, index) => value === sortedArr2[index]);
-  }
-
-  function findCommonCategories(row: any) {
-    if (row?.category && Array.isArray(row.category)) {
-      // If category is already an array of objects, return it as is
-      if (row.category.length > 0 && typeof row.category[0] === 'object') {
-        return row.category;
-      }
-      // If category is an array of IDs, convert them to objects
-      return row.category
-        .map((categoryId: any) =>
-          categoryList.find((category: any) => category.value === categoryId),
-        )
-        .filter(Boolean);
-    } else {
-      const commonCategories = [];
-      for (const category in FinancialData) {
-        if (FinancialData[category][row.metrics]) {
-          commonCategories.push(category);
-        }
-      }
-      return commonCategories
-        .map((commonCategory) => categoryList.find((item: any) => item.label === commonCategory))
-        .filter(Boolean);
-    }
-  }
-
   return (
     <div className="space-y-8">
-      {/* subNav */}
       <SubNav
         links={categoryList.map((item: any) => item.label)}
         selectedLink={selectedLink}
@@ -337,7 +482,6 @@ const Financial_section = ({
               onClick={() => {
                 setShowEdit(!showEdit);
               }}
-              // disabled={true}
             >
               Edit Table <FiEdit className="ml-3" size={18} />
             </Button>
@@ -376,130 +520,26 @@ const Financial_section = ({
         )}
       </div>
 
-      {/* table */}
       <CustomPagination
         items={rows}
         itemsPerPage={5}
         render={(currentItems) => (
-          <div className="shadow-sm rounded-2xl w-full h-auto relative">
-            <Table className="min-w-full overflow-hidden text-black dark:text-white">
-              {/* table header */}
-              <TableHeader className="bg-[#1EF1A5]">
-                <TableRow className="text-black text-lg font-bold">
-                  <TableHead className="w-1/6 py-2 text-center">Metrics</TableHead>
-                  {newYears.map((year) => (
-                    <TableHead key={year} className="w-[13%] py-2 text-center">
-                      {year}
-                    </TableHead>
-                  ))}
-                  {showEdit && <TableHead className="w-1/6 py-2 text-center">Category</TableHead>}
-                  {showEdit && <TableHead className="w-1/6 py-2 text-center">Clear</TableHead>}
-                </TableRow>
-              </TableHeader>
-
-              {/* table body */}
-              <TableBody className="bg-white dark:bg-[#39463E]">
-                {currentItems.length === 0 && !showEdit ? (
-                  <TableRow>
-                    <TableCell className="text-center" colSpan={newYears.length + 3}>
-                      No Financial Data Available
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  currentItems.map((row, rowIndex) => (
-                    <TableRow key={rowIndex}>
-                      <TableCell
-                        className="text-left"
-                        style={{
-                          width: 'max-content',
-                          minWidth: '180px',
-                        }}
-                      >
-                        {showEdit ? (
-                          <CustomSelect
-                            options={metricsList}
-                            onChange={(selectedOption: any) =>
-                              handleSelectChange(rowIndex, selectedOption.value, 'metrics')
-                            }
-                            defaultValue={metricsList.find(
-                              (item: any) =>
-                                item.label === row.metrics || item.value === Number(row.metrics),
-                            )}
-                            placeholder="Select metrics..."
-                            className="w-auto"
-                          />
-                        ) : (
-                          metricsList.find(
-                            (item: any) =>
-                              item.label === row.metrics || item.value === Number(row.metrics),
-                          )?.label || '__'
-                        )}
-                      </TableCell>
-
-                      {newYears.map((year) => (
-                        <TableCell key={year} className="text-center">
-                          {showEdit ? (
-                            <Input
-                              type="text"
-                              value={row[year]}
-                              className="w-full h-full p-2 border border-[#8D9D93] dark:border-[#b7dac4] rounded-xl"
-                              onChange={(e) => handleInputChange(e, rowIndex, year)}
-                            />
-                          ) : isNaN(Number(row[year])) || Number(row[year]) === 0 ? (
-                            '__'
-                          ) : (
-                            Number(row[year]).toLocaleString('en-US', {
-                              style: 'currency',
-                              currency: getCurrencySymbol(countryName),
-                            })
-                          )}
-                        </TableCell>
-                      ))}
-
-                      {showEdit && (
-                        <TableCell className="text-center">
-                          <CustomSelect
-                            options={categoryList}
-                            multi
-                            onChange={(selectedOptions: any) =>
-                              handleSelectChange(rowIndex, selectedOptions, 'category')
-                            }
-                            defaultValue={row.category || findCommonCategories(row)}
-                            placeholder="Category"
-                            className="w-auto"
-                          />
-                        </TableCell>
-                      )}
-
-                      {showEdit && (
-                        <TableCell className="flex justify-center">
-                          <ModalTemplate
-                            FormTitle="Are you sure you want to delete?"
-                            ButtonStyle="p-0 m-0"
-                            disabled
-                            Icon={
-                              <div className="w-8 h-8 hidden md:block relative top-1 right-2 text-[#F96868] cursor-not-allowed">
-                                <GrSubtractCircle className="text-[#EA0000]" size={20} />
-                              </div>
-                            }
-                            onSubmit={() => handleDelete(rowIndex)}
-                            onCancel={() => null}
-                            SubmitText="Yes"
-                            CancelText="No"
-                            SubmitButtonStyle="bg-[#EA0000] hover:bg-[#ea0000e7]"
-                          />
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <FinancialTable
+            rows={rows}
+            showEdit={showEdit}
+            newYears={newYears}
+            metricsList={metricsList}
+            categoryList={categoryList}
+            handleInputChange={handleInputChange}
+            handleSelectChange={handleSelectChange}
+            handleDelete={handleDelete}
+            countryName={countryName}
+            currentItems={currentItems}
+            FinancialData={FinancialData}
+          />
         )}
       />
 
-      {/* Statements */}
       <FStatements financialStatements={financialStatements} companyID={companyID} />
     </div>
   );
