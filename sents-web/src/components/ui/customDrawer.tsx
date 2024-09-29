@@ -43,7 +43,7 @@ const CustomDrawer = ({
   return (
     <Drawer direction="right">
       <DrawerTrigger asChild>
-        <Button type="button">
+        <Button type="button" className="shadow-none">
           <IoIosMenu className="bg-gray-100 py-1 px-2 dark:bg-[#39463E80] dark:text-white w-12 h-[30px] rounded-[40px]" />
         </Button>
       </DrawerTrigger>
@@ -95,7 +95,7 @@ const CustomDrawer = ({
                 <Button
                   type="button"
                   key={index}
-                  className={`flex w-full  justify-center items-center rounded-md space-x-2 px-4 py-2 relative ${
+                  className={`flex w-full shadow-none  justify-center items-center rounded-md space-x-2 px-4 py-2 relative ${
                     isActiveLink ? 'bg-[#39463E] text-white hover:bg-[#39463edc]' : ''
                   }`}
                   disabled={link.disable}
@@ -116,7 +116,7 @@ const CustomDrawer = ({
             onClick={() => {
               handleLogout();
             }}
-            className="flex justify-center items-center space-x-2 p-4 cursor-pointer text-gray-400 hover:bg-gray-100 rounded-lg"
+            className="flex shadow-none justify-center items-center space-x-2 p-4 cursor-pointer text-gray-400 hover:bg-gray-100 rounded-lg"
           >
             <IoIosLogOut size={24} />
             <span>

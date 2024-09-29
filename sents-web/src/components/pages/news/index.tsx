@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -28,7 +28,6 @@ import { CustomSession, CompanyType } from '@/utils/types';
 const Categories = ['Top News', 'News', 'Events', 'Resources', 'Teams'];
 
 function Index() {
-  const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession() as { data: CustomSession };
   const isAdmin = session?.user?.role === 'ADMIN';
@@ -104,7 +103,6 @@ function Index() {
   // Handlers
   const handleSelectCountry = (value: string) => setSelectedCountry(value);
   const handleSelectCompany = (value: string) => setSelectedCompany(value);
-  const handleCreateNews = () => router.push('/create_news');
 
   const handleDeleteNews = useCallback(async () => {
     setIsDeleting(true);
@@ -148,13 +146,13 @@ function Index() {
             <>
               <h1 className="text-[#0D4222] dark:text-[#E6F6F0] text-left">News</h1>
               <div className="flex justify-between items-center">
-                <Button
-                  className="bg-[#39463E] flex items-center text-white p-2 md:p-7 rounded-2xl hover:bg-[#39463ed9]"
-                  onClick={handleCreateNews}
+                <Link
+                  href={'/create_news'}
+                  className="bg-[#39463E] transition transform active:scale-95 flex items-center text-white p-2 md:p-4 rounded-2xl hover:bg-[#39463ed9]"
                 >
                   Create new News
                   <RxPlus className="ml-3" size={18} />
-                </Button>
+                </Link>
                 {showCheckbox ? (
                   <ModalTemplate
                     ButtonText="Delete News"

@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
+} from './pagination';
 
 interface PaginationProps {
   items: any[];
@@ -31,19 +31,19 @@ const CustomPagination = ({ items = [], itemsPerPage, render }: PaginationProps)
       {render(currentItems)}
       <PaginationContainer className="w-full flex justify-end p-2">
         <PaginationPrevious
-          className="cursor-pointer"
+          className="cursor-pointer shadow-none"
           onClick={() => handlePageClick(Math.max(currentPage - 1, 1))}
           isActive={currentPage !== 1}
         />
         {[...Array(totalPages)].map((_, i) => (
-          <PaginationItem key={i} className="list-none cursor-pointer">
+          <PaginationItem key={i} className="list-none cursor-pointer shadow-none">
             <PaginationLink onClick={() => handlePageClick(i + 1)} isActive={i + 1 === currentPage}>
               {i + 1}
             </PaginationLink>
           </PaginationItem>
         ))}
         <PaginationNext
-          className="cursor-pointer"
+          className="cursor-pointer shadow-none"
           onClick={() => handlePageClick(Math.min(currentPage + 1, totalPages))}
           isActive={currentPage !== totalPages}
         />

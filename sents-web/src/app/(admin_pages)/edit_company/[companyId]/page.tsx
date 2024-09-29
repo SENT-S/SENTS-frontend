@@ -2,13 +2,14 @@
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React, { useState, useCallback, useEffect } from 'react';
+import { IoChevronBackOutline } from 'react-icons/io5';
 import { ScaleLoader } from 'react-spinners';
 
 import SubNav from '@/components/admin/Navs/SubNav';
 import FinancialSection from '@/components/admin/sections/Financial_section';
 import NewsSection from '@/components/admin/sections/News_section';
 import OverviewSection from '@/components/admin/sections/Overview_section';
-import CustomBackButton from '@/components/ui/customBackButton';
+import { Button } from '@/components/ui/button';
 import MainLayout from '@/layouts';
 import { fetchMetrics, fetchCategories } from '@/lib/ReduxSlices/metric_category';
 import { stopRefresh } from '@/lib/ReduxSlices/refreshSlice';
@@ -117,8 +118,15 @@ const EditPage: React.FC<CompanyDetailsProps> = ({ params }) => {
         </div>
       ) : (
         <div className="mt-4">
-          <div className="flex items-center justify-between">
-            <CustomBackButton onClick={() => router.back()} customClass="mb-4" />
+          <div className="flex items-center justify-start mb-4">
+            <Button
+              variant="outline"
+              className="text-green-600 gap-4 text-sm font-bold "
+              onClick={() => router.push('/dashboard')}
+            >
+              <IoChevronBackOutline />
+              Return to Dashboard
+            </Button>
           </div>
           <div className="space-y-8">
             <SubNav links={links} selectedLink={selectedLink} setSelectedLink={setSelectedLink} />

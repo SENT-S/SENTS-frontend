@@ -93,7 +93,7 @@ const Header: React.FC = () => {
   );
 
   return (
-    <div className="bg-white z-50 shadow py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463e] sticky top-0">
+    <div className="bg-white z-50 shadow-sm py-4 rounded-b-xl lg:rounded-b-none lg:rounded-bl-xl dark:bg-[#39463e] sticky top-0">
       <div className="px-4 flex justify-between items-center space-x-4 lg:space-x-0">
         <div className="lg:hidden">
           <Link href="/dashboard">

@@ -229,7 +229,7 @@ const CompanyTable: React.FC<TableProps> = ({
         <div className="overflow-x-auto">
           <div className="align-middle inline-block w-full max-w-full min-w-[660px]">
             <div className="overflow-hidden shadow-sm">
-              <div className="bg-white dark:text-[#FFFFFF] dark:bg-[#39463E80] p-6 rounded-2xl">
+              <div className="bg-white dark:text-[#FFFFFF] dark:bg-[#39463E80] p-6 shadow-sm mb-1 rounded-2xl">
                 <div className="flex text-left text-sm leading-4 font-medium capitalize tracking-wider">
                   {memoizedColumns.map((column, index) => (
                     <div
@@ -270,7 +270,7 @@ const EditControls = React.memo(
       </Button>
       {!showEdit && (
         <Link
-          className="bg-[#39463E] m-0 flex items-center text-white p-2 md:p-4 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
+          className="bg-[#39463E] m-0 flex items-center transition transform active:scale-95 text-white p-2 md:p-4 rounded-2xl dark:bg-[#39463E] dark:text-white hover:bg-[#39463ed9] hover:text-white"
           href={'/new_company'}
         >
           Add New Company <RxPlus className="ml-3" size={18} />

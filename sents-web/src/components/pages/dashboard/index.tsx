@@ -96,7 +96,7 @@ const CompanyDashboard = () => {
             key={item.country}
             role="button"
             tabIndex={0}
-            className={`relative w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${
+            className={`relative shadow-sm w-full flex justify-around cursor-pointer items-center p-2 md:p-4 rounded-2xl ${
               item.country === selectedCountry
                 ? 'bg-[#148C59] text-white'
                 : 'bg-white dark:bg-[#39463E80] dark:text-white dark:border dark:border-[#39463E80]'

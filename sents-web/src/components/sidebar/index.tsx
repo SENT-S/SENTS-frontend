@@ -21,7 +21,7 @@ const LinkButton = React.memo(({ link, isActiveLink, isAdmin }: any) => {
   return (
     <Button
       type="button"
-      className={`flex w-full ${
+      className={`flex shadow-none w-full ${
         isAdmin ? 'justify-between px-8 py-6' : 'justify-center px-8 py-9'
       } items-center space-x-2 relative ${isActiveLink ? 'text-[#148c59]' : 'text-gray-400'}`}
       disabled={link.disable}
@@ -111,7 +111,7 @@ const SideBar = () => {
         <Button
           type="button"
           onClick={handleLogout}
-          className="flex justify-center items-center space-x-2 p-4 text-gray-400 hover:bg-gray-100 rounded-lg"
+          className="flex shadow-none justify-center items-center space-x-2 p-4 text-gray-400 hover:bg-gray-100 rounded-lg"
         >
           <IoIosLogOut size={24} />
           <span>
