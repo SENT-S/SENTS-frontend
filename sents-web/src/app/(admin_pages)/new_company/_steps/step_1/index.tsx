@@ -35,13 +35,17 @@ const Index = () => {
 
         const formattedData = { ...companyFields };
         await dispatch(createCompanyAPI(formattedData));
-
         dispatch(setInnerStep(3));
         toast.success('Company created successfully', { position: 'top-center' });
       }
     } catch (error) {
       console.error('Failed to create company', error);
-      toast.error('Failed to create company, please try again', { position: 'top-center' });
+      toast.error(
+        typeof error === 'string' ? error : 'Failed to create company, please try again',
+        {
+          position: 'top-center',
+        },
+      );
     } finally {
       setIsSubmitting(false);
     }

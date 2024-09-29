@@ -41,13 +41,7 @@ export const countryList = [
   { label: 'Uganda', value: 'Uganda' },
   { label: 'Kenya', value: 'Kenya' },
   { label: 'Burundi', value: 'Burundi' },
-  { label: 'South Sudan', value: 'South Sudan' },
-  { label: 'Tanzania', value: 'Tanzania' },
   { label: 'Rwanda', value: 'Rwanda' },
-  {
-    label: 'Democratic Republic of the Congo',
-    value: 'Democratic Republic of the Congo',
-  },
 ];
 
 export const companyList = [

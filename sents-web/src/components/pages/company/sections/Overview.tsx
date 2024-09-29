@@ -1,30 +1,67 @@
 /* eslint-disable no-unused-vars */
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useTheme } from 'next-themes';
 import React, { useEffect, useRef, useState } from 'react';
 
-interface OverviewProps {
-  data: any;
+// Define the structure of the stock data prop
+interface StockData {
+  company_name: string;
+  stock_symbol: string;
 }
 
-const Overview = ({ data }: OverviewProps) => {
+// Define the structure of the component props
+interface OverviewProps {
+  data: StockData;
+}
+
+// Define the structure of Finnhub's quote response
+interface FinnhubQuoteResponse {
+  c: number; // Current price
+  h: number; // High price of the day
+  l: number; // Low price of the day
+  o: number; // Open price of the day
+  pc: number; // Previous close price
+}
+
+// Extend the Window interface to include TradingView
+declare global {
+  interface Window {
+    TradingView: any;
+  }
+}
+
+const Overview: React.FC<OverviewProps> = ({ data }) => {
   const tradingViewRef = useRef<HTMLDivElement>(null);
-  const [selectedRange, setSelectedRange] = useState<string>('D');
+  const [selectedRange, setSelectedRange] = useState<string>('1D');
   const [stockPrice, setStockPrice] = useState<number | null>(null);
   const [percentageChange, setPercentageChange] = useState<number | null>(null);
 
   const stockSymbol = 'AAPL';
   const { theme } = useTheme();
 
+  // Mapping of button labels to TradingView intervals
+  const rangeToInterval: Record<string, string> = {
+    '1D': 'D',
+    '5D': 'D',
+    '1M': 'D',
+    '6M': 'W',
+    YTD: 'M',
+    '1Y': 'M',
+    '5Y': 'M',
+    ALL: 'W',
+  };
+
   // Function to handle time range change
   const handleRangeChange = (range: string) => {
-    setSelectedRange(range);
+    if (selectedRange !== range) {
+      setSelectedRange(range);
+    }
   };
 
   // Function to fetch stock price and percentage change
   const fetchStockData = async () => {
     try {
-      const response = await axios.get(
+      const response: AxiosResponse<FinnhubQuoteResponse> = await axios.get(
         `https://finnhub.io/api/v1/quote?symbol=${stockSymbol}&token=${process.env.NEXT_PUBLIC_FINNHUB_API_KEY}`,
       );
 
@@ -39,53 +76,76 @@ const Overview = ({ data }: OverviewProps) => {
   };
 
   useEffect(() => {
-    // Fetch stock data when component mounts
     fetchStockData();
+    // Optionally, set up an interval to refresh data periodically
+    // const intervalId = setInterval(fetchStockData, 5 * 60 * 1000); // Refresh every 5 minutes
+    // return () => clearInterval(intervalId);
+  }, [stockSymbol]);
 
-    let script: HTMLScriptElement | null = null;
-
-    if (tradingViewRef.current) {
-      // Clear any existing widget instances to prevent duplicates
-      tradingViewRef.current.innerHTML = '';
-
-      // Create a new script element
-      script = document.createElement('script');
-      script.src = 'https://s3.tradingview.com/tv.js';
-      script.async = true;
-      script.onload = () => {
+  useEffect(() => {
+    const loadTradingViewScript = (): Promise<void> => {
+      return new Promise((resolve, reject) => {
         if (window.TradingView) {
-          new window.TradingView.widget({
-            width: '100%',
-            height: 600,
-            symbol: `NASDAQ:${stockSymbol}`,
-            interval: selectedRange,
-            timezone: 'Africa/Nairobi',
-            theme: theme === 'dark' ? 'dark' : 'light',
-            style: '3',
-            locale: 'en',
-            toolbar_bg: theme === 'dark' ? '#1f2937' : '#f1f3f6',
-            enable_publishing: false,
-            allow_symbol_change: true,
-            container_id: 'tradingview_widget',
-          });
-        } else {
-          console.error('TradingView library is not available.');
+          resolve();
+          return;
         }
-      };
 
-      // Append the script to the tradingViewRef div
-      tradingViewRef.current.appendChild(script);
-    }
+        const existingScript = document.getElementById('tradingview-script');
+        if (existingScript) {
+          existingScript.addEventListener('load', () => resolve());
+          existingScript.addEventListener('error', () =>
+            reject(new Error('Failed to load TradingView script')),
+          );
+          return;
+        }
 
-    return () => {
-      if (tradingViewRef.current) {
+        const script = document.createElement('script');
+        script.id = 'tradingview-script';
+        script.src = 'https://s3.tradingview.com/tv.js';
+        script.async = true;
+        script.onload = () => {
+          resolve();
+        };
+        script.onerror = () => {
+          reject(new Error('Failed to load TradingView script'));
+        };
+        document.head.appendChild(script);
+      });
+    };
+
+    const initializeWidget = () => {
+      if (window.TradingView && tradingViewRef.current) {
+        // Clear any existing widget to prevent duplicates
         tradingViewRef.current.innerHTML = '';
-      }
-      if (script) {
-        script.onload = null; // Prevent memory leaks
+
+        new window.TradingView.widget({
+          width: '100%',
+          height: 600,
+          symbol: `NASDAQ:${stockSymbol}`,
+          interval: rangeToInterval[selectedRange] || 'D',
+          timezone: 'Africa/Nairobi',
+          theme: theme === 'dark' ? 'dark' : 'light',
+          style: 3,
+          locale: 'en',
+          toolbar_bg: theme === 'dark' ? '#1f2937' : '#f1f3f6',
+          enable_publishing: false,
+          allow_symbol_change: true,
+          container_id: 'tradingview_widget',
+        });
       }
     };
-  }, [stockSymbol, selectedRange, theme]);
+
+    loadTradingViewScript()
+      .then(() => {
+        initializeWidget();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    // Re-initialize widget when selectedRange or theme changes
+    // Cleanup is handled by clearing the innerHTML in initializeWidget
+  }, [selectedRange, theme, stockSymbol]);
 
   return (
     <div
@@ -94,8 +154,10 @@ const Overview = ({ data }: OverviewProps) => {
       }`}
     >
       <div className="py-2">
-        <h1 className="text-3xl font-bold">{data?.company_name}</h1>
-        <h2 className="text-xl mb-2">{data?.stock_symbol || 'NASDAQ:AAPL'}</h2>
+        <h1 className="text-3xl font-bold">{data.company_name}</h1>
+        <h2 className="text-xl mb-2">
+          {data.stock_symbol ? `NASDAQ:${data.stock_symbol}` : 'NASDAQ:AAPL'}
+        </h2>
       </div>
 
       {/* Stock Price and Percentage Change */}
@@ -103,15 +165,15 @@ const Overview = ({ data }: OverviewProps) => {
         <span className="text-4xl font-bold">
           {stockPrice !== null ? `$${stockPrice.toFixed(2)}` : 'Loading...'}
         </span>
-        <span
-          className={`px-3 py-1 rounded-full text-lg font-semibold ${
-            percentageChange !== null && percentageChange >= 0
-              ? 'text-green-600 bg-green-100'
-              : 'text-red-600 bg-red-100'
-          }`}
-        >
-          {percentageChange !== null ? `${percentageChange.toFixed(2)}%` : ''}
-        </span>
+        {percentageChange !== null && (
+          <span
+            className={`px-3 py-1 rounded-full text-lg font-semibold ${
+              percentageChange >= 0 ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'
+            }`}
+          >
+            {percentageChange.toFixed(2)}%
+          </span>
+        )}
       </div>
 
       {/* Time Range Buttons */}
@@ -146,13 +208,14 @@ const Overview = ({ data }: OverviewProps) => {
         ))}
       </div>
 
+      {/* TradingView Widget */}
       <div className="flex justify-center h-auto w-full">
-        <section
+        <div
           className="w-full"
           id="tradingview_widget"
           ref={tradingViewRef}
           style={{ height: '600px' }}
-        ></section>
+        ></div>
       </div>
     </div>
   );
